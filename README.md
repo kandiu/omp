@@ -1,2 +1,3 @@
 # omp
-Vassilis ,Uma and Eljon
+Vassilis, Marcel, Uma and Eljon
+
