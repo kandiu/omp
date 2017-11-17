@@ -1,2 +1,2 @@
 # omp
-Vassilis and Eljon
+Vassilis, Marcel and Eljon
