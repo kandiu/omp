@@ -1,2 +1,2 @@
 # omp
-Vassilis
+Vassilis and Eljon
