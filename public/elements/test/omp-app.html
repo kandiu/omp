@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+<head>
+
+  <title>Omp Components Test</title>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+  
+  <script src="../../bower_components/web-component-tester/browser.js"></script>
+
+
+  <link rel="import" href="../omp-app/omp-app.html">
+
+</head>
+<body>
+
+  <test-fixture id="basic">
+    <template>
+      <omp-app></omp-app>
+    </template>
+  </test-fixture>
+
+  <script>
+    function $$(el, selector) {
+      return el.shadowRoot.querySelector(selector);
+    }
+
+    suite('Shadow DOM', function() {
+      test('contains the right elements', function() {
+        const el = fixture('basic');
+        assert.ok($$(el, 'h1'), 'contains a <h1> element');
+
+      });
+    });      
+  </script>
+
+</body>
+</html>

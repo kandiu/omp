@@ -1,0 +1,33 @@
+{
+  "name": "OMP",
+  "version": "0.0.0",
+  "description": "Order Management System",
+  "main": "app.js",
+  "scripts": {
+    "start": "DEBUG='*' nodemon ./bin/www",
+    "test": "npm run test-mocha",
+    "test-mocha": "./node_modules/mocha/bin/mocha -R list ./test "
+  },
+  "keywords": [
+    "Node.js",
+    "Express.js",
+    "MongoDB",
+    "Mongoose",
+    "REST"
+  ],
+  "author": "Eljon Harlicaj, Umakanthan Kandiah, Marcel Bezdrighin, Robert Jans, Igor Rebesco",
+  "license": "MIT",
+  "dependencies": {
+    "debug": "^3.1.0",
+    "express": "^4.16.2",
+    "method-override": "^2.3.10",
+    "mongoose": "^4.12.6",
+    "morgan": "^1.9.0",
+    "socket.io": "^2.0.4",
+    "supertest": "^3.0.0"
+  },
+  "devDependencies": {
+    "mocha": "^4.0.1",
+    "should": "^13.1.3"
+  }
+}
