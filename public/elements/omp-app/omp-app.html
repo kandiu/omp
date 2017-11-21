@@ -1,4 +1,7 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../omp-blotter/omp-blotter.html">
+
+
 
 
 <dom-module id="omp-app">
@@ -75,7 +78,7 @@
 	</header>
 
       <div id="builder"> Builder</div>
-      <div id="blotter">Blotter </div>
+      <div id="blotter"><omp-blotter></omp-blotter></div>
       <div id="history"> History </div>
 	
 	
@@ -90,7 +93,7 @@
 				title: {
 					type: Boolean,
 					value: "Order Management System TEST"
-				}
+				},
 
 			}
 		}

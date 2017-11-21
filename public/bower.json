@@ -32,7 +32,10 @@
     "paper-swatch-picker": "PolymerElements/paper-swatch-picker#^2.0.1",
     "neon-animation": "^2.0.1",
     "web-animations-js": "^2.3.1",
-    "paper-toggle-button": "PolymerElements/paper-toggle-button#^2.0.0"
+    "paper-toggle-button": "PolymerElements/paper-toggle-button#^2.0.0",
+    "vaadin-grid": "vaadin/vaadin-grid#^4.0.0",
+    "iron-ajax": "PolymerElements/iron-ajax#^2.0.6",
+    "vaadin-valo-theme": "vaadin/vaadin-valo-theme#^0.3.2"
   },
   "devDependencies": {
     "test-fixture": "PolymerElements/test-fixture#^3.0.0",
