@@ -12,7 +12,7 @@ var Broker = models.Broker;
 var Registry = models.Registry;
 
 var users = {
-  name : 'Users',
+  name : 'User',
   data : [
     {
       "name" : 'igor',
@@ -46,7 +46,7 @@ var users = {
 };
 
 var portfolios = {
-  name : 'Portfolios',
+  name : 'Portfolio',
   data : [
     {
       "portfolio_id" : 'stks-1',
@@ -76,7 +76,7 @@ var portfolios = {
 };
 
 var brokers = {
-  name : 'Brokers',
+  name : 'Broker',
   data : [
     {
       "broker_id" : "GS"

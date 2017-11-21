@@ -18,7 +18,9 @@ var seedData = require('./seedData')
 * Recursive function that goes through 
 * seedData populating each item of it
 */
+
 var seedModel = function(idx, done){
+
   if(idx == seedData.length){
     return done(null, seedData);
   }
