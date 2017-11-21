@@ -1,0 +1,36 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+
+<dom-module id="omp-app">
+  <template>
+
+    <style >
+
+    </style>
+
+	<header>
+		<h1>[[title]]</h1>
+	</header>
+	
+	
+  </template>
+  
+  <script>
+    class OmpApp extends Polymer.Element{
+		static get is() { return 'omp-app'; }
+
+		static get properties(){
+			return { 
+				title: {
+					type: Boolean,
+					value: "Order Management System"
+				}
+
+			}
+		}
+
+	}
+    customElements.define(OmpApp.is, OmpApp);
+  </script>
+
+</dom-module>
