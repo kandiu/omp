@@ -1,0 +1,50 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/vaadin-form-layout/vaadin-form-layout.html">
+
+
+<dom-module id="omp-builder">
+    <template>
+
+        <style>
+
+
+
+        </style>
+
+        <header>
+            <h1>[[title]]</h1>
+        </header>
+
+        <vaadin-form-item>
+            <label slot="label">Label aside</label>
+            <input>
+        </vaadin-form-item>
+        <vaadin-form-item>
+            <label slot="label">Label</label>
+            <input class="full-width">
+        </vaadin-form-item>
+
+
+
+
+    </template>
+
+    <script>
+        class OmpBuilder extends Polymer.Element{
+            static get is() { return 'omp-builder'; }
+
+            static get properties(){
+                return {
+                    title: {
+                        type: String,
+                        value: "Builder"
+                    }
+
+                }
+            }
+
+        }
+        customElements.define(OmpBuilder.is, OmpBuilder);
+    </script>
+
+</dom-module>

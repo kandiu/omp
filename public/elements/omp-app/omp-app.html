@@ -1,4 +1,5 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../omp-builder/omp-builder.html">
 
 
 <dom-module id="omp-app">
@@ -74,7 +75,7 @@
 
 	</header>
 
-      <div id="builder"> Builder</div>
+      <omp-builder id="builder"></omp-builder>
       <div id="blotter">Blotter </div>
       <div id="history"> History </div>
 	
@@ -88,7 +89,7 @@
 		static get properties(){
 			return { 
 				title: {
-					type: Boolean,
+					type: String,
 					value: "Order Management System TEST"
 				}
 

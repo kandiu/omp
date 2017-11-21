@@ -1,5 +1,5 @@
 {
-  "name": "OMP",
+  "name": "omp",
   "authors": [
     "Eljon Harlicaj",
     "Umakanthan Kandiah",
@@ -32,7 +32,10 @@
     "paper-swatch-picker": "PolymerElements/paper-swatch-picker#^2.0.1",
     "neon-animation": "^2.0.1",
     "web-animations-js": "^2.3.1",
-    "paper-toggle-button": "PolymerElements/paper-toggle-button#^2.0.0"
+    "paper-toggle-button": "PolymerElements/paper-toggle-button#^2.0.0",
+    "vaadin-valo-theme": "vaadin/vaadin-valo-theme#^0.3.2",
+    "vaadin-combo-box": "vaadin/vaadin-combo-box#^3.0.2",
+    "vaadin-form-layout": "vaadin/vaadin-form-layout#^1.0.4"
   },
   "devDependencies": {
     "test-fixture": "PolymerElements/test-fixture#^3.0.0",
