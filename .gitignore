@@ -23,6 +23,7 @@
 # Hidden Files and Folders #
 ############################
 .*
+!.travis.yml
 !.bowerrc
 !.gitignore
 !/.gitattributes
@@ -31,6 +32,9 @@
 #################
 node_modules/
 
+# Bower #
+################
+public/bower_components/
 
 # IDE Files #
 #############

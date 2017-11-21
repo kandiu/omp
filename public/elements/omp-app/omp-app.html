@@ -1,0 +1,102 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+
+<dom-module id="omp-app">
+  <template>
+
+    <style >
+        :host {
+            display: -ms-flexbox;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-flex-direction: column;
+            -ms-flex-direction: column;
+            flex-direction: column;
+            -webkit-flex-wrap: nowrap;
+            -ms-flex-wrap: nowrap;
+            flex-wrap: nowrap;
+            -webkit-justify-content: flex-start;
+            -ms-flex-pack: start;
+            justify-content: flex-start;
+            -webkit-align-content: stretch;
+            -ms-flex-line-pack: stretch;
+            align-content: stretch;
+            -webkit-align-items: flex-start;
+            -ms-flex-align: start;
+            align-items: flex-start;
+            width: 100%;
+        }
+
+        #builder{
+            -webkit-order: 1;
+            -ms-flex-order: 1;
+            order: 1;
+            -webkit-flex: 1 1 auto;
+            -ms-flex: 1 1 auto;
+            flex: 1 1 auto;
+            -webkit-align-self: auto;
+            -ms-flex-item-align: auto;
+            align-self: auto;
+            width: 100%
+        }
+
+        #blotter{
+            -webkit-order: 2;
+            -ms-flex-order: 2;
+            order: 2;
+            -webkit-flex: 1 1 auto;
+            -ms-flex: 1 1 auto;
+            flex: 1 1 auto;
+            -webkit-align-self: auto;
+            -ms-flex-item-align: auto;
+            align-self: auto;
+            width: 100%
+        }
+
+        #history {
+            -webkit-order: 3;
+            -ms-flex-order: 3;
+            order: 3;
+            -webkit-flex: 1 1 auto;
+            -ms-flex: 1 1 auto;
+            flex: 1 1 auto;
+            -webkit-align-self: auto;
+            -ms-flex-item-align: auto;
+            align-self: auto;
+            width: 100%
+        }
+
+
+    </style>
+
+	<header>
+		<h1>[[title]]</h1>
+
+	</header>
+
+      <div id="builder"> Builder</div>
+      <div id="blotter">Blotter </div>
+      <div id="history"> History </div>
+	
+	
+  </template>
+  
+  <script>
+    class OmpApp extends Polymer.Element{
+		static get is() { return 'omp-app'; }
+
+		static get properties(){
+			return { 
+				title: {
+					type: Boolean,
+					value: "Order Management System TEST"
+				}
+
+			}
+		}
+
+	}
+    customElements.define(OmpApp.is, OmpApp);
+  </script>
+
+</dom-module>
