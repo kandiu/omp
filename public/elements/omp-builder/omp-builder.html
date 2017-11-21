@@ -1,33 +1,193 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/vaadin-valo-theme/vaadin-combo-box.html">
+<link rel="import" href="../../../bower_components/vaadin-combo-box/vaadin-combo-box.html">
+<link rel="import" href="../../../bower_components/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="../../../bower_components/vaadin-date-picker/vaadin-date-picker.html">
+<link rel="import" href="../../../bower_components/vaadin-button/vaadin-button.html">
+<link rel="import" href="../../../bower_components/vaadin-radio-button/vaadin-radio-button.html">
+<link rel="import" href="../../../bower_components/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="../../../bower_components/vaadin-form-layout/vaadin-form-layout.html">
+<link rel="import" href="../../../bower_components/vaadin-grid/vaadin-grid.html">
+
+<!--Testing purpose-->
+<iron-ajax auto url="https://demo.vaadin.com/demo-data/1.0/people?count=200" handle-as="json" last-response="{{users}}"></iron-ajax>
 
 
 <dom-module id="omp-builder">
     <template>
 
+
         <style>
+            #clearBtn {
+                width: 20%;
+            }
 
+            #upQuant{
+                width: 25%;
+            }
+            vaadin-text-field {
+                width: 25%;
+            }
 
+            vaadin-combo-box {
+                width: 25%
+            }
+
+            #checkerBox {
+                width: 25%;
+            }
+
+            vaadin-grid {
+                width: 100%;
+            }
+
+            * {
+                font-size:8px;
+            }
+            
 
         </style>
 
         <header>
             <h1>[[title]]</h1>
         </header>
+        <div>
+            <vaadin-combo-box id="underlying" label="Underlying"></vaadin-combo-box>
+            <vaadin-combo-box id="exchange" label="Exchange/Country"></vaadin-combo-box>
+            <vaadin-combo-box id="symbol" label="Symbol"></vaadin-combo-box>
+            <!--<vaadin-date-picker label="Maturity"></vaadin-date-picker>-->
+            <vaadin-date-picker placeholder="Maturity">
+            </vaadin-date-picker>
+        </div>
+        <div>
+            <vaadin-text-field id="quantity" label="Quantity"></vaadin-text-field>
+            <vaadin-text-field id="strikeFrom" label="Strike from"></vaadin-text-field>
+            <vaadin-text-field id="strikeTo" label="Strike to"></vaadin-text-field>
+            <vaadin-button id="clearBtn">Clear</vaadin-button>
+        </div>
 
-        <vaadin-form-item>
-            <label slot="label">Label aside</label>
-            <input>
-        </vaadin-form-item>
-        <vaadin-form-item>
-            <label slot="label">Label</label>
-            <input class="full-width">
-        </vaadin-form-item>
+        <div id="upQuant">
+
+
+                <span>
+                    <vaadin-button>5</vaadin-button>
+                    <vaadin-button>10</vaadin-button>
+                    <vaadin-button>20</vaadin-button>
+                </span>
+
+            <span>
+                    <vaadin-button>50</vaadin-button>
+                    <vaadin-button>100</vaadin-button>
+                    <vaadin-button>200</vaadin-button>
+            </span>
+        </div>
+
+
+
+
+        <vaadin-checkbox id="put" checked>PUT</vaadin-checkbox>
+
+        <vaadin-checkbox id="call" checked>CALL</vaadin-checkbox>
+
+        <vaadin-checkbox id="buy" checked> BUY</vaadin-checkbox>
+
+        <vaadin-checkbox id="sell" checked>SELL</vaadin-checkbox>
+
+
+
+
+        <div>
+        <vaadin-grid aria-label="Basic Binding Example" items="[[users.result]]">
+
+            <vaadin-grid-column lex-grow="0">
+                <template class="header">B/S</template>
+                <template>[[index]]</template>
+                <!-- If necessary, the footer could be set using <template class="footer"> -->
+
+            </vaadin-grid-column>
+
+            <vaadin-grid-column>
+                <template class="header">Underlying</template>
+                <template>[[item.firstName]]</template>
+
+            </vaadin-grid-column>
+
+            <vaadin-grid-column>
+                <template class="header">Country</template>
+                <template>[[item.lastName]]</template>
+
+            </vaadin-grid-column>
+
+            <vaadin-grid-column>
+                <template class="header">Ticker</template>
+                <template>[[item.lastName]]</template>
+
+            </vaadin-grid-column>
+
+            <vaadin-grid-column>
+                <template class="header">Maturity</template>
+                <template>[[item.lastName]]</template>
+
+            </vaadin-grid-column>
+
+            <vaadin-grid-column>
+                <template class="header">Right</template>
+                <template>[[item.lastName]]</template>
+
+            </vaadin-grid-column>
+
+            <vaadin-grid-column>
+                <template class="header">Strike</template>
+                <template>[[item.lastName]]</template>
+
+            </vaadin-grid-column>
+
+            <vaadin-grid-column>
+                <template class="header">Quantity</template>
+                <template>[[item.lastName]]</template>
+
+            </vaadin-grid-column>
+
+            <vaadin-grid-column>
+                <template class="header">Limit</template>
+                <template>[[item.lastName]]</template>
+
+            </vaadin-grid-column>
+
+            <vaadin-grid-column >
+                <template class="header">Address</template>
+                <template>
+                    <p style="white-space: normal">[[item.address.street]], [[item.address.city]]</p>
+                </template>
+
+            </vaadin-grid-column>
+
+            </div>
+
+
+
+
+        </vaadin-grid>
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 
     </template>
+
+
+
+
 
     <script>
         class OmpBuilder extends Polymer.Element{
@@ -39,12 +199,30 @@
                         type: String,
                         value: "Builder"
                     }
-
                 }
+
             }
 
         }
         customElements.define(OmpBuilder.is, OmpBuilder);
+
+//        console.log("fanculo",window);
+//        console.log("Where we are: ", document);
+//        var combobox = window.document.querySelector('#demo1-1');
+//
+//
+//        window.addEventListener('WebComponentsReady', function() {
+//            var combobox = document.querySelector('#demo1-1');
+//            combobox.items = [
+//                {label: 'One', value: 1},
+//                {label: 'Two', value: 2},
+//                {label: 'Three', value: 3}
+//            ];
+//        });
     </script>
+
+
+
+
 
 </dom-module>
