@@ -1,6 +1,8 @@
 
-demoRouter = require('./demo')
+const demoRouter = require('./demo');
+const basicDevRouter = require('./devApi/basic_routes');
 
 module.exports = {
-	'demo' : demoRouter
+	'demo' : demoRouter,
+    'dev' : basicDevRouter
 }
