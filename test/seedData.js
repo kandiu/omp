@@ -1,12 +1,15 @@
 'use strict';
 
 var mongoose = require('mongoose');
-var User = mongoose.model('User');
-var Portfolio = mongoose.model('Portfolio');
-var Account = mongoose.model('Account');
-var Broker = mongoose.model('Broker');
-var Registry = mongoose.model('Registry');
 var ObjectId = mongoose.Types.ObjectId;
+
+var models = require('../models');
+
+var User = models.User;
+var Portfolio = models.Portfolio;
+var Account = models.Account;
+var Broker = models.Broker;
+var Registry = models.Registry;
 
 var users = {
   name : 'Users',
