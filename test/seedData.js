@@ -1,15 +1,12 @@
 'use strict';
 
 var mongoose = require('mongoose');
-var ObjectId = mongoose.Types.ObjectId;
 
-var models = require('../models');
-
-var User = models.User;
-var Portfolio = models.Portfolio;
-var Account = models.Account;
-var Broker = models.Broker;
-var Registry = models.Registry;
+var User = mongoose.model('User');
+var Portfolio = mongoose.model('Portfolio');
+var Account = mongoose.model('Account');
+var Broker = mongoose.model('Broker');
+var Registry = mongoose.model('Registry');
 
 var users = {
   name : 'User',
@@ -104,7 +101,7 @@ var registry = {
   data : [
     {
       "instrument_id" : "stkc1",
-      "tradable" : "true", 
+      "tradable" : "true",
       "exchange_id" : "IBIS",
       "tickers" : {"own" : "BMW", "Blomberg" : "BMW Equity"},
       "tick_size" : 0.01,
@@ -123,7 +120,7 @@ var registry = {
 
     {
       "instrument_id" : "stkc2",
-      "tradable" : "true", 
+      "tradable" : "true",
       "exchange_id" : "SBF",
       "tickers" : {"own" : "SAN", "Blomberg" : "SNW Equity"},
       "tick_size" : 0.01,
@@ -142,7 +139,7 @@ var registry = {
 
     {
       "instrument_id" : "stkc3",
-      "tradable" : "true", 
+      "tradable" : "true",
       "exchange_id" : "BVME",
       "tickers" : {"own" : "G", "Blomberg" : "G Equity"},
       "tick_size" : 0.01,
@@ -161,7 +158,7 @@ var registry = {
 
     {
       "instrument_id" : "stkc4",
-      "tradable" : "true", 
+      "tradable" : "true",
       "exchange_id" : "BM",
       "tickers" : {"own" : "TEF", "Blomberg" : "TEF Equity"},
       "tick_size" : 0.01,
@@ -180,7 +177,7 @@ var registry = {
 
     {
       "instrument_id" : "stkc5",
-      "tradable" : "true", 
+      "tradable" : "true",
       "exchange_id" : "NASDAQ",
       "tickers" : {"own" : "APPL", "Blomberg" : "APPL Equity"},
       "tick_size" : 0.01,
@@ -199,7 +196,7 @@ var registry = {
 
     {
       "instrument_id" : "stkc6",
-      "tradable" : "true", 
+      "tradable" : "true",
       "exchange_id" : "NYSE",
       "tickers" : {"own" : "GE", "Blomberg" : "GE Equity"},
       "tick_size" : 0.01,
@@ -218,7 +215,7 @@ var registry = {
 
     {
       "instrument_id" : "idx1",
-      "tradable" : "false", 
+      "tradable" : "false",
       "exchange_id" : "",
       "tickers" : {"own" : "SPX", "Blomberg" : "SPX Index"},
       "tick_size" : 0.01,
@@ -232,7 +229,7 @@ var registry = {
 
     {
       "instrument_id" : "idx2",
-      "tradable" : "false", 
+      "tradable" : "false",
       "exchange_id" : "",
       "tickers" : {"own" : "DJ"},
       "tick_size" : 0.01,
@@ -246,7 +243,7 @@ var registry = {
 
     {
       "instrument_id" : "idx3",
-      "tradable" : "false", 
+      "tradable" : "false",
       "exchange_id" : "",
       "tickers" : {"own" : "DAX"},
       "tick_size" : 0.01,
@@ -260,7 +257,7 @@ var registry = {
 
     {
       "instrument_id" : "idx4",
-      "tradable" : "false", 
+      "tradable" : "false",
       "exchange_id" : "",
       "tickers" : {"own" : "ESX"},
       "tick_size" : 0.01,
@@ -274,7 +271,7 @@ var registry = {
 
     {
       "instrument_id" : "fut1",
-      "tradable" : "true", 
+      "tradable" : "true",
       "exchange_id" : "CME",
       "tickers" : {"own" : "ES", "Blomberg" : "ES Future"},
       "tick_size" : 0.25,
@@ -290,7 +287,7 @@ var registry = {
 
     {
       "instrument_id" : "fut2",
-      "tradable" : "true", 
+      "tradable" : "true",
       "exchange_id" : "ECBOT",
       "tickers" : {"own" : "YM", "Blomberg" : "YM Future"},
       "tick_size" : 1.0,
@@ -306,7 +303,7 @@ var registry = {
 
     {
       "instrument_id" : "fut3",
-      "tradable" : "true", 
+      "tradable" : "true",
       "exchange_id" : "DTB",
       "tickers" : {"own" : "FDAX", "Blomberg" : "DX Future"},
       "tick_size" : 0.5,
@@ -322,7 +319,7 @@ var registry = {
 
     {
       "instrument_id" : "fut4",
-      "tradable" : "true", 
+      "tradable" : "true",
       "exchange_id" : "DTB",
       "tickers" : {"own" : "FESX", "Blomberg" : "FESX Future"},
       "tick_size" : 1.0,
@@ -338,7 +335,7 @@ var registry = {
 
     {
       "instrument_id" : "opt1",
-      "tradable" : "true", 
+      "tradable" : "true",
       "exchange_id" : "GLOBEX",
       "tickers" : {"own" : "ES"},
       "tick_size" : 0.01,
@@ -357,7 +354,7 @@ var registry = {
 
     {
       "instrument_id" : "opt2",
-      "tradable" : "true", 
+      "tradable" : "true",
       "exchange_id" : "DTB",
       "tickers" : {"own" : "OESX"},
       "tick_size" : 0.01,
