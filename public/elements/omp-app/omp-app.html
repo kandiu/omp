@@ -1,12 +1,17 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../../../bower_components/vaadin-valo-theme/vaadin-split-layout.html">
+<link rel="import" href="../../../bower_components/vaadin-split-layout/vaadin-split-layout.html">
 <link rel="import" href="../omp-builder/omp-builder.html">
+<link rel="import" href="../omp-blotter/omp-blotter.html">
+<link rel="import" href="../omp-execution/omp-execution.html">
 
 
 <dom-module id="omp-app">
   <template>
 
     <style >
-        :host {
+   /*     :host {
             display: -ms-flexbox;
             display: -webkit-flex;
             display: flex;
@@ -65,21 +70,28 @@
             -ms-flex-item-align: auto;
             align-self: auto;
             width: 100%
+        }*/
+
+/*        vaadin-split-layout {
+            width: 100%;
+            height: 100vh;
         }
-
-
+        vertical-split-layout div {
+            height: 100%;
+        }*/
+        vertical-split-layout {
+            height: 100%;
+        }
     </style>
 
 	<header>
 		<h1>[[title]]</h1>
-
 	</header>
-
-      <omp-builder id="builder"></omp-builder>
-      <div id="blotter">Blotter </div>
-      <div id="history"> History </div>
-	
-	
+    <div id="builder"><omp-builder></omp-builder></div>
+    <vaadin-split-layout vertical>
+        <div id="blotter"><omp-blotter ></omp-blotter></div>
+        <div id="history"><omp-execution></omp-execution></div>
+    </vaadin-split-layout>
   </template>
   
   <script>
@@ -91,7 +103,7 @@
 				title: {
 					type: String,
 					value: "Order Management System TEST"
-				}
+				},
 
 			}
 		}
