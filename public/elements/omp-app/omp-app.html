@@ -11,7 +11,7 @@
   <template>
 
     <style >
-    #main {
+    #container {
         height: 100vh;
     }
 
@@ -19,15 +19,12 @@
         height: calc(100vh / 3 * 2);
     }
 
-    #blotter, #history, #builder {
-        height: 50%;
-    }
     </style>
 
     <!--<header>
 		<h1>[[title]]</h1>
 	</header>-->
-    <vaadin-split-layout vertical id="main">
+    <vaadin-split-layout vertical id="container" >
         <div id="builder"><omp-builder></omp-builder></div>
         <vaadin-split-layout vertical id="overview">
             <div id="blotter"><omp-blotter></omp-blotter></div>
@@ -45,8 +42,7 @@
 				title: {
 					type: String,
 					value: "Order Management System TEST"
-				},
-
+				}
 			}
 		}
 

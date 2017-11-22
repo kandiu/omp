@@ -10,15 +10,17 @@
 
 <dom-module id="omp-blotter">
   <template>
-    <style include="valo-colors"></style>
-  <dom-bind>
+    <style include="valo-colors">
     
-    <template is="dom-bind">
-      <!-- Fetch an array of users to be shown in the grid -->
-      <iron-ajax auto url="https://demo.vaadin.com/demo-data/1.0/people?count=200" handle-as="json" last-response="{{users}}"></iron-ajax>
+    </style>
+    <dom-bind>
+    
+      <template is="dom-bind">
+        <!-- Fetch an array of users to be shown in the grid -->
+        <iron-ajax auto url="https://demo.vaadin.com/demo-data/1.0/people?count=200" handle-as="json" last-response="{{users}}"></iron-ajax>
 
-      <!-- The array is set as the <vaadin-grid>'s "items" property -->
-        <vaadin-grid aria-label="Basic Binding Example" items="[[users.result]]">
+        <!-- The array is set as the <vaadin-grid>'s "items" property -->
+          <vaadin-grid aria-label="Basic Binding Example" items="[[users.result]]" theme="dark">
 
           <vaadin-grid-column width="50px" flex-grow="0">
             <template class="header">#</template>
@@ -99,10 +101,10 @@
             </vaadin-grid-column>
 
           </vaadin-grid>
-        </template>
-      </dom-bind>  
+      </template>
+    </dom-bind>  
 
-    </template>
+  </template>
 
     <script>
       class OmpBlotter extends Polymer.Element{
