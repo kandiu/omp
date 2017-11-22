@@ -10,10 +10,7 @@
 <link rel="import" href="../../../bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
 
-<!--Testing purpose-->
-
-
-<dom-module id="omp-builder">
+<dom-module id="omp-builder" theme="black">
     <template>
 
 
@@ -96,7 +93,7 @@
 
         <div>
             <iron-ajax auto url="https://demo.vaadin.com/demo-data/1.0/people?count=200" handle-as="json" last-response="{{users}}"></iron-ajax>
-        <vaadin-grid aria-label="Basic Binding Example" items="[[users.result]]">
+        <vaadin-grid aria-label="Basic Binding Example" items="[[users.result]]" theme="black">
 
 
             <vaadin-grid-column lex-grow="0">
@@ -153,15 +150,6 @@
                 <template>[[item.lastName]]</template>
 
             </vaadin-grid-column>
-
-            <vaadin-grid-column >
-                <template class="header">Address</template>
-                <template>
-                    <p style="white-space: normal">[[item.address.street]], [[item.address.city]]</p>
-                </template>
-
-            </vaadin-grid-column>
-
             </div>
 
 

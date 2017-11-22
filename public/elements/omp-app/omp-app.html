@@ -11,21 +11,29 @@
   <template>
 
     <style >
-          vertical-split-layout {
-            height: 100%;
-        }
+    #main {
+        height: 100vh;
+    }
+
+    #overview {
+        height: calc(100vh / 3 * 2);
+    }
+
+    #blotter, #history, #builder {
+        height: 50%;
+    }
     </style>
 
-	<header>
+    <!--<header>
 		<h1>[[title]]</h1>
-	</header>
-    <vaadin-split-layout vertical>
-    <div id="builder"><omp-builder></omp-builder></div>
-    <vaadin-split-layout vertical>
-        <div id="blotter"><omp-blotter ></omp-blotter></div>
-        <div id="history"><omp-execution></omp-execution></div>
+	</header>-->
+    <vaadin-split-layout vertical id="main">
+        <div id="builder"><omp-builder></omp-builder></div>
+        <vaadin-split-layout vertical id="overview">
+            <div id="blotter"><omp-blotter></omp-blotter></div>
+            <div id="history"><omp-execution></omp-execution></div>
+        </vaadin-split-layout>
     </vaadin-split-layout>
-</vaadin-split-layout>
   </template>
   
   <script>
