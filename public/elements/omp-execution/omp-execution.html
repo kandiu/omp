@@ -1,6 +1,6 @@
 
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
-
+<link rel="import" href="../../../bower_components/vaadin-valo-theme/vaadin-grid.html">
 <link rel="import" href="../../../bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="../../../bower_components/vaadin-valo-theme/color.html">
 <link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
@@ -8,7 +8,7 @@
 
 
 
-<dom-module id="omp-blotter">
+<dom-module id="omp-execution">
   <template>
     <style include="valo-colors"></style>
   <dom-bind>
@@ -18,7 +18,7 @@
       <iron-ajax auto url="https://demo.vaadin.com/demo-data/1.0/people?count=200" handle-as="json" last-response="{{users}}"></iron-ajax>
 
       <!-- The array is set as the <vaadin-grid>'s "items" property -->
-        <vaadin-grid aria-label="Basic Binding Example" items="[[users.result]]" theme="dark">
+        <vaadin-grid aria-label="Basic Binding Example" items="[[users.result]]"  theme="dark">
 
           <vaadin-grid-column width="50px" flex-grow="0">
             <template class="header">#</template>
@@ -27,14 +27,9 @@
             </vaadin-grid-column>
 
             <vaadin-grid-column>
-              <template class="header">ACT</template>
+              <template class="header">ID</template>
               <template>[[item.firstName]]</template>
             </vaadin-grid-column> 
-
-            <vaadin-grid-column>
-              <template class="header">CANC</template>
-              <template>[[item.lastName]]</template>
-            </vaadin-grid-column>
 
             <vaadin-grid-column>
               <template class="header">SYMBOL</template>
@@ -42,7 +37,7 @@
             </vaadin-grid-column>
 
             <vaadin-grid-column>
-              <template class="header">ENT TIME</template>
+              <template class="header">NAME</template>
               <template>[[item.lastName]]</template>
             </vaadin-grid-column>
 
@@ -53,18 +48,18 @@
 
 
             <vaadin-grid-column>
-              <template class="header">TYPE</template>
-              <template>[[item.lastName]]</template>
-            </vaadin-grid-column>
-
-
-            <vaadin-grid-column>
               <template class="header">ACTION</template>
               <template>[[item.lastName]]</template>
             </vaadin-grid-column>
 
+
             <vaadin-grid-column>
               <template class="header">QUANTITY</template>
+              <template>[[item.lastName]]</template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column>
+              <template class="header">FILL</template>
               <template>[[item.lastName]]</template>
             </vaadin-grid-column>
 
@@ -74,7 +69,7 @@
             </vaadin-grid-column>
 
             <vaadin-grid-column>
-              <template class="header">DURATION</template>
+              <template class="header">EXCHANGE</template>
               <template>[[item.lastName]]</template>
             </vaadin-grid-column>
 
@@ -112,13 +107,13 @@
     </template>
 
     <script>
-      class OmpBlotter extends Polymer.Element{
-        static get is() { return 'omp-blotter'; }
+      class OmpExecution extends Polymer.Element{
+        static get is() { return 'omp-execution'; }
 
         static get properties(){}
 
       }
-      customElements.define(OmpBlotter.is, OmpBlotter);
+      customElements.define(OmpExecution.is, OmpExecution);
     </script>
 
   </dom-module>
