@@ -31,8 +31,9 @@ function(req, res){
 
 // Initialize routers 
 
-const routes = require('./routes')
-app.use('/demo', routes.demo)
+const routes = require('./routes');
+app.use('/demo', routes.demo);
+app.use('/dev', routes.dev);
 
 
 module.exports = app
