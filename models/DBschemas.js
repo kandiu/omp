@@ -12,26 +12,38 @@ const UserSchema = exports.UserSchema = new Schema ({
 const PortfolioSchema = exports.PortfolioSchema = new Schema ({
 
 	portfolio_id : {type : String, required : true},
-	brokers : {type : [String], required : true},
+	accounts : {type : [String], required : true},
 	settings : {type : [SettingsSchema]}
+	// settings : {
+	// 	selected_assets : [{
+	// 		asset_class : {type : String},
+	// 		instruments : {type : [String]}
+	// 	}]
+	// }
 });
 
 // To be used inside Portfolio Schema
 var SettingsSchema = new Schema ({
-		selected_assets : {type : [String]},
+		selected_assets : {type : [AssetSelectionSchema]},
 		// other settings
+});
+
+var AssetSelectionSchema = new Schema ({
+		asset_class : {type : String, required : true},
+		instruments : {type : [String], required : true}
 });
 
 const AccountSchema = exports.AccountSchema = new Schema  ({
 
 	account_id : {type : String, required : true},
+	broker_id : {type : String, required : true},
 	bank : {type : String, required : true},
 	currency : {type : String, required : true},
-	transactions : {type : [TransactionSchema], required : true}
+	//transactions : {type : [CashTransactionSchema], required : true}
 });
 
 // to be used inside Account Schema
-var TransactionSchema = new Schema  ({
+var CashTransactionSchema = new Schema  ({
 	date : {type : Date, required : true},
 	type : {type : String, required : true},
 	amount : {type : Number, required : true},

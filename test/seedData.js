@@ -14,19 +14,19 @@ var users = {
     {
       "name" : 'igor',
       "description" : 'Igor Rebesco',
-      "portfolios" : ['fut-1', 'fut-2']
+      "portfolios" : ['fut-1', 'stks-1']
     },
 
     {
       "name" : 'uma',
       "description" : '',
-      "portfolios" : ['opts-1']
+      "portfolios" : ['multy-1']
     },
 
     {
       "name" : 'marcel',
       "description" : '',
-      "portfolios" : ['stks-1']
+      "portfolios" : ['fut-2']
     },
 
     {
@@ -37,7 +37,7 @@ var users = {
     {
       "name" : 'eljon',
       "description" : '',
-      "portfolios" : ['stks-1', 'stks-2']
+      "portfolios" : ['stks-2', 'stks-3']
     },
   ]
 };
@@ -47,27 +47,54 @@ var portfolios = {
   data : [
     {
       "portfolio_id" : 'stks-1',
-      "brokers" : ['GS','MS'],
+      "accounts" : ['gs1','ms1','ms10'],
+      "settings" :
+      {
+        "selected_assets" : [{
+          "asset_class" : "Equity",
+          "instruments" : ['stkc1','stkc2','stkc3','stkc4']
+        }]
+      }
     },
 
     {
       "portfolio_id" : 'futs-1',
-      "brokers" : ['IB','GS', 'JPM', 'MS'],
+      "accounts" : ['ib1','gs2', 'jpm1', 'ms2'],
+      "settings" :
+      {
+        "selected_assets" : [{
+          "asset_class" : "Future",
+          "instruments" : ['fut1','fut2']
+        }]
+      }
     },
 
     {
-      "portfolio_id" : 'opts-1',
-      "brokers" : ['IB'],
+      "portfolio_id" : 'multy-1',
+      "accounts" : ['ib2'],
+      "settings" :
+      {
+        "selected_assets" : [
+          {
+            "asset_class" : "Equity",
+            "instruments" : ['stkc1','stkc2','stkc3']
+          },
+          {
+            "asset_class" : "Future",
+            "instruments" : ['fut1','fut2','fut3','fut4']
+          }
+        ]
+      }
     },
 
     {
       "portfolio_id" : 'stks-2',
-      "brokers" : ['MS','JPM'],
+      "accounts" : ['ms3','jpm2'],
     },
 
     {
       "portfolio_id" : 'futs-2',
-      "brokers" : ['GS', 'IB'],
+      "accounts" : ['gs3', 'ib3'],
     },
   ]
 };
@@ -93,6 +120,84 @@ var brokers = {
     {
       "broker_id" : "UBS"
     }
+  ]
+};
+
+var accounts = {
+  name : 'Account',
+  data : [
+    {
+      "account_id" : "gs1",
+      "broker_id" : "GS",
+      "bank" : "GS",
+      "currency" : "EUR",
+    },
+    {
+      "account_id" : "gs2",
+      "broker_id" : "GS",
+      "bank" : "GS",
+      "currency" : "EUR",
+    },
+    {
+      "account_id" : "gs3",
+      "broker_id" : "GS",
+      "bank" : "GS",
+      "currency" : "EUR",
+    },
+    {
+      "account_id" : "ms1",
+      "broker_id" : "MS",
+      "bank" : "MS",
+      "currency" : "EUR",
+    },
+    {
+      "account_id" : "ms2",
+      "broker_id" : "MS",
+      "bank" : "MS",
+      "currency" : "EUR",
+    },
+    {
+      "account_id" : "ms3",
+      "broker_id" : "MS",
+      "bank" : "MS",
+      "currency" : "EUR",
+    },
+    {
+      "account_id" : "ms10",
+      "broker_id" : "MS",
+      "bank" : "MS",
+      "currency" : "EUR",
+    },
+    {
+      "account_id" : "jpm1",
+      "broker_id" : "JPM",
+      "bank" : "JPM",
+      "currency" : "EUR",
+    },
+    {
+      "account_id" : "jpm2",
+      "broker_id" : "JPM",
+      "bank" : "JPM",
+      "currency" : "EUR",
+    },
+    {
+      "account_id" : "ib1",
+      "broker_id" : "IB",
+      "bank" : "HSBC",
+      "currency" : "EUR",
+    },
+    {
+      "account_id" : "ib2",
+      "broker_id" : "IB",
+      "bank" : "HSBC",
+      "currency" : "EUR",
+    },
+    {
+      "account_id" : "ib3",
+      "broker_id" : "IB",
+      "bank" : "HSBC",
+      "currency" : "EUR",
+    },
   ]
 };
 
