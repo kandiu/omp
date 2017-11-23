@@ -1,6 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
 
 var User = mongoose.model('User');
 var Portfolio = mongoose.model('Portfolio');
@@ -131,72 +132,144 @@ var accounts = {
       "broker_id" : "GS",
       "bank" : "GS",
       "currency" : "EUR",
+      "transactions" : [
+           {"date" : new Date(), 
+            "type" : "xy", 
+            "amount" : 23}, 
+           {"date" : new Date(), 
+            "type" : "xy", amount : 23}]
     },
     {
       "account_id" : "gs2",
       "broker_id" : "GS",
       "bank" : "GS",
       "currency" : "EUR",
+      "transactions" : [
+           {"date" : new Date(), 
+            "type" : "xy", 
+            "amount" : 23}, 
+           {"date" : new Date(), 
+            "type" : "xy", amount : 23}]
     },
     {
       "account_id" : "gs3",
       "broker_id" : "GS",
       "bank" : "GS",
       "currency" : "EUR",
+      "transactions" : [
+           {"date" : new Date(), 
+            "type" : "xy", 
+            "amount" : 23}, 
+           {"date" : new Date(), 
+            "type" : "xy", amount : 23}]
     },
     {
       "account_id" : "ms1",
       "broker_id" : "MS",
       "bank" : "MS",
       "currency" : "EUR",
+      "transactions" : [
+           {"date" : new Date(), 
+            "type" : "xy", 
+            "amount" : 23}, 
+           {"date" : new Date(), 
+            "type" : "xy", amount : 23}]
     },
     {
       "account_id" : "ms2",
       "broker_id" : "MS",
       "bank" : "MS",
       "currency" : "EUR",
+      "transactions" : [
+           {"date" : new Date(), 
+            "type" : "xy", 
+            "amount" : 23}, 
+           {"date" : new Date(), 
+            "type" : "xy", amount : 23}]
     },
     {
       "account_id" : "ms3",
       "broker_id" : "MS",
       "bank" : "MS",
       "currency" : "EUR",
+      "transactions" : [
+           {"date" : new Date(), 
+            "type" : "xy", 
+            "amount" : 23}, 
+           {"date" : new Date(), 
+            "type" : "xy", amount : 23}]
     },
     {
       "account_id" : "ms10",
       "broker_id" : "MS",
       "bank" : "MS",
       "currency" : "EUR",
+      "transactions" : [
+           {"date" : new Date(), 
+            "type" : "xy", 
+            "amount" : 23}, 
+           {"date" : new Date(), 
+            "type" : "xy", amount : 23}]
     },
     {
       "account_id" : "jpm1",
       "broker_id" : "JPM",
       "bank" : "JPM",
       "currency" : "EUR",
+      "transactions" : [
+           {"date" : new Date(), 
+            "type" : "xy", 
+            "amount" : 23}, 
+           {"date" : new Date(), 
+            "type" : "xy", amount : 23}]
     },
     {
       "account_id" : "jpm2",
       "broker_id" : "JPM",
       "bank" : "JPM",
       "currency" : "EUR",
+      "transactions" : [
+           {"date" : new Date(), 
+            "type" : "xy", 
+            "amount" : 23}, 
+           {"date" : new Date(), 
+            "type" : "xy", amount : 23}]
     },
     {
       "account_id" : "ib1",
       "broker_id" : "IB",
       "bank" : "HSBC",
       "currency" : "EUR",
+      "transactions" : [
+           {"date" : new Date(), 
+            "type" : "xy", 
+            "amount" : 23}, 
+           {"date" : new Date(), 
+            "type" : "xy", amount : 23}]
     },
     {
       "account_id" : "ib2",
       "broker_id" : "IB",
       "bank" : "HSBC",
       "currency" : "EUR",
+      "transactions" : [
+           {"date" : new Date(), 
+            "type" : "xy", 
+            "amount" : 23}, 
+           {"date" : new Date(), 
+            "type" : "xy", amount : 23}]
     },
     {
       "account_id" : "ib3",
       "broker_id" : "IB",
       "bank" : "HSBC",
       "currency" : "EUR",
+      "transactions" : [
+           {"date" : new Date(), 
+            "type" : "xy", 
+            "amount" : 23}, 
+           {"date" : new Date(), 
+            "type" : "xy", amount : 23}]
     },
   ]
 };
@@ -487,5 +560,6 @@ seedData.push(users);
 seedData.push(portfolios);
 seedData.push(brokers);
 seedData.push(registry);
+seedData.push(accounts);
 
 module.exports = seedData;

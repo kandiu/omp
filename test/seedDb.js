@@ -26,6 +26,7 @@ var seedModel = function(idx, done){
   }
 
   var modelName = seedData[idx].name;
+
   models[modelName].create(seedData[idx].data, function(err){
     if (err) done (err);
 

@@ -6,6 +6,7 @@ const User = models.User;
 const Portfolio = models.Portfolio;
 const Broker = models.Broker;
 const Registry = models.Registry;
+const Account = models.Account;
 
 router.get('/', function(req, res){
 	res.end("development api");
@@ -24,9 +25,22 @@ router.get('/users', function(req, res) {
         }); 
 });
 
-router.get('/users/:_id', function(req, res) {
+// ACCOUNTS
 
-    User.findById(req.params._id, function(err, found) {
+router.get('/accounts', function(req, res) {
+
+    Account.find({}, function(err, found) {
+
+            if (err) 
+                res.status(404).end();           
+            else
+                res.status(200).json(found);
+        }); 
+});
+
+router.get('/accounts/:_id', function(req, res) {
+
+    Account.findById(req.params._id, function(err, found) {
 
             if (err) 
                 res.status(404).end();           
