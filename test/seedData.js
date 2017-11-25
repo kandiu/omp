@@ -15,7 +15,7 @@ var users = {
     {
       "name" : 'igor',
       "description" : 'Igor Rebesco',
-      "portfolios" : ['fut-1', 'stks-1']
+      "portfolios" : ['futs-1', 'stks-1']
     },
 
     {
@@ -27,7 +27,7 @@ var users = {
     {
       "name" : 'marcel',
       "description" : '',
-      "portfolios" : ['fut-2']
+      "portfolios" : ['futs-2']
     },
 
     {
@@ -94,8 +94,25 @@ var portfolios = {
     },
 
     {
+      "portfolio_id" : 'stks-3',
+      "accounts" : ['ms3','jpm2'],
+    },
+
+    {
       "portfolio_id" : 'futs-2',
       "accounts" : ['gs3', 'ib3'],
+    },
+
+    {
+      "portfolio_id" : 'opts-1',
+      "accounts" : ['ib1','gs2', 'jpm1', 'ms2'],
+      "settings" :
+      {
+        "selected_assets" : [{
+          "asset_class" : "Option",
+          "instruments" : ['opt1','opt2']
+        }]
+      }
     },
   ]
 };
