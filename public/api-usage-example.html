@@ -18,6 +18,7 @@
 <button onclick="login()">login</button>
 </span>
 
+<div id="status"></div>
 <div id="login_res" style="border: 1px solid black;"></div>
 <div id="portfolio_data" style="border: 1px solid black;"></div>
 <div id="asset_classes" style="border: 1px solid black;"></div>
@@ -33,12 +34,19 @@ function login() {
 
     ajaxRequest("GET", "/login/" + inTxt, {}, {}, function(response) {
 
-        userData = JSON.parse(response);
+        if (response == "404")
+            displayStatus("404");
 
-        displaySummary();
-        displayPortfolioData();
-        displayAssetClassData();
-        displayBrokers();
+        else {
+
+            userData = JSON.parse(response);
+
+            displayStatus("OK");
+            displaySummary();
+            displayPortfolioData();
+            displayAssetClassData();
+            displayBrokers();
+        }
     });
 }
 
@@ -106,8 +114,6 @@ function displayBrokers() {
 
     userData.brokers.forEach(function(br) {
 
-        console.log("broker portfolio_id: " + br.portfolio_id);
-
         brData += "<tr><td>" + br.portfolio_id + "</td><td>";
 
         br.brokers.forEach(function(cl) {
@@ -123,6 +129,19 @@ function displayBrokers() {
     brokersDisplay.innerHTML = brData;
 }
 
+function displayStatus(status) {
+
+    let statusDisplay = document.getElementById("status");
+    let statusString = "";
+
+    if (status == "OK")
+        statusString = "OK: user found";
+    else
+        statusString = "ERROR: user not found";
+
+    statusDisplay.innerHTML = "<h2>" + statusString + "</h2>";
+}
+
 function ajaxRequest(method, url, headers, data, callback) {
 
     const r = new XMLHttpRequest();
@@ -136,10 +155,13 @@ function ajaxRequest(method, url, headers, data, callback) {
 
         if (r.readyState == 4) {
 
-            if (r.responseText != "")
-                callback(r.responseText);
+            if (r.status == 404)  {
+                console.log("caught 404");
+                callback("404");
+            }
+
             else
-                callback();
+                callback(r.responseText);
         }
     } 
 

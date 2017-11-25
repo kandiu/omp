@@ -33,7 +33,7 @@ router.get('/:_username', function(req, res) {
 
     User.findOne({'name' : uname}, function(err, found) {
 
-        if (err) 
+        if (err || found == null) 
             res.status(404).end();           
         else {
             sendUserData(found, res);
