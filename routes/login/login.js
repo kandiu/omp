@@ -105,7 +105,7 @@ function sendUserData(userObject, res) {
 
         if (pf != undefined) {        
 
-            let mapping = {portfolio_id : "", accounts : []};
+            let mapping = {portfolio_id : pf.portfolio_id, accounts : []};
 
             Account.find({ "account_id" : { $in : pf.accounts } }, 
                 

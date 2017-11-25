@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>OMP-api-usage-example</title>
+</head>
+
+<body >
+
+
+<h1>API usage example</h1>
+
+<h2>GET /login/:username</h1>
+
+<span>
+<input id="logintxt" type="text", placeholder="user name">
+<button onclick="login()">login</button>
+</span>
+
+<div id="login_res" style="border: 1px solid black;"></div>
+<div id="portfolio_data" style="border: 1px solid black;"></div>
+<div id="asset_classes" style="border: 1px solid black;"></div>
+<div id="brokers" style="border: 1px solid black;"></div>
+
+<script>
+
+let userData = {};
+
+function login() {
+
+    let inTxt = document.getElementById("logintxt").value;
+
+    ajaxRequest("GET", "/login/" + inTxt, {}, {}, function(response) {
+
+        userData = JSON.parse(response);
+
+        displaySummary();
+        displayPortfolioData();
+        displayAssetClassData();
+        displayBrokers();
+    });
+}
+
+
+function displaySummary() {   
+
+    let summary = "<h3>summary</h3>";
+
+    summary += "<p>user: " + userData.user.name + "</p>";
+    summary += "<p>portfolios: " + userData.portfolios + "</p>";
+    summary += "<p>assetClasses: " + userData.assetClasses + "</p>";
+    summary += "<p>brokers: " + userData.brokers + "</p>";
+
+    let summaryDisplay = document.getElementById("login_res");
+    summaryDisplay.innerHTML = summary;
+}
+
+function displayPortfolioData() {
+
+    let pfData = "<h3>portfolios:</h3>";
+
+    userData.portfolios.forEach(function(pf) {
+
+        pfData += "portfolio_id: " + pf.portfolio_id + "</p><p>accounts: ";
+
+        pf.accounts.forEach(function(ac) {
+            pfData += ac + " ";
+        });
+
+        pfData += "</p>";
+    });
+
+    let portfolioDisplay = document.getElementById("portfolio_data");
+    portfolioDisplay.innerHTML = pfData;
+}
+
+function displayAssetClassData() {
+
+    let acData = "<h3>asset classes:</h3>";
+
+    acData += "<table><tr><td>portfolio &nbsp; &nbsp;</td><td>asset classes</td></tr>";
+
+    userData.assetClasses.forEach(function(ac) {
+
+        acData += "<tr><td>" + ac.portfolio_id + "</td><td>";
+
+        ac.assetclasses.forEach(function(cl) {
+             acData += cl + " ";
+        });
+
+        acData += "</td></tr>";
+    });
+
+    acData += "</table>";
+
+    let assetClassDisplay = document.getElementById("asset_classes");
+    assetClassDisplay.innerHTML = acData;
+}
+
+function displayBrokers() {
+
+    let brData = "<h3>brokers:</h3>";
+
+    brData += "<table><tr><td>portfolio &nbsp; &nbsp;</td><td>brokers</td></tr>";
+
+    userData.brokers.forEach(function(br) {
+
+        console.log("broker portfolio_id: " + br.portfolio_id);
+
+        brData += "<tr><td>" + br.portfolio_id + "</td><td>";
+
+        br.brokers.forEach(function(cl) {
+             brData += cl + " ";
+        });
+
+        brData += "</td></tr>";
+    });
+
+    brData += "</table>";
+
+    let brokersDisplay = document.getElementById("brokers");
+    brokersDisplay.innerHTML = brData;
+}
+
+function ajaxRequest(method, url, headers, data, callback) {
+
+    const r = new XMLHttpRequest();
+    r.open(method, url, true);
+
+    for (let h in headers)
+        r.setRequestHeader(h, headers[h]);
+
+
+    r.onreadystatechange = function() {
+
+        if (r.readyState == 4) {
+
+            if (r.responseText != "")
+                callback(r.responseText);
+            else
+                callback();
+        }
+    } 
+
+    if (method === "POST" || method === "PUT")
+        r.send(data);
+    else
+        r.send(null);   
+}
+
+</script>
+
+
+</body>
+
+</html>
