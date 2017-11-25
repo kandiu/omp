@@ -80,7 +80,7 @@ function sendUserData(userObject, res) {
             }
 
             else {
-                mapping.ascl = ['Equity', 'Future', 'Option'];
+                mapping.assetclasses = ['Equity', 'Future', 'Option'];
             }
 
             mappings.push(mapping);
