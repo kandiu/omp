@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>OMP-api-usage-example</title>
+</head>
+
+<body >
+
+
+<h1>API usage example</h1>
+
+<span>
+<input id="logintxt" type="text", placeholder="user name">
+<button onclick="login()">login</button>
+</span>
+
+<div id="status"></div>
+
+<h2>Data for populating the top bar: GET /login/:username</h2>
+
+<div id="login_res" style="border: 1px solid black;"></div>
+<div id="portfolio_data" style="border: 1px solid black;"></div>
+<div id="asset_classes" style="border: 1px solid black;"></div>
+<div id="brokers" style="border: 1px solid black;"></div>
+
+<div id="assetDeatils" style="display: none">
+
+    <h2>Data for Asset details</h2>
+
+    <div id="equity_selection" style="border: 1px solid black;">
+
+        <h3>Case user selects "Equity"</h3>
+
+        <div id="equity_symbols"></div>
+
+        <p></p>
+        
+        <input id="eq_sel_txt" type="text", placeholder="selected symbol">
+        <button id="eq_sel_btn">get details</button>
+        </span>
+
+        <p></p>
+
+        <p id="eq_exchange">exchange</p>
+        <p id="eq_currency">currency</p>
+
+    </div>
+
+    <div id="fu_selection" style="border: 1px solid black;">
+
+        <h3>Case user selects "Future"</h3>
+
+        <div id="fu_symbols"></div> <p></p>
+        <div id="fu_maturity"><p>maturity</p></div>
+
+        <p></p>
+        
+        <input id="fu_sel_txt" type="text", placeholder="selected symbol">
+        <button id="fu_sel_btn">get details</button>
+        </span>
+
+        <p></p>
+
+        <p id="fu_exchange">exchange</p>
+        <p id="fu_currency">currency</p>
+
+    </div>
+
+    <div id="op_selection" style="border: 1px solid black;">
+
+        <h3>Case user selects "Future"</h3>
+
+        <div id="op_symbols"></div> <p></p>
+        <div id="op_maturity"><p>maturity</p></div>
+
+        <p></p>
+        
+        <input id="op_sel_txt" type="text", placeholder="selected symbol">
+        <button id="op_sel_btn">get details</button>
+        </span>
+
+        <p></p>
+
+        <p id="op_exchange">exchange</p>
+        <p id="op_currency">currency</p>
+
+    </div>
+
+</div>
+
+
+<script>
+
+let userData = {};
+
+function login() {
+
+    let inTxt = document.getElementById("logintxt").value;
+
+    if (inTxt != "") {
+
+        ajaxRequest("GET", "/login/" + inTxt, {}, {}, function(response) {
+
+            if (response == "404")
+                displayStatus("404");
+
+            else {
+
+                userData = JSON.parse(response);
+
+                displayStatus("OK");
+                displaySummary();
+                displayPortfolioData();
+                displayAssetClassData();
+                displayBrokers();
+
+                displayAssetDetails();
+            }
+        });
+    }
+}
+
+
+function displaySummary() {   
+
+    let summary = "<h3>summary</h3>";
+
+    summary += "<p>user: " + userData.user.name + "</p>";
+    summary += "<p>portfolios: " + userData.portfolios + "</p>";
+    summary += "<p>assetClasses: " + userData.assetClasses + "</p>";
+    summary += "<p>brokers: " + userData.brokers + "</p>";
+
+    let summaryDisplay = document.getElementById("login_res");
+    summaryDisplay.innerHTML = summary;
+}
+
+function displayPortfolioData() {
+
+    let pfData = "<h3>portfolios:</h3>";
+
+    userData.portfolios.forEach(function(pf) {
+
+        pfData += "portfolio_id: " + pf.portfolio_id + "</p><p>accounts: ";
+
+        pf.accounts.forEach(function(ac) {
+            pfData += ac + " ";
+        });
+
+        pfData += "</p>";
+    });
+
+    let portfolioDisplay = document.getElementById("portfolio_data");
+    portfolioDisplay.innerHTML = pfData;
+}
+
+function displayAssetClassData() {
+
+    let acData = "<h3>asset classes:</h3>";
+
+    acData += "<table><tr><td>portfolio &nbsp; &nbsp;</td><td>asset classes</td></tr>";
+
+    userData.assetClasses.forEach(function(ac) {
+
+        acData += "<tr><td>" + ac.portfolio_id + "</td><td>";
+
+        ac.assetclasses.forEach(function(cl) {
+             acData += cl + " ";
+        });
+
+        acData += "</td></tr>";
+    });
+
+    acData += "</table>";
+
+    let assetClassDisplay = document.getElementById("asset_classes");
+    assetClassDisplay.innerHTML = acData;
+}
+
+function displayBrokers() {
+
+    let brData = "<h3>brokers:</h3>";
+
+    brData += "<table><tr><td>portfolio &nbsp; &nbsp;</td><td>brokers</td></tr>";
+
+    userData.brokers.forEach(function(br) {
+
+        brData += "<tr><td>" + br.portfolio_id + "</td><td>";
+
+        br.brokers.forEach(function(cl) {
+             brData += cl + " ";
+        });
+
+        brData += "</td></tr>";
+    });
+
+    brData += "</table>";
+
+    let brokersDisplay = document.getElementById("brokers");
+    brokersDisplay.innerHTML = brData;
+}
+
+function displayAssetDetails() {
+
+    let asDetailsDiv = document.getElementById("assetDeatils");
+    asDetailsDiv.style.display = "block";   
+
+    equityDetails();
+    futureDetails();
+    optionDetails();
+}
+
+function equityDetails() {
+
+    // Symbols available
+
+    let symbols = "<table><tr><td>portfolio &nbsp; &nbsp;</td><td>stock symbols</td></tr>";
+
+    userData.portfolios.forEach(function(pf) {
+
+        symbols += "<tr><td>" + pf.portfolio_id + "</td><td>";
+
+        if (pf.settings != undefined) {
+
+            pf.settings.selected_assets.forEach(function(sa) {
+
+                if (sa.asset_class == "Equity") {
+
+                    sa.instruments.forEach(function(inst) {
+                        
+                        symbols += inst + " ";
+                    });
+                }
+            });
+        }
+
+        symbols += "</td></tr>";
+    });
+
+    symbols += "</table>";
+
+    let symbolsTable = document.getElementById("equity_symbols");
+    symbolsTable.innerHTML = symbols;
+
+    // selected symbol details
+
+    let btn = document.getElementById("eq_sel_btn");
+    let txt = document.getElementById("eq_sel_txt");
+    let excTxt = document.getElementById("eq_exchange");
+    let curTxt = document.getElementById("eq_currency");
+
+
+    function callback(asset_data) {
+
+        if (asset_data != "404") {
+
+            let data = JSON.parse(asset_data);
+
+            excTxt.innerHTML = "exchange: " + data.exchange_id;
+            curTxt.innerHTML = "currency: " + data.currency;
+        }
+    }
+
+    btn.onclick = function() {
+        ajaxRequest("GET", "/registry/" + txt.value, {}, {}, callback);
+    }
+}
+
+function futureDetails() {
+
+    // Symbols available
+
+    let symbols = "<table><tr><td>portfolio &nbsp; &nbsp;</td><td>underlyings</td></tr>";
+
+    userData.portfolios.forEach(function(pf) {
+
+        symbols += "<tr><td>" + pf.portfolio_id + "</td><td>";
+
+        if (pf.settings != undefined) {
+
+            pf.settings.selected_assets.forEach(function(sa) {
+
+                if (sa.asset_class == "Future") {
+
+                    sa.instruments.forEach(function(inst) {
+                        
+                        symbols += inst + " ";
+                    });
+                }
+            });
+        }
+
+        symbols += "</td></tr>";
+    });
+
+    symbols += "</table>";
+
+    let symbolsTable = document.getElementById("fu_symbols");
+    symbolsTable.innerHTML = symbols;
+
+    // selected symbol details
+
+    let btn = document.getElementById("fu_sel_btn");
+    let txt = document.getElementById("fu_sel_txt");
+    let excTxt = document.getElementById("fu_exchange");
+    let curTxt = document.getElementById("fu_currency");
+
+
+    function callback(asset_data) {
+
+        if (asset_data != "404") {
+
+            let data = JSON.parse(asset_data);
+
+            excTxt.innerHTML = "exchange: " + data.exchange_id;
+            curTxt.innerHTML = "currency: " + data.currency;
+        }
+    }
+
+    btn.onclick = function() {
+        ajaxRequest("GET", "/registry/" + txt.value, {}, {}, callback);
+    }
+}
+
+
+function optionDetails() {
+
+    // Symbols available
+
+    let symbols = "<table><tr><td>portfolio &nbsp; &nbsp;</td><td>underlyings</td></tr>";
+
+    userData.portfolios.forEach(function(pf) {
+
+        symbols += "<tr><td>" + pf.portfolio_id + "</td><td>";
+
+        if (pf.settings != undefined) {
+
+            pf.settings.selected_assets.forEach(function(sa) {
+
+                if (sa.asset_class == "Option") {
+
+                    sa.instruments.forEach(function(inst) {
+                        
+                        symbols += inst + " ";
+                    });
+                }
+            });
+        }
+
+        symbols += "</td></tr>";
+    });
+
+    symbols += "</table>";
+
+    let symbolsTable = document.getElementById("op_symbols");
+    symbolsTable.innerHTML = symbols;
+
+    // selected symbol details
+
+    let btn = document.getElementById("op_sel_btn");
+    let txt = document.getElementById("op_sel_txt");
+    let excTxt = document.getElementById("op_exchange");
+    let curTxt = document.getElementById("op_currency");
+
+
+    function callback(asset_data) {
+
+        if (asset_data != "404") {
+
+            let data = JSON.parse(asset_data);
+
+            excTxt.innerHTML = "exchange: " + data.exchange_id;
+            curTxt.innerHTML = "currency: " + data.currency;
+        }
+    }
+
+    btn.onclick = function() {
+        ajaxRequest("GET", "/registry/" + txt.value, {}, {}, callback);
+    }
+}
+
+
+function displayStatus(status) {
+
+    let statusDisplay = document.getElementById("status");
+    let statusString = "";
+
+    if (status == "OK")
+        statusString = "OK: user found";
+    else
+        statusString = "ERROR: user not found";
+
+    statusDisplay.innerHTML = "<h2>" + statusString + "</h2>";
+}
+
+function ajaxRequest(method, url, headers, data, callback) {
+
+    const r = new XMLHttpRequest();
+    r.open(method, url, true);
+
+    for (let h in headers)
+        r.setRequestHeader(h, headers[h]);
+
+
+    r.onreadystatechange = function() {
+
+        if (r.readyState == 4) {
+
+            if (r.status == 404)  {
+                callback("404");
+            }
+
+            else
+                callback(r.responseText);
+        }
+    } 
+
+    if (method === "POST" || method === "PUT")
+        r.send(data);
+    else
+        r.send(null);   
+}
+
+</script>
+
+
+</body>
+
+</html>
