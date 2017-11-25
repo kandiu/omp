@@ -4,12 +4,10 @@ const router = express.Router();
 const models = require('../../models');
 const User = models.User;
 const Portfolio = models.Portfolio;
-const Broker = models.Broker;
-const Registry = models.Registry;
 const Account = models.Account;
 
 router.get('/', function(req, res){
-	res.end("logi api");
+	res.end("login api");
 })
 
 // GET /:_username
