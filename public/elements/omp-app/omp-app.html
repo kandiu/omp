@@ -1,53 +1,72 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
-
-<link rel="import" href="../../../bower_components/vaadin-valo-theme/vaadin-split-layout.html">
+<link rel="import" href="../../../bower_components/vaadin-form-layout/vaadin-form-layout.html">
+<link rel="import" href="../../../bower_components/vaadin-form-layout/vaadin-form-item.html">
 <link rel="import" href="../../../bower_components/vaadin-split-layout/vaadin-split-layout.html">
+<link rel="import" href="../../bower_components/vaadin-valo-theme/vaadin-text-field.html">
+<link rel="import" href="../../../bower_components/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="../../bower_components/vaadin-valo-theme/vaadin-combo-box.html">
+<link rel="import" href="../../bower_components/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="../omp-builder/omp-builder.html">
 <link rel="import" href="../omp-blotter/omp-blotter.html">
 <link rel="import" href="../omp-execution/omp-execution.html">
-
-
 <dom-module id="omp-app">
-  <template>
+    <template>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+        <style >
+         vaadin-form-layout.with-text-fields > vaadin-text-field {
+             margin-top: .5em;
+             margin-bottom: .5em;
+         }
+         label{
+             text-transform: uppercase !important;
+         }
+        </style>
+        <div class="container">
+            <div id="topbar" class="row">
+                <div class="col-3">
+                    <vaadin-combo-box id="user" label="User" items="{{users}}" on-value-changed="userChanged"></vaadin-combo-box>
+                </div>
+                <div class="col-3">
+                    <vaadin-combo-box id="portfolio" label="Portfolio"></vaadin-combo-box>
+                </div>
+                <div class="col-3">
+                    <vaadin-combo-box id="asset-class" label="Asset class"></vaadin-combo-box>
+                </div>
+                <div class="col-3">
+                    <vaadin-combo-box id="broker" label="Broker"></vaadin-combo-box>
+                </div>
+            </div>
+            <div id="builder" class="row mt-4">
+                <omp-builder class="col"></omp-builder>
+            </div>
+            <div id="blotter" class="row">
+                <omp-blotter class="col"></omp-blotter>
+            </div>
+            <div id="execution" class="row">
+                <omp-execution class="col"></omp-execution>
+            </div>
+        </div>
+    </template>
+    <script>
+     class OmpApp extends Polymer.Element{
+         static get is() { return 'omp-app'; }
+         static get properties(){
+             return {
+                 title: {
+                     type: String,
+                     value: "Order Management System TEST"
+                 },
+		 users: {
+		     type: Array,
+		     value: () => ['igor', 'uma', 'marcel', 'eljon', 'robert']
+		 }
+             }
+         }
 
-    <style >
-    #container {
-        height: 100vh;
-    }
-
-    #overview {
-        height: calc(100vh / 3 * 2);
-    }
-
-    </style>
-
-    <!--<header>
-		<h1>[[title]]</h1>
-	</header>-->
-    <vaadin-split-layout vertical id="container" >
-        <div id="builder"><omp-builder></omp-builder></div>
-        <vaadin-split-layout vertical id="overview">
-            <div id="blotter"><omp-blotter></omp-blotter></div>
-            <div id="history"><omp-execution></omp-execution></div>
-        </vaadin-split-layout>
-    </vaadin-split-layout>
-  </template>
-  
-  <script>
-    class OmpApp extends Polymer.Element{
-		static get is() { return 'omp-app'; }
-
-		static get properties(){
-			return { 
-				title: {
-					type: String,
-					value: "Order Management System TEST"
-				}
-			}
-		}
-
-	}
-    customElements.define(OmpApp.is, OmpApp);
-  </script>
-
+	 userChanged(el) {
+	     console.log(el.target.value)
+	 }
+     }
+     customElements.define(OmpApp.is, OmpApp);
+    </script>
 </dom-module>
