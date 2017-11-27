@@ -10,7 +10,7 @@ var registry = data.find(function(d) { return d.name == 'Registry'; }).data;
 
 var users = data.find(d => d.name == 'User').data;
 var portfolios = data.find(d => d.name == 'Portfolio').data;
-var brokers = data.find(d => d.name == 'Broker'}).data;
+var brokers = data.find(d => d.name == 'Broker').data;
 var accounts = data.find(d => d.name == 'Account').data;
 var registry = data.find(d => d.name == 'Registry').data;
 
