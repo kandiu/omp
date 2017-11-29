@@ -24,8 +24,8 @@
              text-aling:center;
          }
         </style>
-            <iron-ajax auto url="https://demo.vaadin.com/demo-data/1.0/people?count=200" handle-as="json" last-response="{{users}}"></iron-ajax>
-        <vaadin-grid aria-label="Basic Binding Example" items="[[users.result]]">
+            <iron-ajax auto url="https://demo.vaadin.com/demo-data/1.0/people?count=200" handle-as="json" last-response="{{orders}}"></iron-ajax>
+        <vaadin-grid aria-label="Basic Binding Example" items="[[orders.result]]">
             <vaadin-grid-column lex-grow="0">
                 <template class="header">B/S</template>
                 <template>[[index]]</template>

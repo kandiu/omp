@@ -81,7 +81,7 @@
                 </div>
                 <div class="row">
 		    <div class="col">
-                        <vaadin-text-field readonly value="CHF" label="Currency"></vaadin-text-field>
+                            <vaadin-text-field readonly value="CHF" label="Currency"></vaadin-text-field>
 		    </div>
                 </div>
 
@@ -99,7 +99,7 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        <vaadin-combo-box id="type" label="Type"></vaadin-combo-box>
+                        <vaadin-combo-box id="type" label="Type" value="{{selectedType}}"></vaadin-combo-box>
                     </div>
                 </div>
                 <div class="row">
@@ -109,7 +109,14 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        <vaadin-text-field readonly value="50" label="Price"></vaadin-text-field>
+			<template is="dom-if" if="{{ _isMKT(selectedType)}}">
+			    <vaadin-text-field readonly value="50" label="Price"></vaadin-text-field>
+			</template>
+			<template is="dom-if" if="{{ !_isMKT(selectedType) }}">
+			    <vaadin-text-field value="50" label="Price"></vaadin-text-field>
+			</template>
+
+
                     </div>
                 </div>
             </div>
@@ -161,7 +168,12 @@
                  quantity: {
                      type: Number,
                      value: 50
-                 }
+                 },
+		 
+		 selectedType: {
+		     type: String,
+		     value: "MKT"
+		 }
              }
          }
          connectedCallback() {
@@ -189,9 +201,11 @@
 
 			 this._userData.accounts.find(function( ac ) {
 			     if ( a.portfolio_id === ac.portfolio_id) {
-				 /* this.brokers = a.*/
+				 console.log(ac.accounts);
+				 this.brokers = ac.accounts.map((x) => x.account_id);
+				 this.selectedBroker = this.brokers[0];
 			     }
-			 })
+			 }.bind(this))
                          return
                      }
                  }.bind(this))
@@ -214,6 +228,9 @@
 
 	 _isFutureOrOption(s) {
 	     return this._isFuture(s) || this._isOption(s)
+	 }
+	 _isMKT(s){
+	     return s === "MKT"
 	 }
      }
      customElements.define(OmpBuilder.is, OmpBuilder);
