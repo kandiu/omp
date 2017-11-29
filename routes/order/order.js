@@ -38,11 +38,17 @@ function validateOrder(order) {
         order.broker != null &&
         order.portfolio_id != null ) {
 
+        if (order.side.toLowerCase() !== "buy" && order.side.toLowerCase() !== "sell")
+            return false;
+
+        if (order.type !== "LMT" && order.type !== "MKT")
+            return false;
+
         if (order.type == 'LMT' && order.price == null)
             return false;
 
         if (! checkDb(order.portfolio_id, order.account, order.broker))
-            return false;
+            return false; 
 
         return true;
     }

@@ -28,15 +28,12 @@ describe('meta test', function() {
 
 describe('retrieving user data', function(){ 
 
-    before(seed);   
-
-    describe('GET /login', function(){
-
 //        before(utils.dropDb);
 //        before(seed);
 //        after(utils.dropDb);
 //        after(seed);
-        
+
+    describe('GET /login', function(){
 
         it('should return empty JSON', function(done){
             request(app)
