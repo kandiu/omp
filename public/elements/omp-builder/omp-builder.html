@@ -23,7 +23,21 @@
              text-aling:center;
          }
         </style>
-        <div class="row">
+        <div id="topbar" class="row">
+            <div class="col-3">
+                <vaadin-combo-box id="user" label="User" items="{{users}}" on-value-changed="userChanged" value="igor"></vaadin-combo-box>
+            </div>
+            <div class="col-3">
+                <vaadin-combo-box id="portfolio" label="Portfolio" items="[[portfolios]]" on-value-changed="portfolioChanged"></vaadin-combo-box>
+            </div>
+            <div class="col-3">
+                <vaadin-combo-box id="asset-class" label="Asset class" items="[[assetClasses]]" value="{{selectedAssetClass}}"></vaadin-combo-box>
+            </div>
+            <div class="col-3">
+                <vaadin-combo-box id="broker" label="Broker" items="[[brokers]]" value="{{selectedBroker}}"></vaadin-combo-box>
+            </div>
+        </div>
+        <div class="row mt-4">
             <div class="col-4">
                 <!-- ASSET DETAIL -->
                 <div class="section-title">ASSET DETAILS</div>
@@ -51,8 +65,8 @@
                 </div>
                 <div class="row">
                     <div class="col">
-			<vaadin-text-field readonly value="50" label="Price"></vaadin-text-field>
-		    </div>
+                        <vaadin-text-field readonly value="50" label="Price"></vaadin-text-field>
+                    </div>
                 </div>
             </div>
             <div class="col-4">
@@ -81,53 +95,10 @@
                 </div>
             </div>
         </div>
-	<div class="row my-2">
-	    <div class="col">
-		<button type="button" class="btn btn-primary float-right" on-click="createOrder">Create</button>
-	    </div>
-	</div>
-        <div class="row mt-4">
+        <div class="row my-2">
             <div class="col">
-                <!-- <iron-ajax auto url="https://demo.vaadin.com/demo-data/1.0/people?count=200" handle-as="json" last-response="{{users}}"></iron-ajax> -->
-                <vaadin-grid aria-label="Basic Binding Example" items="[[users.result]]" theme="black">
-                    <vaadin-grid-column lex-grow="0">
-                        <template class="header">B/S</template>
-                        <template>[[index]]</template>
-                        <!-- If necessary, the footer could be set using <template class="footer"> -->
-                    </vaadin-grid-column>
-                    <vaadin-grid-column>
-                        <template class="header">Underlying</template>
-                        <template>[[item.firstName]]</template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column>
-                        <template class="header">Country</template>
-                        <template>[[item.lastName]]</template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column>
-                        <template class="header">Ticker</template>
-                        <template>[[item.lastName]]</template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column>
-                        <template class="header">Maturity</template>
-                        <template>[[item.lastName]]</template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column>
-                        <template class="header">Right</template>
-                        <template>[[item.lastName]]</template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column>
-                        <template class="header">Strike</template>
-                        <template>[[item.lastName]]</template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column>
-                        <template class="header">Quantity</template>
-                        <template>[[item.lastName]]</template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column>
-                        <template class="header">Limit</template>
-                        <template>[[item.lastName]]</template>
-                    </vaadin-grid-column>
-                </vaadin-grid></div>
+                <button type="button" class="btn btn-primary float-right" on-click="createOrder">Create</button>
+            </div>
         </div>
     </template>
     <script>
@@ -135,22 +106,49 @@
          static get is() { return 'omp-builder'; }
          static get properties(){
              return {
-		 quantity: {
-		     type: Number,
-		     value: 50
-		 }
+                 users: {
+                     type: Array,
+                     value: () => ['igor', 'uma', 'marcel', 'eljon', 'robert']
+                 },
+                 _userData: {
+                     type: Object,
+                     value: () => {}
+                 },
+                 quantity: {
+                     type: Number,
+                     value: 50
+                 }
              }
          }
          connectedCallback() {
-             super.connectedCallback();
-             this.$["duration"].items = ["DAY", "GTC"]
-             this.$["type"].items = ["MKT", "LMT"]
-         }
-
-	 changePrice(el){
-	     this.set("quantity", this.get("quantity") + parseInt(el.target.getAttribute("data")));
+	     super.connectedCallback();
+	     this.$["duration"].items = ["DAY", "GTC"]
+	     this.$["type"].items = ["MKT", "LMT"]
 	 }
-
+         userChanged(ev) {
+             axios.get(`/login/${ev.target.value}`)
+                  .then( function(res){
+                      this.set('_userData', res.data);
+                      this.set('portfolios', this._userData.portfolios.map((x) => x.portfolio_id))
+                      this.$.portfolio.value = this.portfolios[0]
+                  }.bind(this))
+         }
+         portfolioChanged(ev){
+             /* console.log(this.get('selectedPortfolio'))*/
+             /* console.log(this._userData);*/
+             if ( this._userData != undefined) {
+                 this._userData.assetClasses.find(function(a){
+                     if ( a.portfolio_id === this.$.portfolio.value) {
+                         this.$['asset-class'].items = a.assetclasses
+                         this.$['asset-class'].value = a.assetclasses[0]
+                         return
+                     }
+                 }.bind(this))
+             }
+         }
+         changePrice(el){
+             this.set("quantity", this.get("quantity") + parseInt(el.target.getAttribute("data")));
+         }
      }
      customElements.define(OmpBuilder.is, OmpBuilder);
     </script>

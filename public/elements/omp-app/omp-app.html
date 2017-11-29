@@ -6,9 +6,13 @@
 <link rel="import" href="../../../bower_components/vaadin-text-field/vaadin-text-field.html">
 <link rel="import" href="../../bower_components/vaadin-valo-theme/vaadin-combo-box.html">
 <link rel="import" href="../../bower_components/vaadin-combo-box/vaadin-combo-box.html">
+<link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
+
 <link rel="import" href="../omp-builder/omp-builder.html">
 <link rel="import" href="../omp-blotter/omp-blotter.html">
 <link rel="import" href="../omp-execution/omp-execution.html">
+<link rel="import" href="../omp-order/omp-order.html">
+
 <dom-module id="omp-app">
     <template>
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
@@ -20,31 +24,44 @@
          label{
              text-transform: uppercase !important;
          }
+	 .container {
+	    width:100vw;
+	 }
         </style>
         <div class="container">
-            <div id="topbar" class="row">
-                <div class="col-3">
-                    <vaadin-combo-box id="user" label="User" items="{{users}}" on-value-changed="userChanged" value="igor"></vaadin-combo-box>
-                </div>
-                <div class="col-3">
-                    <vaadin-combo-box id="portfolio" label="Portfolio" items="[[portfolios]]" on-value-changed="portfolioChanged"></vaadin-combo-box>
-                </div>
-                <div class="col-3">
-                    <vaadin-combo-box id="asset-class" label="Asset class" items="[[assetClasses]]" value="{{selectedAssetClass}}"></vaadin-combo-box>
-                </div>
-                <div class="col-3">
-                    <vaadin-combo-box id="broker" label="Broker" items="[[brokers]]" value="{{selectedBroker}}"></vaadin-combo-box>
-                </div>
-            </div>
             <div id="builder" class="row mt-4">
                 <omp-builder class="col"></omp-builder>
             </div>
-            <div id="blotter" class="row">
-                <omp-blotter class="col"></omp-blotter>
+            <div class="row">
+                <div class="col">
+                    <nav class="navbar navbar-expand-lg navbar-light bg-light ">
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                            <ul class="navbar-nav mr-auto">
+                                <li class="nav-item active">
+                                    <a class="nav-link" on-click="changePage" data="order">Order</span></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" on-click="changePage" data="blotter">Blotter</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" on-click="changePage" data="history">History</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
             </div>
-            <div id="execution" class="row">
-                <omp-execution class="col"></omp-execution>
-            </div>
+            <iron-pages selected="[[pageName]]" attr-for-selected="page-name" fallback-selection="order">
+                <div page-name="order" id="order" class="row">
+                    <omp-order class="col"></omp-order>
+                </div>
+                <div page-name="blotter" id="blotter" class="row">
+                    <omp-blotter class="col"></omp-blotter>
+                </div>
+                <div page-name="history" id="execution" class="row">
+                    <omp-execution class="col"></omp-execution>
+                </div>
+            </iron-pages>
         </div>
     </template>
     <script>
@@ -56,39 +73,17 @@
                      type: String,
                      value: "Order Management System TEST"
                  },
-                 users: {
-                     type: Array,
-                     value: () => ['igor', 'uma', 'marcel', 'eljon', 'robert']
-                 },
-                 _userData: {
-                     type: Object,
-                     value: () => {}
+                 pageName: {
+                     type: String,
+                     value: "order"
                  }
              }
          }
          /* connectedCallback(){
             }*/
-         userChanged(ev) {
-             axios.get(`/login/${ev.target.value}`)
-                  .then( function(res){
-                      this.set('_userData', res.data);
-                      this.set('portfolios', this._userData.portfolios.map((x) => x.portfolio_id))
-                      this.$.portfolio.value = this.portfolios[0]
-                  }.bind(this))
-         }
-         portfolioChanged(ev){
-             /* console.log(this.get('selectedPortfolio'))*/
-             /* console.log(this._userData);*/
-             debugger
-             if ( this._userData != undefined) {
-                 this._userData.assetClasses.find(function(a){
-                     if ( a.portfolio_id === this.$.portfolio.value) {
-                         this.$['asset-class'].items = a.assetclasses
-                         this.$['asset-class'].value = a.assetclasses[0]
-                         return
-                     }
-                 }.bind(this))
-             }
+         changePage(ev){
+             console.log(ev.target.getAttribute('data'));
+             this.set('pageName', ev.target.getAttribute('data'));
          }
      }
      customElements.define(OmpApp.is, OmpApp);
