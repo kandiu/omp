@@ -5,7 +5,7 @@ const models = require('../../models');
 const Registry = models.Registry;
 
 router.get('/', function(req, res){
-	res.end("logi api");
+	res.end("usage: method GET, url /instrument_id");
 })
 
 // GET /:_instrument
