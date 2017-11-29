@@ -29,7 +29,7 @@ describe('meta test', function() {
 describe('retrieving user data', function(){ 
 
 //        before(utils.dropDb);
-//        before(seed);
+        before(seed);
 //        after(utils.dropDb);
 //        after(seed);
 
@@ -51,6 +51,7 @@ describe('retrieving user data', function(){
             request(app)
                 .get('/login/' + tdu.user_names[0])
                 .set('Accept', 'application/json')
+                .expect('Content-Type', /json/, 'it should respond with json' )
                 .expect(200)
                 .end(done)
         });
