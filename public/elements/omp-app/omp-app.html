@@ -7,50 +7,46 @@
 <link rel="import" href="../../bower_components/vaadin-valo-theme/vaadin-combo-box.html">
 <link rel="import" href="../../bower_components/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
-
 <link rel="import" href="../omp-builder/omp-builder.html">
 <link rel="import" href="../omp-blotter/omp-blotter.html">
 <link rel="import" href="../omp-execution/omp-execution.html">
 <link rel="import" href="../omp-order/omp-order.html">
-
 <dom-module id="omp-app">
     <template>
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
         <style >
-         vaadin-form-layout.with-text-fields > vaadin-text-field {
-             margin-top: .5em;
-             margin-bottom: .5em;
-         }
          label{
              text-transform: uppercase !important;
          }
-	 .container {
-	    width:100vw;
-	 }
+         .container-fluid {
+            height:100% !important;
+         } */
         </style>
         <div class="container">
             <div id="builder" class="row mt-4">
                 <omp-builder class="col"></omp-builder>
             </div>
-            <div class="row">
-                <div class="col">
-                    <nav class="navbar navbar-expand-lg navbar-light bg-light ">
-                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                            <ul class="navbar-nav mr-auto">
-                                <li class="nav-item active">
-                                    <a class="nav-link" on-click="changePage" data="order">Order</span></a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" on-click="changePage" data="blotter">Blotter</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" on-click="changePage" data="history">History</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </nav>
+	</div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col">
+                        <nav class="navbar navbar-expand-lg navbar-light bg-light ">
+                            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                                <ul class="navbar-nav mr-auto">
+                                    <li class="nav-item active">
+                                        <a class="nav-link" on-click="changePage" data="order">Order</span></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" on-click="changePage" data="blotter">Blotter</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" on-click="changePage" data="history">History</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </nav>
+                    </div>
                 </div>
-            </div>
             <iron-pages selected="[[pageName]]" attr-for-selected="page-name" fallback-selection="order">
                 <div page-name="order" id="order" class="row">
                     <omp-order class="col"></omp-order>
