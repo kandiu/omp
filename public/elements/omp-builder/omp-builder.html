@@ -40,7 +40,51 @@
         <div class="row mt-4">
             <div class="col-4">
                 <!-- ASSET DETAIL -->
-                <div class="section-title">ASSET DETAILS</div>
+                <div class="row">
+		    <div class="col">
+			<div class="section-title">ASSET DETAILS</div>
+		    </div>
+		</div>
+
+		<template is="dom-if" if="{{ _isEquity(selectedAssetClass)}}">
+		    <div class="row">
+			<div class="col">
+                            <vaadin-combo-box id="symbol" label="Symbol"></vaadin-combo-box>
+			</div>
+                    </div>
+		</template>
+		<template is="dom-if" if="{{ _isFutureOrOption(selectedAssetClass)}}">
+		    <div class="row">
+			<div class="col">
+                            <vaadin-combo-box id="underlying" label="Underlying"></vaadin-combo-box>
+			</div>
+                    </div>
+		    <div class="row">
+			<div class="col">
+			    <vaadin-date-picker label="Maturity">
+			    </vaadin-date-picker>
+			</div>
+                    </div>
+
+		    <template is="dom-if" if="{{ _isOption(selectedAssetClass)}}">
+			<vaadin-text-field  id="strike" value="" label="Strike"></vaadin-text-field>
+		    </template>
+
+
+		</template>
+
+
+		<div class="row">
+		    <div class="col">
+                        <vaadin-combo-box id="exchange" label="Exchange"></vaadin-combo-box>
+		    </div>
+                </div>
+                <div class="row">
+		    <div class="col">
+                        <vaadin-text-field readonly value="CHF" label="Currency"></vaadin-text-field>
+		    </div>
+                </div>
+
             </div>
             <div class="col-4">
                 <!-- ORDER SETTIGS -->
@@ -128,6 +172,7 @@
          userChanged(ev) {
              axios.get(`/login/${ev.target.value}`)
                   .then( function(res){
+		      console.log(res)
                       this.set('_userData', res.data);
                       this.set('portfolios', this._userData.portfolios.map((x) => x.portfolio_id))
                       this.$.portfolio.value = this.portfolios[0]
@@ -141,6 +186,12 @@
                      if ( a.portfolio_id === this.$.portfolio.value) {
                          this.$['asset-class'].items = a.assetclasses
                          this.$['asset-class'].value = a.assetclasses[0]
+
+			 this._userData.accounts.find(function( ac ) {
+			     if ( a.portfolio_id === ac.portfolio_id) {
+				 /* this.brokers = a.*/
+			     }
+			 })
                          return
                      }
                  }.bind(this))
@@ -149,6 +200,21 @@
          changePrice(el){
              this.set("quantity", this.get("quantity") + parseInt(el.target.getAttribute("data")));
          }
+
+	 
+	 _isEquity(s){
+	     return s === "Equity";
+	 }
+	 _isFuture(s){
+	     return s === "Future";
+	 }
+	 _isOption(s){
+	     return s === "Option";
+	 }
+
+	 _isFutureOrOption(s) {
+	     return this._isFuture(s) || this._isOption(s)
+	 }
      }
      customElements.define(OmpBuilder.is, OmpBuilder);
     </script>
