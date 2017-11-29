@@ -7,7 +7,7 @@ const Portfolio = models.Portfolio;
 const Account = models.Account;
 
 router.get('/', function(req, res){
-	res.end("login api");
+	res.status(200).json({});
 })
 
 // GET /:_username
@@ -144,6 +144,7 @@ function sendUserData(userObject, res) {
 
 
     function finish() {
+        res.set("Content-Type", "application/json");
         res.status(200).json(userData);
     }
 }
