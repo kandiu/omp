@@ -19,7 +19,7 @@
       <iron-ajax auto url="https://demo.vaadin.com/demo-data/1.0/people?count=200" handle-as="json" last-response="{{users}}"></iron-ajax>
 
       <!-- The array is set as the <vaadin-grid>'s "items" property -->
-        <vaadin-grid aria-label="Basic Binding Example" items="[[users.result]]"  theme="dark">
+        <vaadin-grid aria-label="Basic Binding Example" items="[[users.result]]"  theme="">
 
           <vaadin-grid-column width="50px" flex-grow="0">
             <template class="header">#</template>

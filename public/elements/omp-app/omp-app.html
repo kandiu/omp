@@ -1,53 +1,87 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
-
-<link rel="import" href="../../../bower_components/vaadin-valo-theme/vaadin-split-layout.html">
+<link rel="import" href="../../../bower_components/vaadin-form-layout/vaadin-form-layout.html">
+<link rel="import" href="../../../bower_components/vaadin-form-layout/vaadin-form-item.html">
 <link rel="import" href="../../../bower_components/vaadin-split-layout/vaadin-split-layout.html">
+<link rel="import" href="../../bower_components/vaadin-valo-theme/vaadin-text-field.html">
+<link rel="import" href="../../../bower_components/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="../../bower_components/vaadin-valo-theme/vaadin-combo-box.html">
+<link rel="import" href="../../bower_components/vaadin-combo-box/vaadin-combo-box.html">
+<link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../omp-builder/omp-builder.html">
 <link rel="import" href="../omp-blotter/omp-blotter.html">
 <link rel="import" href="../omp-execution/omp-execution.html">
-
-
+<link rel="import" href="../omp-order/omp-order.html">
 <dom-module id="omp-app">
-  <template>
-
-    <style >
-    #container {
-        height: 100vh;
-    }
-
-    #overview {
-        height: calc(100vh / 3 * 2);
-    }
-
-    </style>
-
-    <!--<header>
-		<h1>[[title]]</h1>
-	</header>-->
-    <vaadin-split-layout vertical id="container" >
-        <div id="builder"><omp-builder></omp-builder></div>
-        <vaadin-split-layout vertical id="overview">
-            <div id="blotter"><omp-blotter></omp-blotter></div>
-            <div id="history"><omp-execution></omp-execution></div>
-        </vaadin-split-layout>
-    </vaadin-split-layout>
-  </template>
-  
-  <script>
-    class OmpApp extends Polymer.Element{
-		static get is() { return 'omp-app'; }
-
-		static get properties(){
-			return { 
-				title: {
-					type: String,
-					value: "Order Management System TEST"
-				}
-			}
-		}
-
-	}
-    customElements.define(OmpApp.is, OmpApp);
-  </script>
-
+    <template>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+        <style >
+         label{
+             text-transform: uppercase !important;
+         }
+         .container-fluid {
+            height:100% !important;
+         } */
+        </style>
+        <div class="container">
+            <div id="builder" class="row mt-4">
+                <omp-builder class="col"></omp-builder>
+            </div>
+	</div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col">
+                        <nav class="navbar navbar-expand-lg navbar-light bg-light ">
+                            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                                <ul class="navbar-nav mr-auto">
+                                    <li class="nav-item active">
+                                        <a class="nav-link" on-click="changePage" data="order">Order</span></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" on-click="changePage" data="blotter">Blotter</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" on-click="changePage" data="history">History</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+            <iron-pages selected="[[pageName]]" attr-for-selected="page-name" fallback-selection="order">
+                <div page-name="order" id="order" class="row">
+                    <omp-order class="col"></omp-order>
+                </div>
+                <div page-name="blotter" id="blotter" class="row">
+                    <omp-blotter class="col"></omp-blotter>
+                </div>
+                <div page-name="history" id="execution" class="row">
+                    <omp-execution class="col"></omp-execution>
+                </div>
+            </iron-pages>
+        </div>
+    </template>
+    <script>
+     class OmpApp extends Polymer.Element{
+         static get is() { return 'omp-app'; }
+         static get properties(){
+             return {
+                 title: {
+                     type: String,
+                     value: "Order Management System TEST"
+                 },
+                 pageName: {
+                     type: String,
+                     value: "order"
+                 }
+             }
+         }
+         /* connectedCallback(){
+            }*/
+         changePage(ev){
+             console.log(ev.target.getAttribute('data'));
+             this.set('pageName', ev.target.getAttribute('data'));
+         }
+     }
+     customElements.define(OmpApp.is, OmpApp);
+    </script>
 </dom-module>

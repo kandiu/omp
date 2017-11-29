@@ -1,0 +1,78 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/vaadin-valo-theme/vaadin-combo-box.html">
+<link rel="import" href="../../../bower_components/vaadin-combo-box/vaadin-combo-box.html">
+<link rel="import" href="../../../bower_components/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="../../../bower_components/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="../../../bower_components/vaadin-date-picker/vaadin-date-picker.html">
+<link rel="import" href="../../../bower_components/vaadin-valo-theme/vaadin-button.html">
+<link rel="import" href="../../../bower_components/vaadin-button/vaadin-button.html">
+<link rel="import" href="../../../bower_components/vaadin-radio-button/vaadin-radio-button.html">
+<link rel="import" href="../../../bower_components/vaadin-valo-theme/vaadin-grid.html">
+<link rel="import" href="../../../bower_components/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="omp-order">
+    <template>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+        <style>
+         .section-title{
+             text-transform: uppercase;
+             font-weight: bold;
+         }
+         #quantity {
+             border-radius: 0px;
+             text-aling:center;
+         }
+        </style>
+            <iron-ajax auto url="https://demo.vaadin.com/demo-data/1.0/people?count=200" handle-as="json" last-response="{{orders}}"></iron-ajax>
+        <vaadin-grid aria-label="Basic Binding Example" items="[[orders.result]]">
+            <vaadin-grid-column lex-grow="0">
+                <template class="header">B/S</template>
+                <template>[[index]]</template>
+                <!-- If necessary, the footer could be set using <template class="footer"> -->
+            </vaadin-grid-column>
+            <vaadin-grid-column>
+                <template class="header">Underlying</template>
+                <template>[[item.firstName]]</template>
+            </vaadin-grid-column>
+            <vaadin-grid-column>
+                <template class="header">Country</template>
+                <template>[[item.lastName]]</template>
+            </vaadin-grid-column>
+            <vaadin-grid-column>
+                <template class="header">Ticker</template>
+                <template>[[item.lastName]]</template>
+            </vaadin-grid-column>
+            <vaadin-grid-column>
+                <template class="header">Maturity</template>
+                <template>[[item.lastName]]</template>
+            </vaadin-grid-column>
+            <vaadin-grid-column>
+                <template class="header">Right</template>
+                <template>[[item.lastName]]</template>
+            </vaadin-grid-column>
+            <vaadin-grid-column>
+                <template class="header">Strike</template>
+                <template>[[item.lastName]]</template>
+            </vaadin-grid-column>
+            <vaadin-grid-column>
+                <template class="header">Quantity</template>
+                <template>[[item.lastName]]</template>
+            </vaadin-grid-column>
+            <vaadin-grid-column>
+                <template class="header">Limit</template>
+                <template>[[item.lastName]]</template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+    </template>
+    <script>
+     class OmpOrder extends Polymer.Element{
+         static get is() { return 'omp-order'; }
+         static get properties(){
+             return {
+             }
+         }
+     }
+     customElements.define(OmpOrder.is, OmpOrder);
+    </script>
+</dom-module>
