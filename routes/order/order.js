@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-const models = require('../../models');
+//const models = require('../../models');
+const op = require('../../fix/orderProcessing');
 
 
 // GET /
@@ -11,21 +12,16 @@ router.get('/', function(req, res) {
     res.end("usage: method POST, payload JSON order object");
 });
 
-/*
-router.get('/', function(req, res) {
 
-    let inst = req.params._instrument;
+router.post('/', function(req, res) {
 
-    Registry.findOne({"instrument_id" : inst}, function(err, found) {
+    let order = req.body;
 
-        if (err || found == null) 
-            res.status(404).end();           
-        else {
-            res.status(200).json(found);
-        }
-    }); 
+    op.processOrder(order);
+
+    res.status(201).end();
 });
-*/
+
 
 
 
