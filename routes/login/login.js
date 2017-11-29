@@ -144,6 +144,7 @@ function sendUserData(userObject, res) {
 
 
     function finish() {
+        res.set("Content-Type", "application/json");
         res.status(200).json(userData);
     }
 }
