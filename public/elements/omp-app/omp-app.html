@@ -56,49 +56,40 @@
                      type: String,
                      value: "Order Management System TEST"
                  },
-		 users: {
-		     type: Array,
-		     value: () => ['igor', 'uma', 'marcel', 'eljon', 'robert']
-		 },
-
-		 _userData: {
-		     type: Object,
-		     value: () => {}
-		 }
+                 users: {
+                     type: Array,
+                     value: () => ['igor', 'uma', 'marcel', 'eljon', 'robert']
+                 },
+                 _userData: {
+                     type: Object,
+                     value: () => {}
+                 }
              }
          }
-
-	 /* connectedCallback(){
-
-	    }*/
-	 userChanged(ev) {
-	     axios.get(`/login/${ev.target.value}`)
-		  .then( function(res){
-		      this.set('_userData', res.data);
-		      this.set('portfolios', this._userData.portfolios.map((x) => x.portfolio_id))
-
-		      this.$.portfolio.value = this.portfolios[0]
-		      
-		  }.bind(this))
-	 }
-
-	 portfolioChanged(ev){
-	     /* console.log(this.get('selectedPortfolio'))*/
-	     /* console.log(this._userData);*/
-	     debugger
-	     if ( this._userData != undefined) {
-		this._userData.assetClasses.find(function(a){
-		    if ( a.portfolio_id === this.$.portfolio.value) {
-			this.$['asset-class'].items = a.assetclasses
-			this.$['asset-class'].value = a.assetclasses[0]
-			 return
-		     }
-		 }.bind(this))
-
-
-	     }
-
-	 }
+         /* connectedCallback(){
+            }*/
+         userChanged(ev) {
+             axios.get(`/login/${ev.target.value}`)
+                  .then( function(res){
+                      this.set('_userData', res.data);
+                      this.set('portfolios', this._userData.portfolios.map((x) => x.portfolio_id))
+                      this.$.portfolio.value = this.portfolios[0]
+                  }.bind(this))
+         }
+         portfolioChanged(ev){
+             /* console.log(this.get('selectedPortfolio'))*/
+             /* console.log(this._userData);*/
+             debugger
+             if ( this._userData != undefined) {
+                 this._userData.assetClasses.find(function(a){
+                     if ( a.portfolio_id === this.$.portfolio.value) {
+                         this.$['asset-class'].items = a.assetclasses
+                         this.$['asset-class'].value = a.assetclasses[0]
+                         return
+                     }
+                 }.bind(this))
+             }
+         }
      }
      customElements.define(OmpApp.is, OmpApp);
     </script>
