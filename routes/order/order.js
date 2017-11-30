@@ -29,14 +29,15 @@ router.post('/', function(req, res) {
 
 function validateOrder(order) {
 
-    if( order.side != null &&
-        order.symbol != null &&
-        order.quantity != null &&
-        order.type != null &&
-        order.duration != null &&
+    if( order.user_id != null &&
         order.account != null &&
         order.broker != null &&
-        order.portfolio_id != null ) {
+        order.portfolio_id != null &&
+        order.ticker != null &&
+        order.quantity != null &&
+        order.side != null &&              
+        order.type != null &&
+        order.duration != null ) {
 
         if (order.side.toLowerCase() !== "buy" && order.side.toLowerCase() !== "sell")
             return false;
