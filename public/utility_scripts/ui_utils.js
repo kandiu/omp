@@ -47,7 +47,7 @@ function udSymbols(userData, portfolioId, assetClass) {
 
     let portfolio = udPortfolio(userData, portfolioId);
 
-    if (portfolio.settings != undefined) {
+    if (typeof portfolio.settings !== "undefined") {
 
         let assets = portfolio.settings.selected_assets.filter(
                         (as) => as.asset_class === assetClass);

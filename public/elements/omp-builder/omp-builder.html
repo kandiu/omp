@@ -28,10 +28,10 @@
                 <vaadin-combo-box id="user" label="User" items="{{users}}" on-value-changed="userChanged" value="igor"></vaadin-combo-box>
             </div>
             <div class="col-3">
-                <vaadin-combo-box id="portfolio" label="Portfolio" items="[[portfolios]]" on-value-changed="portfolioChanged"></vaadin-combo-box>
+                <vaadin-combo-box id="portfolio" label="Portfolio" items="[[portfolios]]" on-value-changed="portfolioChanged" value="{{selectedPortfolio}}"></vaadin-combo-box>
             </div>
             <div class="col-3">
-                <vaadin-combo-box id="asset-class" label="Asset class" items="[[assetClasses]]" value="{{selectedAssetClass}}"></vaadin-combo-box>
+                <vaadin-combo-box id="asset-class" label="Asset class" items="[[assetClasses]]" value="{{selectedAssetClass}}" on-value-changed="assetClassChanged"></vaadin-combo-box>
             </div>
             <div class="col-3">
                 <vaadin-combo-box id="broker" label="Broker" items="[[brokers]]" value="{{selectedBroker}}"></vaadin-combo-box>
@@ -49,14 +49,14 @@
 		<template is="dom-if" if="{{ _isEquity(selectedAssetClass)}}">
 		    <div class="row">
 			<div class="col">
-                            <vaadin-combo-box id="symbol" label="Symbol"></vaadin-combo-box>
+                            <vaadin-combo-box id="symbol" label="Symbol" items="{{symbols}}" value="{{selectedSymbol}}"></vaadin-combo-box>
 			</div>
                     </div>
 		</template>
 		<template is="dom-if" if="{{ _isFutureOrOption(selectedAssetClass)}}">
 		    <div class="row">
 			<div class="col">
-                            <vaadin-combo-box id="underlying" label="Underlying"></vaadin-combo-box>
+                            <vaadin-combo-box id="underlying" label="Underlying" items="{{symbols}}" value="{{selectedSymbol}}"></vaadin-combo-box>
 			</div>
                     </div>
 		    <div class="row">
@@ -173,7 +173,12 @@
 		 selectedType: {
 		     type: String,
 		     value: "MKT"
+		 },
+		 symbols:{
+		     type: Array,
+		     value: () => []
 		 }
+	     
              }
          }
          connectedCallback() {
@@ -184,10 +189,11 @@
          userChanged(ev) {
              axios.get(`/login/${ev.target.value}`)
                   .then( function(res){
-		      console.log(res)
+		      /* console.log(res)*/
                       this.set('_userData', res.data);
                       this.set('portfolios', this._userData.portfolios.map((x) => x.portfolio_id))
                       this.$.portfolio.value = this.portfolios[0]
+		      /* console.log(this._userData);*/
                   }.bind(this))
          }
          portfolioChanged(ev){
@@ -201,7 +207,7 @@
 
 			 this._userData.accounts.find(function( ac ) {
 			     if ( a.portfolio_id === ac.portfolio_id) {
-				 console.log(ac.accounts);
+				 /* console.log(ac.accounts);*/
 				 this.brokers = ac.accounts.map((x) => x.account_id);
 				 this.selectedBroker = this.brokers[0];
 			     }
@@ -211,6 +217,18 @@
                  }.bind(this))
              }
          }
+
+	 assetClassChanged(ev){
+	     console.log("herer")
+	     if ( this._userData && this.selectedPortfolio && this.selectedAssetClass){
+		 let data = udSymbols(this._userData, this.selectedPortfolio, this.selectedAssetClass);
+		 if ( data ) {
+		     console.log(data)
+		     this.set("symbols", data);
+		     this.set("selectedSymbol", data[0]);
+		 }
+	     }
+	 }
          changePrice(el){
              this.set("quantity", this.get("quantity") + parseInt(el.target.getAttribute("data")));
          }
