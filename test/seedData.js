@@ -1,12 +1,16 @@
 'use strict';
 
 var mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
 
-var User = mongoose.model('User');
-var Portfolio = mongoose.model('Portfolio');
-var Account = mongoose.model('Account');
-var Broker = mongoose.model('Broker');
-var Registry = mongoose.model('Registry');
+// var User = mongoose.model('User');
+// var Portfolio = mongoose.model('Portfolio');
+// var Account = mongoose.model('Account');
+// var Broker = mongoose.model('Broker');
+// var Registry = mongoose.model('Registry');
+// var AssetClass = mongoose.model('AssetClass');
+// var Future = mongoose.model('Future');
+var ObjectId = mongoose.Types.ObjectId;
 
 var users = {
   name : 'User',
@@ -42,12 +46,41 @@ var users = {
   ]
 };
 
+var assetclasses = {
+  name : 'AssetClass',
+  data : [
+    {
+      "classname" : "Equity",
+      "symbol" : "STK",
+      "tradable" : "true",
+    },
+    {
+      "classname" : "Future",
+      "symbol" : "FUT",
+      "derivative" : "true",
+      "tradable" : "true",
+    },
+    {
+      "classname" : "Option",
+      "symbol" : "OPT",
+      "derivative" : "true",
+      "tradable" : "true",
+    },
+    {
+      "classname" : "Index",
+      "symbol" : "IDX",
+      "tradable" : "false",
+    },
+  ]
+};
+
 var portfolios = {
   name : 'Portfolio',
   data : [
     {
-      "portfolio_id" : 'stks-1',
+      "symbol" : 'stks-1',
       "accounts" : ['gs1','ms1','ms10'],
+      "currency" : "EUR",
       "settings" :
       {
         "selected_assets" : [{
@@ -58,20 +91,22 @@ var portfolios = {
     },
 
     {
-      "portfolio_id" : 'futs-1',
+      "symbol" : 'futs-1',
       "accounts" : ['ib1','gs2', 'jpm1', 'ms2'],
+      "currency" : "EUR",
       "settings" :
       {
         "selected_assets" : [{
           "asset_class" : "Future",
-          "instruments" : ['fut1','fut2']
+          "underlyings" : ['idx1','idx2','idx3','idx4']
         }]
       }
     },
 
     {
-      "portfolio_id" : 'multy-1',
+      "symbol" : 'multy-1',
       "accounts" : ['ib2'],
+      "currency" : "EUR",
       "settings" :
       {
         "selected_assets" : [
@@ -88,13 +123,24 @@ var portfolios = {
     },
 
     {
-      "portfolio_id" : 'stks-2',
+      "symbol" : 'stks-2',
       "accounts" : ['ms3','jpm2'],
+      "currency" : "USD",
     },
 
     {
-      "portfolio_id" : 'futs-2',
+      "symbol" : 'futs-2',
       "accounts" : ['gs3', 'ib3'],
+      "currency" : "EUR",
+      "settings" :
+      {
+        "selected_assets" : [
+          {
+            "asset_class" : "Future",
+            "instruments" : ['idx3','idx4']
+          }
+        ]
+      }
     },
   ]
 };
@@ -103,23 +149,61 @@ var brokers = {
   name : 'Broker',
   data : [
     {
-      "broker_id" : "GS"
+      "symbol" : "GS"
     },
     {
-      "broker_id" : "IB"
+      "symbol" : "IB"
     },
     {
-      "broker_id" : "MS"
+      "symbol" : "MS"
     },
     {
-      "broker_id" : "JPM"
+      "symbol" : "JPM"
     },
     {
-      "broker_id" : "CS"
+      "symbol" : "CS"
     },
     {
-      "broker_id" : "UBS"
+      "symbol" : "UBS"
     }
+  ]
+};
+
+var exchanges = {
+  name : 'Exchange',
+  data : [
+    {
+      "symbol" : "IBIS",
+      "name" : "xxxxxxxxxx"
+    },
+    {
+      "symbol" : "SBF",
+      "name" : "xxxxxxxxxx"
+    },
+    {
+      "symbol" : "NYSE",
+      "name" : "New York Stock Exchange"
+    },
+    {
+      "symbol" : "NASDAQ",
+      "name" : "Nasdaq"
+    },
+    {
+      "symbol" : "BVME",
+      "name" : "Borsa Valore Mercato Elettronico"
+    },
+    {
+      "symbol" : "CME",
+      "name" : "Chicago Mercatile Exchange"
+    },
+    {
+      "symbol" : "DTE",
+      "name" : "Deutsche Boerse"
+    },
+    {
+      "symbol" : "ECBOT",
+      "name" : "Electronic Chicago Board of Trade"
+    },
   ]
 };
 
@@ -128,91 +212,92 @@ var accounts = {
   data : [
     {
       "account_id" : "gs1",
-      "broker_id" : "GS",
+      "broker_symbol" : "GS",
       "bank" : "GS",
       "currency" : "EUR",
     },
     {
       "account_id" : "gs2",
-      "broker_id" : "GS",
+      "broker_symbol" : "GS",
       "bank" : "GS",
       "currency" : "EUR",
     },
     {
       "account_id" : "gs3",
-      "broker_id" : "GS",
+      "broker_symbol" : "GS",
       "bank" : "GS",
       "currency" : "EUR",
     },
     {
       "account_id" : "ms1",
-      "broker_id" : "MS",
+      "broker_symbol" : "MS",
       "bank" : "MS",
       "currency" : "EUR",
     },
     {
       "account_id" : "ms2",
-      "broker_id" : "MS",
+      "broker_symbol" : "MS",
       "bank" : "MS",
       "currency" : "EUR",
     },
     {
       "account_id" : "ms3",
-      "broker_id" : "MS",
+      "broker_symbol" : "MS",
       "bank" : "MS",
       "currency" : "EUR",
     },
     {
       "account_id" : "ms10",
-      "broker_id" : "MS",
+      "broker_symbol" : "MS",
       "bank" : "MS",
       "currency" : "EUR",
     },
     {
       "account_id" : "jpm1",
-      "broker_id" : "JPM",
+      "broker_symbol" : "JPM",
       "bank" : "JPM",
       "currency" : "EUR",
     },
     {
       "account_id" : "jpm2",
-      "broker_id" : "JPM",
+      "broker_symbol" : "JPM",
       "bank" : "JPM",
       "currency" : "EUR",
     },
     {
       "account_id" : "ib1",
-      "broker_id" : "IB",
+      "broker_symbol" : "IB",
       "bank" : "HSBC",
       "currency" : "EUR",
     },
     {
       "account_id" : "ib2",
-      "broker_id" : "IB",
+      "broker_symbol" : "IB",
       "bank" : "HSBC",
       "currency" : "EUR",
     },
     {
       "account_id" : "ib3",
-      "broker_id" : "IB",
+      "broker_symbol" : "IB",
       "bank" : "HSBC",
       "currency" : "EUR",
     },
   ]
 };
 
-var registry = {
-  name : 'Registry',
+var equities = {
+  name : 'Equity',
   data : [
     {
       "instrument_id" : "stkc1",
-      "tradable" : "true",
       "exchange_id" : "IBIS",
-      "tickers" : {"own" : "BMW", "Blomberg" : "BMW Equity"},
+      "tickers" : [
+              {"provider" : "own", "symbol" : "BMW"}, 
+              {"provider" : "Bloomberg", "symbol" : "DMW Index"},
+            ],
       "tick_size" : 0.01,
       "currency" : "EUR",
       "class" : {
-          "type" : "STK",
           "isin" : "DE0005190003",
           "right" : "common",
           "description" : "Bayerische Motoren Werke AG",
@@ -225,13 +310,14 @@ var registry = {
 
     {
       "instrument_id" : "stkc2",
-      "tradable" : "true",
       "exchange_id" : "SBF",
-      "tickers" : {"own" : "SAN", "Blomberg" : "SNW Equity"},
+      "tickers" : [
+                    {"provider" : "own", "symbol" : "SAN"}, 
+                    {"provider" : "Bloomberg", "symbol" : "SNW Equity"},
+                  ],
       "tick_size" : 0.01,
       "currency" : "EUR",
       "class" : {
-          "type" : "STK",
           "isin" : "FR0000120578",
           "right" : "common",
           "description" : "Sanofi",
@@ -244,13 +330,14 @@ var registry = {
 
     {
       "instrument_id" : "stkc3",
-      "tradable" : "true",
       "exchange_id" : "BVME",
-      "tickers" : {"own" : "G", "Blomberg" : "G Equity"},
+      "tickers" : [
+                    {"provider" : "own", "symbol" : "G"}, 
+                    {"provider" : "Bloomberg", "symbol" : "G Equity"},
+                  ],
       "tick_size" : 0.01,
       "currency" : "EUR",
       "class" : {
-          "type" : "STK",
           "isin" : "IT0000062072",
           "right" : "common",
           "description" : "Assicurazioni Generali S.p.A.",
@@ -263,13 +350,14 @@ var registry = {
 
     {
       "instrument_id" : "stkc4",
-      "tradable" : "true",
       "exchange_id" : "BM",
-      "tickers" : {"own" : "TEF", "Blomberg" : "TEF Equity"},
+      "tickers" : [
+                    {"provider" : "own", "symbol" : "TEF"}, 
+                    {"provider" : "Bloomberg", "symbol" : "TEF Equity"},
+                  ],
       "tick_size" : 0.01,
       "currency" : "EUR",
       "class" : {
-          "type" : "STK",
           "isin" : "ES0178430E18",
           "right" : "common",
           "description" : "Telefonica SA",
@@ -282,13 +370,14 @@ var registry = {
 
     {
       "instrument_id" : "stkc5",
-      "tradable" : "true",
       "exchange_id" : "NASDAQ",
-      "tickers" : {"own" : "APPL", "Blomberg" : "APPL Equity"},
+      "tickers" : [
+                    {"provider" : "own", "symbol" : "APPL"}, 
+                    {"provider" : "Bloomberg", "symbol" : "APPL Equity"},
+                  ],
       "tick_size" : 0.01,
       "currency" : "USD",
       "class" : {
-          "type" : "STK",
           "isin" : "US0378331005",
           "right" : "common",
           "description" : "Apple Inc",
@@ -301,13 +390,14 @@ var registry = {
 
     {
       "instrument_id" : "stkc6",
-      "tradable" : "true",
       "exchange_id" : "NYSE",
-      "tickers" : {"own" : "GE", "Blomberg" : "GE Equity"},
+      "tickers" : [
+                    {"provider" : "own", "symbol" : "GE"}, 
+                    {"provider" : "Bloomberg", "symbol" : "GE Equity"},
+                  ],
       "tick_size" : 0.01,
       "currency" : "USD",
       "class" : {
-          "type" : "STK",
           "isin" : "US3696041033",
           "right" : "common",
           "description" : "General Electric Co",
@@ -317,16 +407,22 @@ var registry = {
           "sector" : "Industrial"
       }
     },
+  ]
+};
 
+var indeces = {
+  name : 'Index',
+  data : [
     {
       "instrument_id" : "idx1",
-      "tradable" : "false",
       "exchange_id" : "",
-      "tickers" : {"own" : "SPX", "Blomberg" : "SPX Index"},
+      "tickers" : [
+                    {"provider" : "own", "symbol" : "SPX"}, 
+                    {"provider" : "Bloomberg", "symbol" : "SPX Index"},
+                  ],
       "tick_size" : 0.01,
       "currency" : "USD",
       "class" : {
-        "type" : "IDX",
         "asset_class" : "US Equity Index",
         "country" : "US"
       }
@@ -334,9 +430,11 @@ var registry = {
 
     {
       "instrument_id" : "idx2",
-      "tradable" : "false",
       "exchange_id" : "",
-      "tickers" : {"own" : "DJ"},
+      "tickers" : [
+                    {"provider" : "own", "symbol" : "DJ"}, 
+                    {"provider" : "Bloomberg", "symbol" : "DM Index"},
+                  ],
       "tick_size" : 0.01,
       "currency" : "USD",
       "class" : {
@@ -348,13 +446,11 @@ var registry = {
 
     {
       "instrument_id" : "idx3",
-      "tradable" : "false",
       "exchange_id" : "",
-      "tickers" : {"own" : "DAX"},
+      "tickers" : [{"provider" : "own", "symbol" : "DAX"}],
       "tick_size" : 0.01,
       "currency" : "EUR",
       "class" : {
-        "type" : "IDX",
         "asset_class" : "EU Equity Index",
         "country" : "DE"
       }
@@ -362,94 +458,104 @@ var registry = {
 
     {
       "instrument_id" : "idx4",
-      "tradable" : "false",
       "exchange_id" : "",
-      "tickers" : {"own" : "ESX"},
+      "tickers" : [{"provider" : "own", "symbol" : "ESX"}],
       "tick_size" : 0.01,
       "currency" : "EUR",
       "class" : {
-        "type" : "IDX",
         "asset_class" : "EU Equity Index",
         "country" : "EU"
       }
     },
+  ]
+};
 
+var futures = {
+  name : 'Future',
+  data : [
     {
       "instrument_id" : "fut1",
-      "tradable" : "true",
       "exchange_id" : "CME",
-      "tickers" : {"own" : "ES", "Blomberg" : "ES Future"},
+      "tickers" : [
+                    {"provider" : "own", "symbol" : "SP"}, 
+                    {"provider" : "Bloomberg", "symbol" : "SP Future"},
+                  ],
       "tick_size" : 0.25,
       "currency" : "USD",
       "class" : {
-          "type" : "FUT",
           "tick_value" : 50,
           "underlying" : "idx1",
-          "expiring_date" : "15/12/2017",
+          "expiring_date" : "Fri Dec 15 2017 23:00:00 GMT+0100 (CET)",
           "settlement" : "cash"
       }
     },
 
     {
       "instrument_id" : "fut2",
-      "tradable" : "true",
       "exchange_id" : "ECBOT",
-      "tickers" : {"own" : "YM", "Blomberg" : "YM Future"},
+      "tickers" : [
+                    {"provider" : "own", "symbol" : "DJ"}, 
+                    {"provider" : "Bloomberg", "symbol" : "DM Future"},
+                  ],
       "tick_size" : 1.0,
       "currency" : "USD",
       "class" : {
-          "type" : "FUT",
           "tick_value" : 5,
           "underlying" : "idx2",
-          "expiring_date" : "15/12/2017",
+          "expiring_date" : "Fri Dec 15 2017 23:00:00 GMT+0100 (CET)",
           "settlement" : "cash"
       }
     },
 
     {
       "instrument_id" : "fut3",
-      "tradable" : "true",
       "exchange_id" : "DTB",
-      "tickers" : {"own" : "FDAX", "Blomberg" : "DX Future"},
+      "tickers" : [
+                    {"provider" : "own", "symbol" : "FDAX"}, 
+                    {"provider" : "Bloomberg", "symbol" : "DX Future"},
+                  ],
       "tick_size" : 0.5,
       "currency" : "EUR",
       "class" : {
-          "type" : "FUT",
           "tick_value" : 25,
           "underlying" : "idx3",
-          "expiring_date" : "15/12/2017",
+          "expiring_date" : "Fri Dec 15 2017 23:00:00 GMT+0100 (CET)",
           "settlement" : "cash"
       }
     },
 
     {
       "instrument_id" : "fut4",
-      "tradable" : "true",
       "exchange_id" : "DTB",
-      "tickers" : {"own" : "FESX", "Blomberg" : "FESX Future"},
+      "tickers" : [
+                    {"provider" : "own", "symbol" : "FESX"}, 
+                    {"provider" : "Bloomberg", "symbol" : "FESX Index"},
+                  ],
       "tick_size" : 1.0,
       "currency" : "EUR",
       "class" : {
-          "type" : "FUT",
           "tick_value" : 10,
           "underlying" : "idx4",
-          "expiring_date" : "15/12/2017",
+          "expiring_date" : "Fri Dec 15 2017 23:00:00 GMT+0100 (CET)",
           "settlement" : "cash"
       }
     },
+  ]
+};
 
+var options = {
+  name : 'Option',
+  data : [
     {
       "instrument_id" : "opt1",
-      "tradable" : "true",
       "exchange_id" : "GLOBEX",
-      "tickers" : {"own" : "ES"},
+      "tickers" : [{"provider" : "own", "symbol" : "SPX"}],
       "tick_size" : 0.01,
       "currency" : "USD",
       "class" : {
-        "type" : "OPT",
         "multiplier" : 50,
         "underlying" : "fut1",
-        "expiring_date" : "15/12/2017",
+        "expiring_date" : "Fri Dec 15 2017 23:00:00 GMT+0100 (CET)",
         "strike" : 2620,
         "right" : "call",
         "settlement" : "physical",
@@ -459,16 +565,14 @@ var registry = {
 
     {
       "instrument_id" : "opt2",
-      "tradable" : "true",
       "exchange_id" : "DTB",
-      "tickers" : {"own" : "OESX"},
+      "tickers" : [{"provider" : "own", "symbol" : "ESX"}],
       "tick_size" : 0.01,
       "currency" : "EUR",
       "class" : {
-        "type" : "OPT",
         "multiplier" : 10,
         "underlying" : "idx4",
-        "expiring_date" : "15/12/2017",
+        "expiring_date" : "Fri Dec 15 2017 23:00:00 GMT+0100 (CET)",
         "strike" : 3725,
         "right" : "call",
         "settlement" : "cash",
@@ -476,16 +580,18 @@ var registry = {
       }
     },
   ]
-}
-
-
-
-
+};
 
 var seedData = [];
 seedData.push(users);
 seedData.push(portfolios);
 seedData.push(brokers);
-seedData.push(registry);
+seedData.push(accounts);
+seedData.push(futures);
+seedData.push(options);
+seedData.push(assetclasses);
+seedData.push(equities);
+seedData.push(indeces);
+seedData.push(exchanges);
 
 module.exports = seedData;
