@@ -2,218 +2,237 @@
 <link rel="import" href="../../../bower_components/vaadin-valo-theme/vaadin-combo-box.html">
 <link rel="import" href="../../../bower_components/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="../../../bower_components/vaadin-text-field/vaadin-text-field.html">
-
 <link rel="import" href="../../../bower_components/vaadin-valo-theme/vaadin-date-picker.html">
 <link rel="import" href="../../../bower_components/vaadin-date-picker/vaadin-date-picker.html">
-
 <link rel="import" href="../../../bower_components/vaadin-valo-theme/vaadin-button.html">
 <link rel="import" href="../../../bower_components/vaadin-button/vaadin-button.html">
-
-<link rel="import" href="../../../bower_components/vaadin-valo-theme/vaadin-radio-button.html">
 <link rel="import" href="../../../bower_components/vaadin-radio-button/vaadin-radio-button.html">
-
-<link rel="import" href="../../../bower_components/vaadin-valo-theme/vaadin-checkbox.html">
-<link rel="import" href="../../../bower_components/vaadin-checkbox/vaadin-checkbox.html">
-
-
-<link rel="import" href="../../../bower_components/vaadin-valo-theme/vaadin-form-layout.html">
-<link rel="import" href="../../../bower_components/vaadin-form-layout/vaadin-form-layout.html">
-
 <link rel="import" href="../../../bower_components/vaadin-valo-theme/vaadin-grid.html">
 <link rel="import" href="../../../bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
-
 <dom-module id="omp-builder">
     <template>
-
-
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
         <style>
-            #clearBtn {
-                width: 20%;
-            }
-
-            #upQuant{
-                width: 25%;
-            }
-            vaadin-text-field {
-                width: 25%;
-            }
-
-            vaadin-combo-box {
-                width: 25%
-            }
-
-            #checkerBox {
-                width: 25%;
-            }
-
-            vaadin-grid {
-                width: 100%;
-            }
-/*
-            * {
-                font-size:8px;
-            }*/
-            
-
+         .section-title{
+             text-transform: uppercase;
+             font-weight: bold;
+         }
+         #quantity {
+             border-radius: 0px;
+             text-aling:center;
+         }
         </style>
-
-
-        <div>
-            <vaadin-combo-box id="underlying" label="Underlying"></vaadin-combo-box>
-            <vaadin-combo-box id="exchange" label="Exchange/Country"></vaadin-combo-box>
-            <vaadin-combo-box id="symbol" label="Symbol"></vaadin-combo-box>
-            <!--<vaadin-date-picker label="Maturity"></vaadin-date-picker>-->
-            <vaadin-date-picker placeholder="Maturity">
-            </vaadin-date-picker>
-        </div>
-        <div>
-            <vaadin-text-field id="quantity" label="Quantity"></vaadin-text-field>
-            <vaadin-text-field id="strikeFrom" label="Strike from"></vaadin-text-field>
-            <vaadin-text-field id="strikeTo" label="Strike to"></vaadin-text-field>
-            <vaadin-button id="clearBtn">Clear</vaadin-button>
-        </div>
-
-        <div id="upQuant">
-
-
-                <span>
-                    <vaadin-button>5</vaadin-button>
-                    <vaadin-button>10</vaadin-button>
-                    <vaadin-button>20</vaadin-button>
-                </span>
-
-            <span>
-                    <vaadin-button>50</vaadin-button>
-                    <vaadin-button>100</vaadin-button>
-                    <vaadin-button>200</vaadin-button>
-            </span>
-        </div>
-
-
-
-
-        <vaadin-checkbox id="put" checked>PUT</vaadin-checkbox>
-
-        <vaadin-checkbox id="call" checked>CALL</vaadin-checkbox>
-
-        <vaadin-checkbox id="buy" checked> BUY</vaadin-checkbox>
-
-        <vaadin-checkbox id="sell" checked>SELL</vaadin-checkbox>
-
-
-
-
-        <div>
-            <iron-ajax auto url="https://demo.vaadin.com/demo-data/1.0/people?count=200" handle-as="json" last-response="{{users}}"></iron-ajax>
-        <vaadin-grid aria-label="Basic Binding Example" items="[[users.result]]" theme="black">
-
-
-            <vaadin-grid-column lex-grow="0">
-                <template class="header">B/S</template>
-                <template>[[index]]</template>
-                <!-- If necessary, the footer could be set using <template class="footer"> -->
-
-            </vaadin-grid-column>
-
-            <vaadin-grid-column>
-                <template class="header">Underlying</template>
-                <template>[[item.firstName]]</template>
-
-            </vaadin-grid-column>
-
-            <vaadin-grid-column>
-                <template class="header">Country</template>
-                <template>[[item.lastName]]</template>
-
-            </vaadin-grid-column>
-
-            <vaadin-grid-column>
-                <template class="header">Ticker</template>
-                <template>[[item.lastName]]</template>
-
-            </vaadin-grid-column>
-
-            <vaadin-grid-column>
-                <template class="header">Maturity</template>
-                <template>[[item.lastName]]</template>
-
-            </vaadin-grid-column>
-
-            <vaadin-grid-column>
-                <template class="header">Right</template>
-                <template>[[item.lastName]]</template>
-
-            </vaadin-grid-column>
-
-            <vaadin-grid-column>
-                <template class="header">Strike</template>
-                <template>[[item.lastName]]</template>
-
-            </vaadin-grid-column>
-
-            <vaadin-grid-column>
-                <template class="header">Quantity</template>
-                <template>[[item.lastName]]</template>
-
-            </vaadin-grid-column>
-
-            <vaadin-grid-column>
-                <template class="header">Limit</template>
-                <template>[[item.lastName]]</template>
-
-            </vaadin-grid-column>
+        <div id="topbar" class="row">
+            <div class="col-3">
+                <vaadin-combo-box id="user" label="User" items="{{users}}" on-value-changed="userChanged" value="igor"></vaadin-combo-box>
             </div>
+            <div class="col-3">
+                <vaadin-combo-box id="portfolio" label="Portfolio" items="[[portfolios]]" on-value-changed="portfolioChanged"></vaadin-combo-box>
+            </div>
+            <div class="col-3">
+                <vaadin-combo-box id="asset-class" label="Asset class" items="[[assetClasses]]" value="{{selectedAssetClass}}"></vaadin-combo-box>
+            </div>
+            <div class="col-3">
+                <vaadin-combo-box id="broker" label="Broker" items="[[brokers]]" value="{{selectedBroker}}"></vaadin-combo-box>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-4">
+                <!-- ASSET DETAIL -->
+                <div class="row">
+		    <div class="col">
+			<div class="section-title">ASSET DETAILS</div>
+		    </div>
+		</div>
+
+		<template is="dom-if" if="{{ _isEquity(selectedAssetClass)}}">
+		    <div class="row">
+			<div class="col">
+                            <vaadin-combo-box id="symbol" label="Symbol"></vaadin-combo-box>
+			</div>
+                    </div>
+		</template>
+		<template is="dom-if" if="{{ _isFutureOrOption(selectedAssetClass)}}">
+		    <div class="row">
+			<div class="col">
+                            <vaadin-combo-box id="underlying" label="Underlying"></vaadin-combo-box>
+			</div>
+                    </div>
+		    <div class="row">
+			<div class="col">
+			    <vaadin-date-picker label="Maturity">
+			    </vaadin-date-picker>
+			</div>
+                    </div>
+
+		    <template is="dom-if" if="{{ _isOption(selectedAssetClass)}}">
+			<vaadin-text-field  id="strike" value="" label="Strike"></vaadin-text-field>
+		    </template>
 
 
+		</template>
 
 
-        </vaadin-grid>
+		<div class="row">
+		    <div class="col">
+                        <vaadin-combo-box id="exchange" label="Exchange"></vaadin-combo-box>
+		    </div>
+                </div>
+                <div class="row">
+		    <div class="col">
+                            <vaadin-text-field readonly value="CHF" label="Currency"></vaadin-text-field>
+		    </div>
+                </div>
+
+            </div>
+            <div class="col-4">
+                <!-- ORDER SETTIGS -->
+                <div class="section-title mb-4 row"><div class="col">ORDER SETTINGS</div></div>
+                <div class="row">
+                    <div class="col">
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            <button type="button" class="btn btn-success">BUY</button>
+                            <button type="button" class="btn btn-danger">SELL</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <vaadin-combo-box id="type" label="Type" value="{{selectedType}}"></vaadin-combo-box>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <vaadin-combo-box id="duration" label="Duration" value="GTC"></vaadin-combo-box>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+			<template is="dom-if" if="{{ _isMKT(selectedType)}}">
+			    <vaadin-text-field readonly value="50" label="Price"></vaadin-text-field>
+			</template>
+			<template is="dom-if" if="{{ !_isMKT(selectedType) }}">
+			    <vaadin-text-field value="50" label="Price"></vaadin-text-field>
+			</template>
 
 
-
-
-
-
-
-
-
-
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <!-- QUANTITY -->
+                <div class="row section-title mb-4"><div class="col">QUANTITY</div></div>
+                <div class="row">
+                    <div class="col">
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            <button type="button" class="btn btn-light" on-click="changePrice" data="10">10</button>
+                            <button type="button" class="btn btn-light" on-click="changePrice" data="20">20</button>
+                            <button type="button" class="btn btn-light" on-click="changePrice" data=50">50</button>
+                            <button type="button" class="btn btn-light" on-click="changePrice" data="100">100</button>
+                            <button type="button" class="btn btn-light" on-click="changePrice" data="200">200</button>
+                            <button type="button" class="btn btn-light" on-click="changePrice" data="300">300</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col">
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            <button type="button" class="btn btn-secondary" on-click="changePrice" data="1">+</button>
+                            <input id="quantity" type="text" class="form-control" value="{{quantity}}">
+                            <button type="button" class="btn btn-secondary" on-click="changePrice" data="-1">-</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row my-2">
+            <div class="col">
+                <button type="button" class="btn btn-primary float-right" on-click="createOrder">Create</button>
+            </div>
+        </div>
     </template>
-
-
-
-
-
     <script>
-        class OmpBuilder extends Polymer.Element{
-            static get is() { return 'omp-builder'; }
+     class OmpBuilder extends Polymer.Element{
+         static get is() { return 'omp-builder'; }
+         static get properties(){
+             return {
+                 users: {
+                     type: Array,
+                     value: () => ['igor', 'uma', 'marcel', 'eljon', 'robert']
+                 },
+                 _userData: {
+                     type: Object,
+                     value: () => {}
+                 },
+                 quantity: {
+                     type: Number,
+                     value: 50
+                 },
+		 
+		 selectedType: {
+		     type: String,
+		     value: "MKT"
+		 }
+             }
+         }
+         connectedCallback() {
+	     super.connectedCallback();
+	     this.$["duration"].items = ["DAY", "GTC"]
+	     this.$["type"].items = ["MKT", "LMT"]
+	 }
+         userChanged(ev) {
+             axios.get(`/login/${ev.target.value}`)
+                  .then( function(res){
+		      console.log(res)
+                      this.set('_userData', res.data);
+                      this.set('portfolios', this._userData.portfolios.map((x) => x.portfolio_id))
+                      this.$.portfolio.value = this.portfolios[0]
+                  }.bind(this))
+         }
+         portfolioChanged(ev){
+             /* console.log(this.get('selectedPortfolio'))*/
+             /* console.log(this._userData);*/
+             if ( this._userData != undefined) {
+                 this._userData.assetClasses.find(function(a){
+                     if ( a.portfolio_id === this.$.portfolio.value) {
+                         this.$['asset-class'].items = a.assetclasses
+                         this.$['asset-class'].value = a.assetclasses[0]
 
-            static get properties(){
-                return {
-                    title: {
-                        type: String,
-                        value: "Builder"
-                    }
-                }
+			 this._userData.accounts.find(function( ac ) {
+			     if ( a.portfolio_id === ac.portfolio_id) {
+				 console.log(ac.accounts);
+				 this.brokers = ac.accounts.map((x) => x.account_id);
+				 this.selectedBroker = this.brokers[0];
+			     }
+			 }.bind(this))
+                         return
+                     }
+                 }.bind(this))
+             }
+         }
+         changePrice(el){
+             this.set("quantity", this.get("quantity") + parseInt(el.target.getAttribute("data")));
+         }
 
-            }
+	 
+	 _isEquity(s){
+	     return s === "Equity";
+	 }
+	 _isFuture(s){
+	     return s === "Future";
+	 }
+	 _isOption(s){
+	     return s === "Option";
+	 }
 
-            connectedCallback() {
-                super.connectedCallback();
-                let item = [1, 2, 3, 4];
-                let el = this.shadowRoot.getElementById('underlying');
-                el.items = item;
-
-            }
-
-        }
-        customElements.define(OmpBuilder.is, OmpBuilder);
-
+	 _isFutureOrOption(s) {
+	     return this._isFuture(s) || this._isOption(s)
+	 }
+	 _isMKT(s){
+	     return s === "MKT"
+	 }
+     }
+     customElements.define(OmpBuilder.is, OmpBuilder);
     </script>
-
-
-
-
-
 </dom-module>

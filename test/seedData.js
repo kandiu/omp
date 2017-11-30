@@ -1,6 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
 
 var User = mongoose.model('User');
 var Portfolio = mongoose.model('Portfolio');
@@ -14,7 +15,7 @@ var users = {
     {
       "name" : 'igor',
       "description" : 'Igor Rebesco',
-      "portfolios" : ['fut-1', 'stks-1']
+      "portfolios" : ['futs-1', 'stks-1']
     },
 
     {
@@ -26,7 +27,7 @@ var users = {
     {
       "name" : 'marcel',
       "description" : '',
-      "portfolios" : ['fut-2']
+      "portfolios" : ['futs-2']
     },
 
     {
@@ -93,8 +94,25 @@ var portfolios = {
     },
 
     {
+      "portfolio_id" : 'stks-3',
+      "accounts" : ['ms3','jpm2'],
+    },
+
+    {
       "portfolio_id" : 'futs-2',
       "accounts" : ['gs3', 'ib3'],
+    },
+
+    {
+      "portfolio_id" : 'opts-1',
+      "accounts" : ['ib1','gs2', 'jpm1', 'ms2'],
+      "settings" :
+      {
+        "selected_assets" : [{
+          "asset_class" : "Option",
+          "instruments" : ['opt1','opt2']
+        }]
+      }
     },
   ]
 };
@@ -131,72 +149,144 @@ var accounts = {
       "broker_id" : "GS",
       "bank" : "GS",
       "currency" : "EUR",
+      "transactions" : [
+           {"date" : new Date(), 
+            "type" : "xy", 
+            "amount" : 23}, 
+           {"date" : new Date(), 
+            "type" : "xy", amount : 23}]
     },
     {
       "account_id" : "gs2",
       "broker_id" : "GS",
       "bank" : "GS",
       "currency" : "EUR",
+      "transactions" : [
+           {"date" : new Date(), 
+            "type" : "xy", 
+            "amount" : 23}, 
+           {"date" : new Date(), 
+            "type" : "xy", amount : 23}]
     },
     {
       "account_id" : "gs3",
       "broker_id" : "GS",
       "bank" : "GS",
       "currency" : "EUR",
+      "transactions" : [
+           {"date" : new Date(), 
+            "type" : "xy", 
+            "amount" : 23}, 
+           {"date" : new Date(), 
+            "type" : "xy", amount : 23}]
     },
     {
       "account_id" : "ms1",
       "broker_id" : "MS",
       "bank" : "MS",
       "currency" : "EUR",
+      "transactions" : [
+           {"date" : new Date(), 
+            "type" : "xy", 
+            "amount" : 23}, 
+           {"date" : new Date(), 
+            "type" : "xy", amount : 23}]
     },
     {
       "account_id" : "ms2",
       "broker_id" : "MS",
       "bank" : "MS",
       "currency" : "EUR",
+      "transactions" : [
+           {"date" : new Date(), 
+            "type" : "xy", 
+            "amount" : 23}, 
+           {"date" : new Date(), 
+            "type" : "xy", amount : 23}]
     },
     {
       "account_id" : "ms3",
       "broker_id" : "MS",
       "bank" : "MS",
       "currency" : "EUR",
+      "transactions" : [
+           {"date" : new Date(), 
+            "type" : "xy", 
+            "amount" : 23}, 
+           {"date" : new Date(), 
+            "type" : "xy", amount : 23}]
     },
     {
       "account_id" : "ms10",
       "broker_id" : "MS",
       "bank" : "MS",
       "currency" : "EUR",
+      "transactions" : [
+           {"date" : new Date(), 
+            "type" : "xy", 
+            "amount" : 23}, 
+           {"date" : new Date(), 
+            "type" : "xy", amount : 23}]
     },
     {
       "account_id" : "jpm1",
       "broker_id" : "JPM",
       "bank" : "JPM",
       "currency" : "EUR",
+      "transactions" : [
+           {"date" : new Date(), 
+            "type" : "xy", 
+            "amount" : 23}, 
+           {"date" : new Date(), 
+            "type" : "xy", amount : 23}]
     },
     {
       "account_id" : "jpm2",
       "broker_id" : "JPM",
       "bank" : "JPM",
       "currency" : "EUR",
+      "transactions" : [
+           {"date" : new Date(), 
+            "type" : "xy", 
+            "amount" : 23}, 
+           {"date" : new Date(), 
+            "type" : "xy", amount : 23}]
     },
     {
       "account_id" : "ib1",
       "broker_id" : "IB",
       "bank" : "HSBC",
       "currency" : "EUR",
+      "transactions" : [
+           {"date" : new Date(), 
+            "type" : "xy", 
+            "amount" : 23}, 
+           {"date" : new Date(), 
+            "type" : "xy", amount : 23}]
     },
     {
       "account_id" : "ib2",
       "broker_id" : "IB",
       "bank" : "HSBC",
       "currency" : "EUR",
+      "transactions" : [
+           {"date" : new Date(), 
+            "type" : "xy", 
+            "amount" : 23}, 
+           {"date" : new Date(), 
+            "type" : "xy", amount : 23}]
     },
     {
       "account_id" : "ib3",
       "broker_id" : "IB",
       "bank" : "HSBC",
       "currency" : "EUR",
+      "transactions" : [
+           {"date" : new Date(), 
+            "type" : "xy", 
+            "amount" : 23}, 
+           {"date" : new Date(), 
+            "type" : "xy", amount : 23}]
     },
   ]
 };
@@ -487,5 +577,6 @@ seedData.push(users);
 seedData.push(portfolios);
 seedData.push(brokers);
 seedData.push(registry);
+seedData.push(accounts);
 
 module.exports = seedData;

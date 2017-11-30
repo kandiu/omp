@@ -9,29 +9,39 @@ const UserSchema = exports.UserSchema = new Schema ({
 
 });
 
-const PortfolioSchema = exports.PortfolioSchema = new Schema ({
-
-	portfolio_id : {type : String, required : true},
-	accounts : {type : [String], required : true},
-	settings : {type : [SettingsSchema]}
-	// settings : {
-	// 	selected_assets : [{
-	// 		asset_class : {type : String},
-	// 		instruments : {type : [String]}
-	// 	}]
-	// }
+const AssetSelectionSchema = new Schema ({
+		asset_class : {type : String, required : true},
+		instruments : {type : [String], required : true}
 });
 
 // To be used inside Portfolio Schema
-var SettingsSchema = new Schema ({
+const SettingsSchema = new Schema ({
 		selected_assets : {type : [AssetSelectionSchema]},
 		// other settings
 });
 
-var AssetSelectionSchema = new Schema ({
-		asset_class : {type : String, required : true},
-		instruments : {type : [String], required : true}
+const PortfolioSchema = exports.PortfolioSchema = new Schema ({
+
+	portfolio_id : {type : String, required : true},
+	accounts : {type : [String], required : true},
+
+	settings : {
+	 	selected_assets : 
+        [{
+	 		asset_class : {type : String},
+	 		instruments : {type : [String]}
+	 	}]
+	 }
+
 });
+
+// to be used inside Account Schema
+const CashTransactionSchema = new Schema  ({
+	date : {type : Date, required : true},
+	type : {type : String, required : true},
+	amount : {type : Number, required : true},
+});
+
 
 const AccountSchema = exports.AccountSchema = new Schema  ({
 
@@ -39,14 +49,7 @@ const AccountSchema = exports.AccountSchema = new Schema  ({
 	broker_id : {type : String, required : true},
 	bank : {type : String, required : true},
 	currency : {type : String, required : true},
-	//transactions : {type : [CashTransactionSchema], required : true}
-});
-
-// to be used inside Account Schema
-var CashTransactionSchema = new Schema  ({
-	date : {type : Date, required : true},
-	type : {type : String, required : true},
-	amount : {type : Number, required : true},
+	transactions : {type : [CashTransactionSchema], required : true}
 });
 
 const BrokerSchema = exports.BrokerSchema = new Schema ({
@@ -196,3 +199,7 @@ mongoose.model('Book', BookSchema);
 mongoose.model('Blotter', BlotterSchema);
 mongoose.model('Execution', FillOrCancelSchema);
 mongoose.model('Registry', RegistrySchema);
+
+
+
+
