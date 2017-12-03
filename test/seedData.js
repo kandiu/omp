@@ -78,8 +78,9 @@ var portfolios = {
   name : 'Portfolio',
   data : [
     {
-      "portfolio_id" : 'stks-1',
+      "symbol" : 'stks-1',
       "accounts" : ['gs1','ms1','ms10'],
+      "currency" : "EUR",
       "settings" :
       {
         "selected_assets" : [{
@@ -90,20 +91,22 @@ var portfolios = {
     },
 
     {
-      "portfolio_id" : 'fut-1',
+      "symbol" : 'fut-1',
       "accounts" : ['ib1','gs2', 'jpm1', 'ms2'],
+      "currency" : "EUR",
       "settings" :
       {
         "selected_assets" : [{
           "asset_class" : "Future",
-          "underlyings" : ['stkc1','stkc2','stkc3']
+          "underlyings" : ['idx1','idx2','idx3','idx4']
         }]
       }
     },
 
     {
-      "portfolio_id" : 'multy-1',
+      "symbol" : 'multy-1',
       "accounts" : ['ib2'],
+      "currency" : "EUR",
       "settings" :
       {
         "selected_assets" : [
@@ -120,42 +123,46 @@ var portfolios = {
     },
 
     {
-      "portfolio_id" : 'stks-2',
+      "symbol" : 'stks-2',
       "accounts" : ['ms3','jpm2'],
+      "currency" : "USD",
     },
 
     {
-      "portfolio_id" : 'stks-3',
+      "symbol" : 'stks-3',
       "accounts" : ['ms3','jpm2'],
+      "currency" : "USD",
     },
 
     {
-      "portfolio_id" : 'fut-2',
+      "symbol" : 'fut-2',
       "accounts" : ['gs3', 'ib3'],
+      "currency" : "EUR",
       "settings" :
       {
         "selected_assets" : [
           {
             "asset_class" : "Future",
-            "instruments" : ['fut1','fut2','fut3','fut4']
+            "instruments" : ['idx3','idx4']
           }
         ]
       }
     },
 
     {
-      "portfolio_id" : 'opts-1',
+      "symbol" : 'opts-1',
       "accounts" : ['gs3', 'ib3'],
+      "currency" : "EUR",
       "settings" :
       {
         "selected_assets" : [
           {
             "asset_class" : "Option",
-            "instruments" : ['opt1', 'opt2']
+            "underlyings" : ['idx3','idx4']
           }
         ]
       }
-    }
+    },
   ]
 };
 
@@ -163,23 +170,61 @@ var brokers = {
   name : 'Broker',
   data : [
     {
-      "broker_id" : "GS"
+      "symbol" : "GS"
     },
     {
-      "broker_id" : "IB"
+      "symbol" : "IB"
     },
     {
-      "broker_id" : "MS"
+      "symbol" : "MS"
     },
     {
-      "broker_id" : "JPM"
+      "symbol" : "JPM"
     },
     {
-      "broker_id" : "CS"
+      "symbol" : "CS"
     },
     {
-      "broker_id" : "UBS"
+      "symbol" : "UBS"
     }
+  ]
+};
+
+var exchanges = {
+  name : 'Exchange',
+  data : [
+    {
+      "symbol" : "IBIS",
+      "name" : "xxxxxxxxxx"
+    },
+    {
+      "symbol" : "SBF",
+      "name" : "xxxxxxxxxx"
+    },
+    {
+      "symbol" : "NYSE",
+      "name" : "New York Stock Exchange"
+    },
+    {
+      "symbol" : "NASDAQ",
+      "name" : "Nasdaq"
+    },
+    {
+      "symbol" : "BVME",
+      "name" : "Borsa Valore Mercato Elettronico"
+    },
+    {
+      "symbol" : "CME",
+      "name" : "Chicago Mercatile Exchange"
+    },
+    {
+      "symbol" : "DTE",
+      "name" : "Deutsche Boerse"
+    },
+    {
+      "symbol" : "ECBOT",
+      "name" : "Electronic Chicago Board of Trade"
+    },
   ]
 };
 
@@ -188,87 +233,81 @@ var accounts = {
   data : [
     {
       "account_id" : "gs1",
-      "broker_id" : "GS",
+      "broker_symbol" : "GS",
       "bank" : "GS",
       "currency" : "EUR",
-      // "transactions" : [
-      //      {"date" : new Date(), 
-      //       "type" : "xy", 
-      //       "amount" : 23}, 
-      //      {"date" : new Date(), 
-      //       "type" : "xy", amount : 23}]
     },
     {
       "account_id" : "gs2",
-      "broker_id" : "GS",
+      "broker_symbol" : "GS",
       "bank" : "GS",
       "currency" : "EUR",
     },
     {
       "account_id" : "gs3",
-      "broker_id" : "GS",
+      "broker_symbol" : "GS",
       "bank" : "GS",
       "currency" : "EUR",
     },
     {
       "account_id" : "ms1",
-      "broker_id" : "MS",
+      "broker_symbol" : "MS",
       "bank" : "MS",
       "currency" : "EUR",
     },
     {
       "account_id" : "ms2",
-      "broker_id" : "MS",
+      "broker_symbol" : "MS",
       "bank" : "MS",
       "currency" : "EUR",
     },
     {
       "account_id" : "ms3",
-      "broker_id" : "MS",
+      "broker_symbol" : "MS",
       "bank" : "MS",
       "currency" : "EUR",
     },
     {
       "account_id" : "ms10",
-      "broker_id" : "MS",
+      "broker_symbol" : "MS",
       "bank" : "MS",
       "currency" : "EUR",
     },
     {
       "account_id" : "jpm1",
-      "broker_id" : "JPM",
+      "broker_symbol" : "JPM",
       "bank" : "JPM",
       "currency" : "EUR",
     },
     {
       "account_id" : "jpm2",
-      "broker_id" : "JPM",
+      "broker_symbol" : "JPM",
       "bank" : "JPM",
       "currency" : "EUR",
     },
     {
       "account_id" : "ib1",
-      "broker_id" : "IB",
+      "broker_symbol" : "IB",
       "bank" : "HSBC",
       "currency" : "EUR",
     },
     {
       "account_id" : "ib2",
-      "broker_id" : "IB",
+      "broker_symbol" : "IB",
       "bank" : "HSBC",
       "currency" : "EUR",
     },
     {
       "account_id" : "ib3",
-      "broker_id" : "IB",
+      "broker_symbol" : "IB",
       "bank" : "HSBC",
       "currency" : "EUR",
     },
   ]
 };
 
-var registry = {
-  name : 'Registry',
+var equities = {
+  name : 'Equity',
   data : [
     {
       "instrument_id" : "stkc1",
@@ -389,7 +428,12 @@ var registry = {
           "sector" : "Industrial"
       }
     },
+  ]
+};
 
+var indeces = {
+  name : 'Index',
+  data : [
     {
       "instrument_id" : "idx1",
       "exchange_id" : "",
@@ -444,7 +488,12 @@ var registry = {
         "country" : "EU"
       }
     },
+  ]
+};
 
+var futures = {
+  name : 'Future',
+  data : [
     {
       "instrument_id" : "fut1",
       "exchange_id" : "CME",
@@ -457,7 +506,7 @@ var registry = {
       "class" : {
           "tick_value" : 50,
           "underlying" : "idx1",
-          "expiring_date" : "15/12/2017",
+          "expiring_date" : "Fri Dec 15 2017 23:00:00 GMT+0100 (CET)",
           "settlement" : "cash"
       }
     },
@@ -474,7 +523,7 @@ var registry = {
       "class" : {
           "tick_value" : 5,
           "underlying" : "idx2",
-          "expiring_date" : "15/12/2017",
+          "expiring_date" : "Fri Dec 15 2017 23:00:00 GMT+0100 (CET)",
           "settlement" : "cash"
       }
     },
@@ -491,7 +540,7 @@ var registry = {
       "class" : {
           "tick_value" : 25,
           "underlying" : "idx3",
-          "expiring_date" : "15/12/2017",
+          "expiring_date" : "Fri Dec 15 2017 23:00:00 GMT+0100 (CET)",
           "settlement" : "cash"
       }
     },
@@ -508,11 +557,16 @@ var registry = {
       "class" : {
           "tick_value" : 10,
           "underlying" : "idx4",
-          "expiring_date" : "15/12/2017",
+          "expiring_date" : "Fri Dec 15 2017 23:00:00 GMT+0100 (CET)",
           "settlement" : "cash"
       }
     },
+  ]
+};
 
+var options = {
+  name : 'Option',
+  data : [
     {
       "instrument_id" : "opt1",
       "exchange_id" : "GLOBEX",
@@ -522,7 +576,7 @@ var registry = {
       "class" : {
         "multiplier" : 50,
         "underlying" : "fut1",
-        "expiring_date" : "15/12/2017",
+        "expiring_date" : "Fri Dec 15 2017 23:00:00 GMT+0100 (CET)",
         "strike" : 2620,
         "right" : "call",
         "settlement" : "physical",
@@ -539,7 +593,7 @@ var registry = {
       "class" : {
         "multiplier" : 10,
         "underlying" : "idx4",
-        "expiring_date" : "15/12/2017",
+        "expiring_date" : "Fri Dec 15 2017 23:00:00 GMT+0100 (CET)",
         "strike" : 3725,
         "right" : "call",
         "settlement" : "cash",
@@ -547,116 +601,18 @@ var registry = {
       }
     },
   ]
-}
-
-var registry1 = {
-  name : 'Registry1',
-  data : [
-    {
-      "instrument_id" : "fut4",
-      "exchange_id" : "DTB",
-      "tickers" : [
-                    {"provider" : "own", "symbol" : "FESX"}, 
-                    {"provider" : "Bloomberg", "symbol" : "FESX Future"},
-                  ],
-      "tick_size" : 1.0,
-      "currency" : "EUR",
-      "class" : { 
-          "type" : "Future",
-          "item" : ObjectId("000000000000000000000001"),
-      }    
-    },
-  ]
-}
-
-var futures = {
-  name : 'Future',
-  data : [
-    {
-      "_id" : ObjectId("000000000000000000000001"),
-      "tick_value" : 10,
-      "underlying" : "idx4",
-      "expiring_date" : "Fri Dec 15 2017 23:00:00 GMT+0100 (CET)",
-      "settlement" : "cash"
-    },
-  ]
-}
-
-var equities = {
-  name : 'Equity',
-  data : [
-    {
-      "instrument_id" : "eqt4",
-      "exchange_id" : "DTB",
-      "tickers" : [
-                    {"provider" : "own", "symbol" : "BAS"}, 
-                    {"provider" : "Bloomberg", "symbol" : "BAS Equity"},
-                  ],
-      "tick_size" : 0.01,
-      "currency" : "EUR",
-      "class" : {
-          "isin" : "xxxxxxxxxxx",
-          "right" : "common",
-          "description" : "BASF AG",
-          "country" : "EU",
-          "industry" : "Chemicals",
-          "supersector" : "Chemicals",
-          "sector" : "Chemicals"       
-      },  
-    },
-    {
-      "instrument_id" : "eqt5",
-      "exchange_id" : "DTB",
-      "tickers" : [
-                    {"provider" : "own", "symbol" : "BAY"}, 
-                    {"provider" : "Bloomberg", "symbol" : "BAYN Equity"},
-                  ],
-      "tick_size" : 0.01,
-      "currency" : "EUR",
-      "class" : {
-          "isin" : "xxxxxxxxxxx",
-          "right" : "common",
-          "description" : "BAYER AG",
-          "country" : "EU",
-          "industry" : "Chemicals",
-          "supersector" : "Chemicals",
-          "sector" : "Chemicals"       
-      },  
-    },
-  ]
-}
-
-var indeces = {
-  name : 'Index',
-  data : [
-      {
-        "instrument_id" : "idx10",
-        "exchange_id" : "",
-        "tickers" : [
-                      {"provider" : "own", "symbol" : "ESX"}, 
-                      {"provider" : "Bloomberg", "symbol" : "DSX Index"},
-                    ],
-        "tick_size" : 0.01,
-        "currency" : "EUR",
-        "class" : {
-          "asset_class" : "EU Equity Index",
-          "country" : "EU",
-          "industry" : "macro",
-        },  
-      },
-  ]
-}
+};
 
 var seedData = [];
 seedData.push(users);
 seedData.push(portfolios);
 seedData.push(brokers);
-seedData.push(registry);
 seedData.push(accounts);
 seedData.push(futures);
+seedData.push(options);
 seedData.push(assetclasses);
-seedData.push(registry1);
 seedData.push(equities);
 seedData.push(indeces);
+seedData.push(exchanges);
 
 module.exports = seedData;

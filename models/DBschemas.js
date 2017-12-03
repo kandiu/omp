@@ -16,33 +16,19 @@ const UserSchema = exports.UserSchema = new Schema ({
 
 });
 
-// const AssetSelectionSchema = new Schema ({
-// 		asset_class : {type : String, required : true},
-// 		instruments : {type : [String], required : true}
-// });
+// To be used inside SettingsSchema
+const AssetSelectionSchema = new Schema ({
+		asset_class : {type : String, required : true},
+		instruments : {type : [String]},
+		underlyings : {type : [String]},
+}, {_id : false});
 
-// // To be used inside Portfolio Schema
-// const SettingsSchema = new Schema ({
-// 		selected_assets : {type : [AssetSelectionSchema]},
-// 		// other settings
-// });
+// To be used inside Portfolio Schema
+const SettingsSchema = new Schema ({
+		selected_assets : {type : [AssetSelectionSchema]},
+		// other settings
+}, {_id : false});
 
-const PortfolioSchema = exports.PortfolioSchema = new Schema ({
-
-	portfolio_id : {type : String, required : true},
-	accounts : {type : [String], required : true},
-	settings : {
-	 	selected_assets : 
-        [{
-	 		asset_class : {type : String, enum : Object.keys(ac)},
-	 		// how to contraint oneOf underlyings and instruments
-	 		// and only if the asset class is a derivative, otherwise
-	 		// only instrument is allowed
-	 		underlyings : {type : [String]},
-	 		instruments : {type : [String]},
-	 	}]
-	}
-});
 
 const AssetClassSchema = exports.AssetClassSchema = new Schema ({
 	classname : {type : String, required : true, enum : Object.keys(ac)},
@@ -51,17 +37,45 @@ const AssetClassSchema = exports.AssetClassSchema = new Schema ({
 	tradable : {type : Boolean, required : true},
 });
 
-AssetClassSchema.post('validate', function(doc) {
+var assetclass = mongoose.model('AssetClass', AssetClassSchema);
+//var query = assetclass.find({}).select('derivative');
+// TODO: query inside middleware in order to do validation
+
+/* 
+ * Middleware checking if the asset class symbol is consistent
+ * with the asset class name as provided for by the "ac" map 
+ */
+AssetClassSchema.post('save', function(doc, next) {
 	if (ac[doc.classname] != doc.symbol) {
-		throw new Error('Asset class inconsistency!');
+		next(new Error('Asset class inconsistency!'));
 	}
+	assetclass.find({}, function(err, doc) {
+		console.log(doc);
+	});
+	next();
 });
 
-/* TODO : validation check if all elements of ac object are actually into the 
-   AssetClassSchema */
-// AssetClassSchema.post('find', function(result) {
-// 	console.log(result.count());
-// });
+const PortfolioSchema = exports.PortfolioSchema = new Schema ({
+
+	symbol : {type : String, required : true},
+	accounts : {type : [String], required : true},
+	currency : {type : String, required : true},
+	settings : {type : SettingsSchema},
+});
+
+/* 
+ * Middleware checking if instruments and underlyings are mutually exclusive
+ */
+PortfolioSchema.post('save', function(doc, next) {
+	if (doc.settings != undefined) {
+		doc.settings.selected_assets.forEach(function(s) {
+			if (s.instruments.length > 0 && s.underlyings.length > 0) {
+				next(new Error('instruments and underlyings are mutually exclusive!'));
+			}
+		});
+	}
+	next();
+});
 
 const CashTransactionSchema = new Schema  ({
 	account_id : {type : String, required : true, unique : true},
@@ -72,28 +86,31 @@ const CashTransactionSchema = new Schema  ({
 
 
 const AccountSchema = exports.AccountSchema = new Schema  ({
-	account_id : {type : String, required : true},
-	broker_id : {type : String, required : true},
+	account_id : {type : String, required : true, unique : true},
+	broker_symbol : {type : String, required : true},
 	bank : {type : String, required : true},
 	currency : {type : String, required : true},
-	//transactions : {type : [CashTransactionSchema], required : true}
 });
 
 const BrokerSchema = exports.BrokerSchema = new Schema ({
-
-	broker_id : {type : String, required : true},
+	symbol : {type : String, required : true, unique : true},
 	description : {type : String},
 	// the fee schema
 	// all details necessary for FIX connections
 
 });
 
+const ExchangeSchema = exports.ExchangeSchema = new Schema ({
+	symbol : {type : String, required : true, unique : true},
+	name : {type : String, required : true}
+});
+
 const BookSchema = exports.BookSchema = new Schema ({
-	order_id : {type : String, required : true},
+	order_id : {type : String, required : true, unique : true},
 	order_tag : {type : String}, // to be verified
 	security_id : {type : String, required : true},
-	execution_broker_id : {type : String, required : true},
-	clearing_broker_id : {type : String, required : true},
+	execution_broker_symbol : {type : String, required : true},
+	clearing_broker_symbol : {type : String, required : true},
 	timestamp : {type : Date, required : true},
 	quantity : {type : Number, required : true}, // Number or Object?
 	price : {type : Number, required : true},
@@ -102,7 +119,7 @@ const BookSchema = exports.BookSchema = new Schema ({
 });
 
 const BlotterSchema = exports.BlotterSchema = new Schema ({
-	order_id : {type : String, required : true},
+	order_id : {type : String, required : true, unique : true},
 	symbol : {type : String, required : true},
 	creation_time : {type : Date, required : true},
 	timestamp : {type : Date, required : true}, // all amendation
@@ -118,7 +135,7 @@ const BlotterSchema = exports.BlotterSchema = new Schema ({
 });
 
 const FillOrCancelSchema = exports.FillOrCancelSchema  = new Schema ({
-	order_id : {type : String, required : true},
+	order_id : {type : String, required : true, unique : true},
 	symbol : {type : String, required : true},
 	timestamp : {type : Date, required : true}, 
 	action : {type : String, required : true},
@@ -130,166 +147,42 @@ const FillOrCancelSchema = exports.FillOrCancelSchema  = new Schema ({
 	account : {type : String, required : true}
 });
 
-/* TODO : validation check if at least the "own" field is present */
 const tickers = new Schema ({
-	provider : {type : String, 
-		       //  validate : {
-		       //    isAsync : true,
-		       //    validator : function(v, cb) {
-		       //      setTimeout(function() {
-		       //        var checkInternal = v.some(x => x == 'own');
-		       //        var msg = 'internal ticker must be specified!';
-		       //        cb(checkInternal.test(v), msg);
-		       //      }, 5);
-		       //    },
-		      	// },
-		        required : true, default : "own"},
+	provider : {type : String, required : true, default : "own"},
 	symbol : {type : String, required : true},
-});
+}, {_id : false});
 
 /* 
- * Problem: the "class" field should 'polimorphically' be populated 
- * by different asset classes schemas each one with its own contents
- * (e.g. futures asset class has an "expiring_date" field, equities not)
- * Three solutions: 0) Mixed; 1) Population; 2) Discriminators
- */
-
-// Begin Case 0 ---------------------------------------------------------
-
-/* 
- * 0) Mixed solution: the field "class" is an Object. Drawback: 
- * it can be populated by whatever object and no validation is possible
- */
-const RegistrySchema = exports.RegistrySchema = new Schema ({
-
-	instrument_id : {type : String, required : true},
-	exchange_id : {type : String},
-	//tickers : {type : Object, required : true},
-	tickers : {type : [tickers], required : true},
-	tick_size : {type : Number, required : true},
-	currency : {type : String, required : true},
-	class : {type : Object, required : true}
-
-});
-
-// All schema up to Currency should be nested into the class field
-const Option = new Schema ({
-
-	//type : {type : String, required : true},
-	multiplier : {type : Number , required : true},
-	underlying : {type : String, required : true},
-	issuing_date : {type : Date},
-	expiring_date : {type : Date, required : true},
-	strike : {type : Number, required : true},
-	right : {type : String, required : true},
-	settlement : {type : String, required : true},
-	exercise_type : {type : String, required : true}
-	
-});
-
-const Equity = new Schema ({
-
-	//type : {type : String, required : true},
-	right : {type : String, required : true},
-	isin : {type : String , required : true},
-	description : {type : String},
-	country : {type : String},
-	industry : {type : String},
-	supersector : {type : String},
-	sector : {type : String}
-});
-
-const Bond = new Schema ({
-
-	//type : {type : String, required : true},
-	category : {type : String, required : true},
-	isin : {type : String , required : true},
-	issuer : {type : String, required : true},
-	face_value : {type : Number, required : true},
-	issue_price : {type : Number, required : true},
-	issuing_date : {type : Date},
-	expiring_date : {type : Date, required : true},	
-	coupon_rate : {type : Number, required : true},
-	coupon_date : {type : [Date], required : true},
-	rating : {type : String}
-	// other
-});
-
-const Index = new Schema ({
-
-	//type : {type : String, required : true},
-	asset_class : {type : String, required : true},
-	country : {type : String, required : true},
-	industry : {type : String},
-	supersector : {type : String},
-	sector : {type : String}
-	
-});
-
-const Currency = new Schema ({
-
-	//type : {type : String, required : true},
-	isin : {type : String , required : true},
-	country : {type : String}
-	
-});
-
-// End Case 0 ------------------------------------------------------------
-
-// Begin Case 1 ---------------------------------------------------------- 
-
-/* 
- * 1) Population: the field "class" has a "type" field that track the path
- * the Registry Schem must follow in order to find the correct Schema that
- * is supposed to populate the class field. The link between the two is 
- * guaranted by the _id
- */
-const Registry_1_Schema = exports.Registry_1_Schema = new Schema ({
-
-	instrument_id : {type : String, required : true},
-	exchange_id : {type : String},
-	tickers : {type : [tickers], required : true},
-	tick_size : {type : Number, required : true},
-	currency : {type : String, required : true},
-	class : {
-		type : {type: String, enum : Object.keys(ac)},
-		item : {type : Schema.Types.ObjectId, refPath : 'class.type'},
-	}
-});
-
-const FutureSchema = exports.FutureSchema = new Schema ({
-
-	tick_value : {type : Number , required : true},
-	underlying : {type : String, required : true},
-	issuing_date : {type : Date},
-	expiring_date : {type : Date, required : true},
-	first_notice_date : {type : Date},
-	settlement : {type : String, required : true}
-	
-});
-
-// End Case 1 ---------------------------------------------------------------
-
-// Begin Case 2 -------------------------------------------------------------
-
-/* 
- * 2) Discriminator: there are two parts in any registry: the former is 
+ * Discriminator: there are two parts in any registry: the former is 
  * common to each registry (i.e. all fields in Registry_2_Schema) the latter
  * must change according to the asset class (e.g. EquitySchema, IndexSchema).
  * Both parts are glued together by the discriminatoryKey and the 
  * Registry_2_Schema assumes a different form according to the discriminatoryKey
  */
-const Registry_2_Schema = exports.Registry_2_Schema = new Schema ({
+const RegistrySchema = exports.RegistrySchema = new Schema ({
 
-	instrument_id : {type : String, required : true},
-	exchange_id : {type : String},
+	instrument_id : {type : String, required : true, unique : true},
+	exchange_symbol : {type : String},
 	tickers : {type : [tickers], required : true},
 	tick_size : {type : Number, required : true},
 	currency : {type : String, required : true},
 }, {discriminatorKey: 'type'});
 
-var Registry2 = mongoose.model('Registry2', Registry_2_Schema);
+/*
+ * Middleware: after saving it checks if for each registry
+ * the ticker schema has at least the 'own' provider with a
+ * non empty symbol 
+ */
+RegistrySchema.post('save', function(doc, next) {
+	doc.tickers.forEach(function(t) {
+		if (t.provider == 'own' && t.symbol != '') {
+			next();
+		}
+		next(new Error('The "own" ticker must be provided!'))
+	});
+});
 
+/* All schemas below are the 'polymorphic' part of the Registry Schema*/
 const EquitySchema = exports.EquitySchema = new Schema (
 	{class : 
 		{
@@ -305,6 +198,37 @@ const EquitySchema = exports.EquitySchema = new Schema (
 	{discriminatorKey : 'type'}
 );
 
+const FutureSchema = exports.FutureSchema = new Schema (
+	{class :
+		{
+			tick_value : {type : Number , required : true},
+			underlying : {type : String, required : true},
+			issuing_date : {type : Date},
+			expiring_date : {type : Date, required : true},
+			first_notice_date : {type : Date},
+			settlement : {type : String, required : true},
+		}
+	}, 
+	{discriminatorKey : 'type'}
+);
+
+const OptionSchema = exports.OptionSchema = new Schema (
+	{class : 
+		{
+			multiplier : {type : Number , required : true},
+			underlying : {type : String, required : true},
+			issuing_date : {type : Date},
+			expiring_date : {type : Date, required : true},
+			strike : {type : Number, required : true},
+			right : {type : String, required : true},
+			settlement : {type : String, required : true},
+			exercise_type : {type : String, required : true}
+		}
+	}, 
+	{discriminatorKey : 'type'}
+);
+
+
 const IndexSchema = exports.IndexSchema = new Schema (
 	{class : 
 		{
@@ -318,21 +242,26 @@ const IndexSchema = exports.IndexSchema = new Schema (
 	{discriminatorKey : 'type'}
 );
 
-var EquityRegistry = Registry2.discriminator('Equity', EquitySchema);
-var IndexRegistry = Registry2.discriminator('Index', IndexSchema);
+var registry = mongoose.model('Registry', RegistrySchema);
+
+var equities = registry.discriminator('Equity', EquitySchema);
+var futures = registry.discriminator('Future', FutureSchema);
+var options = registry.discriminator('Option', OptionSchema);
+var indeces = registry.discriminator('Index', IndexSchema);
 
 // End Case 2 ---------------------------------------------------------------
 
 mongoose.model('User', UserSchema);
 mongoose.model('Portfolio', PortfolioSchema);
-mongoose.model('AssetClass', AssetClassSchema);
+//var assetclass = mongoose.model('AssetClass', AssetClassSchema);
 mongoose.model('Account', AccountSchema);
 mongoose.model('Broker', BrokerSchema);
+mongoose.model('Exchange', ExchangeSchema);
 mongoose.model('Book', BookSchema);
 mongoose.model('Blotter', BlotterSchema);
 mongoose.model('Execution', FillOrCancelSchema);
 mongoose.model('Registry', RegistrySchema);
-mongoose.model('Registry1', Registry_1_Schema);
 mongoose.model('Future', FutureSchema);
+mongoose.model('Option', OptionSchema);
 mongoose.model('Equity', EquitySchema);
 mongoose.model('Index', IndexSchema);
