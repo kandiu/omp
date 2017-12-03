@@ -8,6 +8,21 @@ var ac = {
 	Index  : 'IDX',
 };
 
+var maturity_symbols = [
+	{month : 'JAN', symbol : 'F'},
+	{month : 'FEB', symbol : 'G'},
+	{month : 'MAR', symbol : 'H'},
+	{month : 'APR', symbol : 'J'},
+	{month : 'MAY', symbol : 'K'},
+	{month : 'JUN', symbol : 'M'},
+	{month : 'JUL', symbol : 'N'},
+	{month : 'AUG', symbol : 'Q'},
+	{month : 'SEP', symbol : 'U'},
+	{month : 'OCT', symbol : 'V'},
+	{month : 'NOV', symbol : 'X'},
+	{month : 'DEC', symbol : 'Z'},
+];
+
 const UserSchema = exports.UserSchema = new Schema ({
 
 	name : {type : String, required : true},
@@ -106,16 +121,17 @@ const ExchangeSchema = exports.ExchangeSchema = new Schema ({
 });
 
 const BookSchema = exports.BookSchema = new Schema ({
-	order_id : {type : String, required : true, unique : true},
-	order_tag : {type : String}, // to be verified
+	order_id : {type : String, required : true},
+	timestamp : {type : Date, required : true},
+	quantity : {type : Number, required : true}, 
+	price : {type : Number, required : true},
 	security_id : {type : String, required : true},
+	security_symbol : {type : String, required : true},
 	execution_broker_symbol : {type : String, required : true},
 	clearing_broker_symbol : {type : String, required : true},
-	timestamp : {type : Date, required : true},
-	quantity : {type : Number, required : true}, // Number or Object?
-	price : {type : Number, required : true},
-	portfolio_id : {type : String, required : true}
-
+	exchange_symbol : {type : String, required : true},
+	account_id : {type : String, required : true},
+	order_tag : {type : String}, // to be verified
 });
 
 const BlotterSchema = exports.BlotterSchema = new Schema ({

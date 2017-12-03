@@ -16,14 +16,17 @@ function udPortfolioIds(userData) {
 
 function udAssetClasses(userData, portfolio_id) {
 
-    var classesObj = { assetclasses : []};
-    if ( userData && portfolio_id && userData.assetClasses ) {
-	classesObj = userData.assetClasses.find(function(ac){ 
-            return  ac.portfolio_id === portfolio_id; 
-        });
+    let classesObj = userData.assetclasses.find(function(ac) {
+                        return ac.portfolio_id === portfolio_id;
+                    });
 
-    }
-    return classesObj.assetclasses;
+    let classNames = [];
+
+    classesObj.classes.forEach(function(cl) {
+        classNames.push(cl.classname);
+    });
+
+    return classNames;
 }
 
 
@@ -85,10 +88,10 @@ function getCurrency(regObj) {
 function udPortfolio(userData, portfolioId) {
 
     if ( userData ){
-	return userData.portfolios.find(function(pf) { 
-            return pf.portfolio_id === portfolioId; 
-	});
 
+	    return userData.portfolios.find(function(pf) { 
+                return pf.symbol === portfolioId; 
+	    });
     }
     return [];
 }
