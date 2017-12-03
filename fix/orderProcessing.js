@@ -19,20 +19,13 @@ module.exports = {
 		});
 	},
 
-	send: function(message){
-		if (message[message.length-1]!='\n')
-			message+="\n";
-
-		client.write(message);
+	sendOrder: function(order){
+		client.write(order.toString());
 	},
 
 
 	setHandler: function(f){
 		client.dataHandler=f;
-	},
-
-	processOrder: function(order){
-		
 	}
 }
 
