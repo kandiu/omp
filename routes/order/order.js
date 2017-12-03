@@ -1,5 +1,8 @@
 const express = require('express');
 const router = express.Router();
+const fixclient = require("../../fix/orderProcessing.js")
+
+
 
 //const models = require('../../models');
 const op = require('../../fix/orderProcessing');
@@ -21,7 +24,7 @@ router.post('/', function(req, res) {
         res.status(400).end();
 
     else {
-        op.processOrder(order);
+        fixclient.send(order);
         res.status(201).end();
     }
 });
@@ -64,14 +67,6 @@ function checkDb(portfolio, account, broker) {
 
     return true;
 }
-
-
-
-
-
-
-
-
 
 
 

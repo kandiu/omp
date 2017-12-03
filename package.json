@@ -20,6 +20,7 @@
   "dependencies": {
     "debug": "^3.1.0",
     "express": "^4.16.2",
+    "fixparser": "^1.7.0",
     "method-override": "^2.3.10",
     "mongoose": "^4.12.6",
     "morgan": "^1.9.0",

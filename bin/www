@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 var debug = require('debug')('omp-server');
 var app = require('../app');
+var fixclient = require("../fix/orderProcessing.js")
+
+fixclient.connect()
 
 app.set('port', process.env.PORT || 3000);
 
