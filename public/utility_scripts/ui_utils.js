@@ -16,10 +16,13 @@ function udPortfolioIds(userData) {
 
 function udAssetClasses(userData, portfolio_id) {
 
-    let classesObj = userData.assetClasses.find(function(ac){ 
-                        return  ac.portfolio_id === portfolio_id; 
-                     });
+    var classesObj = { assetclasses : []};
+    if ( userData && portfolio_id && userData.assetClasses ) {
+	classesObj = userData.assetClasses.find(function(ac){ 
+            return  ac.portfolio_id === portfolio_id; 
+        });
 
+    }
     return classesObj.assetclasses;
 }
 
@@ -52,7 +55,6 @@ function udSymbols(userData, portfolioId, assetClass) {
         let assets = portfolio.settings.selected_assets.filter(
                         (as) => as.asset_class === assetClass);
 
-
         let inst = [];
         
         assets.forEach(function(as) {
@@ -82,9 +84,13 @@ function getCurrency(regObj) {
 
 function udPortfolio(userData, portfolioId) {
 
-    return userData.portfolios.find(function(pf) { 
+    if ( userData ){
+	return userData.portfolios.find(function(pf) { 
             return pf.portfolio_id === portfolioId; 
-    });
+	});
+
+    }
+    return [];
 }
 
 function queryRegistry(symbol, callback) {
