@@ -19,37 +19,38 @@
              text-transform: uppercase !important;
          }
          .container-fluid {
-            height:100% !important;
-         } */
+             height:100% !important;
+         }
+         */
         </style>
         <div class="container">
-            <div id="builder" class="row mt-4">
-                <omp-builder class="col"></omp-builder>
+            <div class="row mt-4">
+                <omp-builder id="builder" class="col" on-new-order="_newOrder"></omp-builder>
             </div>
-	</div>
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col">
-                        <nav class="navbar navbar-expand-lg navbar-light bg-light ">
-                            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                                <ul class="navbar-nav mr-auto">
-                                    <li class="nav-item active">
-                                        <a class="nav-link" on-click="changePage" data="order">Order</span></a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" on-click="changePage" data="blotter">Blotter</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" on-click="changePage" data="history">History</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </nav>
-                    </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col">
+                    <nav class="navbar navbar-expand-lg navbar-light bg-light ">
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                            <ul class="navbar-nav mr-auto">
+                                <li class="nav-item active">
+                                    <a class="nav-link" on-click="changePage" data="order">Order</span></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" on-click="changePage" data="blotter">Blotter</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" on-click="changePage" data="history">History</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
                 </div>
+            </div>
             <iron-pages selected="[[pageName]]" attr-for-selected="page-name" fallback-selection="order">
-                <div page-name="order" id="order" class="row">
-                    <omp-order class="col"></omp-order>
+                <div page-name="order" class="row">
+                    <omp-order id="order"  class="col"></omp-order>
                 </div>
                 <div page-name="blotter" id="blotter" class="row">
                     <omp-blotter class="col"></omp-blotter>
@@ -75,12 +76,15 @@
                  }
              }
          }
-         /* connectedCallback(){
-            }*/
+
          changePage(ev){
              console.log(ev.target.getAttribute('data'));
              this.set('pageName', ev.target.getAttribute('data'));
          }
+
+	 _newOrder(ev) {
+	     this.$.order.addOrder(ev.detail)
+	 }
      }
      customElements.define(OmpApp.is, OmpApp);
     </script>

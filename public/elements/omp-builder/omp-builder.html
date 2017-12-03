@@ -25,122 +25,113 @@
         </style>
         <div id="topbar" class="row">
             <div class="col-3">
-                <vaadin-combo-box id="user" label="User" items="{{users}}" on-value-changed="userChanged" value="igor"></vaadin-combo-box>
+                <vaadin-combo-box id="user" label="User" items="{{_users}}" value="{{_selectedUser}}"></vaadin-combo-box>
             </div>
             <div class="col-3">
-                <vaadin-combo-box id="portfolio" label="Portfolio" items="[[portfolios]]" on-value-changed="portfolioChanged"></vaadin-combo-box>
+                <vaadin-combo-box id="portfolio" label="Portfolio" items="[[_portfolios]]" value="{{_selectedPortfolio}}"></vaadin-combo-box>
             </div>
             <div class="col-3">
-                <vaadin-combo-box id="asset-class" label="Asset class" items="[[assetClasses]]" value="{{selectedAssetClass}}"></vaadin-combo-box>
+                <vaadin-combo-box id="asset-class" label="Asset class" items="[[_assetClasses]]" value="{{_selectedAssetClass}}"></vaadin-combo-box>
             </div>
             <div class="col-3">
-                <vaadin-combo-box id="broker" label="Broker" items="[[brokers]]" value="{{selectedBroker}}"></vaadin-combo-box>
+                <vaadin-combo-box id="broker" label="Broker" items="[[_brokers]]" value="{{_selectedBroker}}"></vaadin-combo-box>
             </div>
         </div>
         <div class="row mt-4">
             <div class="col-4">
                 <!-- ASSET DETAIL -->
                 <div class="row">
-		    <div class="col">
-			<div class="section-title">ASSET DETAILS</div>
-		    </div>
-		</div>
-
-		<template is="dom-if" if="{{ _isEquity(selectedAssetClass)}}">
-		    <div class="row">
-			<div class="col">
-                            <vaadin-combo-box id="symbol" label="Symbol"></vaadin-combo-box>
-			</div>
+                    <div class="col">
+                        <div class="section-title">ASSET DETAILS</div>
                     </div>
-		</template>
-		<template is="dom-if" if="{{ _isFutureOrOption(selectedAssetClass)}}">
-		    <div class="row">
-			<div class="col">
-                            <vaadin-combo-box id="underlying" label="Underlying"></vaadin-combo-box>
-			</div>
+                </div>
+                <template is="dom-if" if="{{ _isEquity(_selectedAssetClass)}}">
+                    <div class="row">
+                        <div class="col">
+                            <vaadin-combo-box id="symbol" label="Symbol" items="{{_symbols}}" value="{{_selectedSymbol}}" on-value-changed="_symbolChanged"></vaadin-combo-box>
+                        </div>
                     </div>
-		    <div class="row">
-			<div class="col">
-			    <vaadin-date-picker label="Maturity">
-			    </vaadin-date-picker>
-			</div>
+                </template>
+                <template is="dom-if" if="{{ _isFutureOrOption(_selectedAssetClass)}}">
+                    <div class="row">
+                        <div class="col">
+                            <vaadin-combo-box id="underlying" label="Underlying" items="{{_symbols}}" value="{{_selectedSymbol}}" on-value-change="_symbolChanged"></vaadin-combo-box>
+                        </div>
                     </div>
-
-		    <template is="dom-if" if="{{ _isOption(selectedAssetClass)}}">
-			<vaadin-text-field  id="strike" value="" label="Strike"></vaadin-text-field>
-		    </template>
-
-
-		</template>
-
-
-		<div class="row">
-		    <div class="col">
-                        <vaadin-combo-box id="exchange" label="Exchange"></vaadin-combo-box>
-		    </div>
+                    <div class="row">
+                        <div class="col">
+                            <vaadin-date-picker label="Maturity">
+                            </vaadin-date-picker>
+                        </div>
+                    </div>
+                    <template is="dom-if" if="{{ _isOption(_selectedAssetClass)}}">
+                        <vaadin-text-field  id="strike" value="" label="Strike"></vaadin-text-field>
+                    </template>
+                </template>
+                <div class="row">
+                    <div class="col">
+                        <vaadin-text-field id="exchange" label="Exchange" value="{{_exchange}}"></vaadin-text-field>
+                    </div>
                 </div>
                 <div class="row">
-		    <div class="col">
-                            <vaadin-text-field readonly value="CHF" label="Currency"></vaadin-text-field>
-		    </div>
+                    <div class="col">
+                        <vaadin-text-field readonly value="{{_currency}}" label="Currency"></vaadin-text-field>
+                    </div>
                 </div>
-
             </div>
             <div class="col-4">
                 <!-- ORDER SETTIGS -->
-                <div class="section-title mb-4 row"><div class="col">ORDER SETTINGS</div></div>
                 <div class="row">
                     <div class="col">
-                        <div class="btn-group" role="group" aria-label="Basic example">
-                            <button type="button" class="btn btn-success">BUY</button>
-                            <button type="button" class="btn btn-danger">SELL</button>
-                        </div>
+                        <div class="section-title">ORDER SETTINGS</div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col">
-                        <vaadin-combo-box id="type" label="Type" value="{{selectedType}}"></vaadin-combo-box>
+                        <vaadin-combo-box id="type" label="Type" value="{{_selectedType}}"></vaadin-combo-box>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col">
-                        <vaadin-combo-box id="duration" label="Duration" value="GTC"></vaadin-combo-box>
+                        <vaadin-combo-box id="duration" label="Duration" value="{{_selectedDuration}}"></vaadin-combo-box>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col">
-			<template is="dom-if" if="{{ _isMKT(selectedType)}}">
-			    <vaadin-text-field readonly value="50" label="Price"></vaadin-text-field>
-			</template>
-			<template is="dom-if" if="{{ !_isMKT(selectedType) }}">
-			    <vaadin-text-field value="50" label="Price"></vaadin-text-field>
-			</template>
-
-
+                        <template is="dom-if" if="{{ _isMKT(_selectedType)}}">
+                            <vaadin-text-field readonly value="50" label="Price"></vaadin-text-field>
+                        </template>
+                        <template is="dom-if" if="{{ !_isMKT(_selectedType) }}">
+                            <vaadin-text-field value="{{_price}}" label="Price"></vaadin-text-field>
+                        </template>
                     </div>
                 </div>
             </div>
             <div class="col-4">
                 <!-- QUANTITY -->
-                <div class="row section-title mb-4"><div class="col">QUANTITY</div></div>
+                <div class="row">
+                    <div class="col">
+                        <div class="section-title mb-4">QUANTITY</div>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col">
                         <div class="btn-group" role="group" aria-label="Basic example">
-                            <button type="button" class="btn btn-light" on-click="changePrice" data="10">10</button>
-                            <button type="button" class="btn btn-light" on-click="changePrice" data="20">20</button>
-                            <button type="button" class="btn btn-light" on-click="changePrice" data=50">50</button>
-                            <button type="button" class="btn btn-light" on-click="changePrice" data="100">100</button>
-                            <button type="button" class="btn btn-light" on-click="changePrice" data="200">200</button>
-                            <button type="button" class="btn btn-light" on-click="changePrice" data="300">300</button>
+                            <button type="button" class="btn btn-light" on-click="_changeQuantity" data="10">10</button>
+                            <button type="button" class="btn btn-light" on-click="_changeQuantity" data="20">20</button>
+                            <button type="button" class="btn btn-light" on-click="_changeQuantity" data="50">50</button>
+                            <button type="button" class="btn btn-light" on-click="_changeQuantity" data="100">100</button>
+                            <button type="button" class="btn btn-light" on-click="_changeQuantity" data="200">200</button>
+                            <button type="button" class="btn btn-light" on-click="_changeQuantity" data="300">300</button>
                         </div>
                     </div>
                 </div>
                 <div class="row mt-4">
                     <div class="col">
                         <div class="btn-group" role="group" aria-label="Basic example">
-                            <button type="button" class="btn btn-secondary" on-click="changePrice" data="1">+</button>
-                            <input id="quantity" type="text" class="form-control" value="{{quantity}}">
-                            <button type="button" class="btn btn-secondary" on-click="changePrice" data="-1">-</button>
+                            <button type="button" class="btn btn-secondary" on-click="_changeQuantity" data="1">+</button>
+                            <input id="quantity" type="text" class="form-control" value="{{_quantity}}">
+                            <button type="button" class="btn btn-secondary" on-click="_changeQuantity" data="-1">-</button>
                         </div>
                     </div>
                 </div>
@@ -148,7 +139,10 @@
         </div>
         <div class="row my-2">
             <div class="col">
-                <button type="button" class="btn btn-primary float-right" on-click="createOrder">Create</button>
+                <div class="btn-group float-right" role="group" aria-label="Basic example">
+                    <button type="button" class="btn btn-success" on-click="sendOrder" data="buy">BUY</button>
+                    <button type="button" class="btn btn-danger" on-click="sendOrder" data="sell">SELL</button>
+                </div>
             </div>
         </div>
     </template>
@@ -157,7 +151,7 @@
          static get is() { return 'omp-builder'; }
          static get properties(){
              return {
-                 users: {
+                 _users: {
                      type: Array,
                      value: () => ['igor', 'uma', 'marcel', 'eljon', 'robert']
                  },
@@ -165,76 +159,151 @@
                      type: Object,
                      value: () => {}
                  },
-                 quantity: {
+                 _quantity: {
                      type: Number,
                      value: 50
                  },
-		 
-		 selectedType: {
+                 _selectedType: {
+                     type: String,
+                     value: "MKT"
+                 },
+                 _symbols:{
+                     type: Array,
+                     value: () => []
+                 },
+
+		 _selectedSymbol: {
+		     type: Array,
+		     observer: '_symbolChanged'
+		 },
+                 _selectedUser: {
+                     type: String,
+		     value: 'igor',
+		     observer: '_userChanged'
+                 },
+
+		 _currency: {
 		     type: String,
-		     value: "MKT"
+		     value: "CHF"
+		 },
+
+		 _portfolios: {
+		     type: Array,
+		     value: () => [],
+		 },
+		 _selectedPortfolio: {
+		     type: String,
+		     observer: '_portfolioChanged'
+		 },
+
+		 _assetClasses: {
+		     type: Array,
+		     value: () => []
+		 },
+
+		 _selectedAssetClass: {
+		     type: String,
+		     observer: '_assetClassChanged'
+		 },
+
+		 _brokers: {
+		     type: Array,
+		     value: () => []
+		 },
+
+		 _selectedBroker: {
+		     type: String,
+		     /* observer: '_brokerChanged'*/
+		 },
+
+		 _exchange: {
+		     type: String,
+		 },
+
+		 _selectedDuration: {
+		     type: String,
+		     value: "DAY"
+		 },
+
+		 _price:{
+		     type: Number,
+		     value: 50
 		 }
              }
          }
          connectedCallback() {
-	     super.connectedCallback();
-	     this.$["duration"].items = ["DAY", "GTC"]
-	     this.$["type"].items = ["MKT", "LMT"]
-	 }
-         userChanged(ev) {
-             axios.get(`/login/${ev.target.value}`)
+             super.connectedCallback();
+             this.$["duration"].items = ["DAY", "GTC"]
+             this.$["type"].items = ["MKT", "LMT"]
+         }
+
+         _userChanged(ev) {
+	     axios.get(`/login/${this._selectedUser}`)
                   .then( function(res){
-		      console.log(res)
                       this.set('_userData', res.data);
-                      this.set('portfolios', this._userData.portfolios.map((x) => x.portfolio_id))
-                      this.$.portfolio.value = this.portfolios[0]
+		      this.set('_portfolios', udPortfolioIds(this._userData));
+		      this.set('_selectedPortfolio', this._portfolios[0]);
                   }.bind(this))
-         }
-         portfolioChanged(ev){
-             /* console.log(this.get('selectedPortfolio'))*/
-             /* console.log(this._userData);*/
-             if ( this._userData != undefined) {
-                 this._userData.assetClasses.find(function(a){
-                     if ( a.portfolio_id === this.$.portfolio.value) {
-                         this.$['asset-class'].items = a.assetclasses
-                         this.$['asset-class'].value = a.assetclasses[0]
-
-			 this._userData.accounts.find(function( ac ) {
-			     if ( a.portfolio_id === ac.portfolio_id) {
-				 console.log(ac.accounts);
-				 this.brokers = ac.accounts.map((x) => x.account_id);
-				 this.selectedBroker = this.brokers[0];
-			     }
-			 }.bind(this))
-                         return
-                     }
-                 }.bind(this))
-             }
-         }
-         changePrice(el){
-             this.set("quantity", this.get("quantity") + parseInt(el.target.getAttribute("data")));
-         }
-
-         createOrder(){
 
          }
+         _portfolioChanged(ev){
+	     if ( this._userData ) {
+		 this.set('_assetClasses', udAssetClasses(this._userData, this._selectedPortfolio));
+		 this.set('_selectedAssetClass', this._assetClasses[0]);
+		 this.set('_brokers', udBrokers(this._userData, this._selectedPortfolio));
+		 this.set('_selectedBroker', this._brokers[0]);
+	     }
 
-	 
-	 _isEquity(s){
-	     return s === "Equity";
-	 }
-	 _isFuture(s){
-	     return s === "Future";
-	 }
-	 _isOption(s){
-	     return s === "Option";
+         }
+         _assetClassChanged(ev){
+	     if ( this._userData ) {
+		 this.set('_symbols', udSymbols(this._userData, this._selectedPortfolio, this._selectedAssetClass));
+		 this.set('_selectedSymbol', this._symbols[0]);
+	     }
+         }
+
+	 _symbolChanged(ev) {
+	     if ( this._userData ){
+		 axios.get(`/registry/${this._selectedSymbol}`)
+		      .then(function(reg){
+			  console.log(reg)
+			  this.set('_currency', getCurrency(reg.data));
+			  this.set('_exchange', getExchange(reg.data));
+		      }.bind(this));
+	     }
 	 }
 
-	 _isFutureOrOption(s) {
-	     return this._isFuture(s) || this._isOption(s)
-	 }
-	 _isMKT(s){
-	     return s === "MKT"
+         _changeQuantity(el){
+             this.set("_quantity", this.get("_quantity") + parseInt(el.target.getAttribute("data")));
+         }
+         _isEquity(s){
+             return s === "Equity";
+         }
+         _isFuture(s){
+             return s === "Future";
+         }
+         _isOption(s){
+             return s === "Option";
+         }
+         _isFutureOrOption(s) {
+             return this._isFuture(s) || this._isOption(s)
+         }
+         _isMKT(s){
+             return s === "MKT"
+         }
+
+	 sendOrder(ev){
+	     console.log("Buy clicked")
+	     let order = {
+		 side : ev.target.getAttribute('data'),
+		 symbol: this._selectedSymbol,
+		 quantity: this._quantity,
+		 type: this._selectedType,
+		 price: this._selectedType === 'MKT' ? 50 : this._price,
+		 duration: this._selectedDuration
+	     }
+
+	     this.dispatchEvent(new CustomEvent('new-order', {detail: order }))
 	 }
      }
      customElements.define(OmpBuilder.is, OmpBuilder);
