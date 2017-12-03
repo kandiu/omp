@@ -70,7 +70,6 @@ function udSymbols(userData, portfolioId, assetClass) {
 
 
 // Exchange
-// registry object -> String  //// get the registry object using queryRegistry(symbol, callback)
 function getExchange(regObj) {
     return regObj.exchange_id;
 }
