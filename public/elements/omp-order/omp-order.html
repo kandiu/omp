@@ -53,6 +53,11 @@
                 <template class="header">Druation</template>
                 <template>[[item.duration]]</template>
             </vaadin-grid-column>
+	    <vaadin-grid-column>
+                <template>
+		    <button on-click="_remove">Remove</button>
+		</template>
+            </vaadin-grid-column>
         </vaadin-grid>
     </template>
     <script>
@@ -70,6 +75,10 @@
 	 addOrder(order){
 	     console.log(order);
 	     this.push('orders', order);
+	 }
+
+	 _remove(ev) {
+	     this.splice('orders', ev.model.index, 1);
 	 }
      }
      customElements.define(OmpOrder.is, OmpOrder);
