@@ -96,8 +96,20 @@ function udPortfolio(userData, portfolioId) {
     return [];
 }
 
-function queryRegistry(symbol, callback) {
-    ajaxRequest("GET", "/registry/" + symbol, {}, {}, callback);
+function findEquity(symbol, callback) {
+    ajaxRequest("GET", "/equities/" + symbol, {}, {}, callback);
+}
+
+function findIndex(symbol, callback) {
+    ajaxRequest("GET", "/indeces/" + symbol, {}, {}, callback);
+}
+
+function findFuture(symbol, callback) {
+    ajaxRequest("GET", "/futures/" + symbol, {}, {}, callback);
+}
+
+function findOption(symbol, callback) {
+    ajaxRequest("GET", "/options/" + symbol, {}, {}, callback);
 }
 
 function ajaxRequest(method, url, headers, data, callback) {
