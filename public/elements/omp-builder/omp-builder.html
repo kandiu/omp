@@ -93,7 +93,7 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        <vaadin-combo-box id="duration" label="Duration" value="GTC"></vaadin-combo-box>
+                        <vaadin-combo-box id="duration" label="Duration" value="{{_selectedDuration}}"></vaadin-combo-box>
                     </div>
                 </div>
                 <div class="row">
@@ -102,7 +102,7 @@
                             <vaadin-text-field readonly value="50" label="Price"></vaadin-text-field>
                         </template>
                         <template is="dom-if" if="{{ !_isMKT(_selectedType) }}">
-                            <vaadin-text-field value="50" label="Price"></vaadin-text-field>
+                            <vaadin-text-field value="{{_price}}" label="Price"></vaadin-text-field>
                         </template>
                     </div>
                 </div>
@@ -117,21 +117,21 @@
                 <div class="row">
                     <div class="col">
                         <div class="btn-group" role="group" aria-label="Basic example">
-                            <button type="button" class="btn btn-light" on-click="_changePrice" data="10">10</button>
-                            <button type="button" class="btn btn-light" on-click="_changePrice" data="20">20</button>
-                            <button type="button" class="btn btn-light" on-click="_changePrice" data="50">50</button>
-                            <button type="button" class="btn btn-light" on-click="_changePrice" data="100">100</button>
-                            <button type="button" class="btn btn-light" on-click="_changePrice" data="200">200</button>
-                            <button type="button" class="btn btn-light" on-click="_changePrice" data="300">300</button>
+                            <button type="button" class="btn btn-light" on-click="_changeQuantity" data="10">10</button>
+                            <button type="button" class="btn btn-light" on-click="_changeQuantity" data="20">20</button>
+                            <button type="button" class="btn btn-light" on-click="_changeQuantity" data="50">50</button>
+                            <button type="button" class="btn btn-light" on-click="_changeQuantity" data="100">100</button>
+                            <button type="button" class="btn btn-light" on-click="_changeQuantity" data="200">200</button>
+                            <button type="button" class="btn btn-light" on-click="_changeQuantity" data="300">300</button>
                         </div>
                     </div>
                 </div>
                 <div class="row mt-4">
                     <div class="col">
                         <div class="btn-group" role="group" aria-label="Basic example">
-                            <button type="button" class="btn btn-secondary" on-click="_changePrice" data="1">+</button>
+                            <button type="button" class="btn btn-secondary" on-click="_changeQuantity" data="1">+</button>
                             <input id="quantity" type="text" class="form-control" value="{{_quantity}}">
-                            <button type="button" class="btn btn-secondary" on-click="_changePrice" data="-1">-</button>
+                            <button type="button" class="btn btn-secondary" on-click="_changeQuantity" data="-1">-</button>
                         </div>
                     </div>
                 </div>
@@ -140,8 +140,8 @@
         <div class="row my-2">
             <div class="col">
                 <div class="btn-group float-right" role="group" aria-label="Basic example">
-                    <button type="button" class="btn btn-success">BUY</button>
-                    <button type="button" class="btn btn-danger">SELL</button>
+                    <button type="button" class="btn btn-success" on-click="sendOrder" data="buy">BUY</button>
+                    <button type="button" class="btn btn-danger" on-click="sendOrder" data="sell">SELL</button>
                 </div>
             </div>
         </div>
@@ -218,6 +218,16 @@
 
 		 _exchange: {
 		     type: String,
+		 },
+
+		 _selectedDuration: {
+		     type: String,
+		     value: "DAY"
+		 },
+
+		 _price:{
+		     type: Number,
+		     value: 50
 		 }
              }
          }
@@ -263,7 +273,7 @@
 	     }
 	 }
 
-         _changePrice(el){
+         _changeQuantity(el){
              this.set("_quantity", this.get("_quantity") + parseInt(el.target.getAttribute("data")));
          }
          _isEquity(s){
@@ -281,6 +291,20 @@
          _isMKT(s){
              return s === "MKT"
          }
+
+	 sendOrder(ev){
+	     console.log("Buy clicked")
+	     let order = {
+		 side : ev.target.getAttribute('data'),
+		 symbol: this._selectedSymbol,
+		 quantity: this._quantity,
+		 type: this._selectedType,
+		 price: this._selecteType === 'MKT' ? 50 : this._price,
+		 duration: this._selectedDuration
+	     }
+
+	     this.dispatchEvent(new CustomEvent('new-order', {detail: order }))
+	 }
      }
      customElements.define(OmpBuilder.is, OmpBuilder);
     </script>
