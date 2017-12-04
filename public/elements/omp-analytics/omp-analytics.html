@@ -1,0 +1,94 @@
+
+<link rel="import" href="../../../bower_components/vaadin-charts/vaadin-line-chart.html">
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
+
+
+
+<dom-module id="omp-analytics">
+    <template>
+        <vaadin-line-chart>
+            <chart-title>Orders</chart-title>
+            <x-axis name="Price" type="datetime">
+                <chart-title>Date</chart-title>
+            </x-axis>
+            <y-axis>
+                <chart-title>Price</chart-title>
+            </y-axis>
+
+            <!--<y-axis id="humidity">-->
+                <!--<chart-title>Humidity (%)</chart-title>-->
+                <!--<min>0</min>-->
+                <!--<opposite>true</opposite>-->
+            <!--</y-axis>-->
+
+
+            <!--<data-series name="Humidity" type="column" data="[[humidityData]]"  y-axis = "humidity">-->
+            <!--</data-series>-->
+
+            <data-series name="Temperature" data="[[temperatureData]]">
+            </data-series>
+
+        </vaadin-line-chart>
+
+
+        <iron-ajax id="temperatureFetcher"
+                   url="data/temperature"
+                   handle-as="json"
+                   last-response="{{temperatureData}}"
+                   debounce-duration="300"></iron-ajax>
+
+
+
+
+        <!--<iron-ajax id="humidityFetcher"-->
+                   <!--url="data/humidity"-->
+                   <!--handle-as="json"-->
+                   <!--last-response="{{humidityData}}"-->
+                   <!--debounce-duration="300"></iron-ajax>-->
+
+    </template>
+
+
+<script>
+    class OmpAnalytics extends Polymer.Element {
+
+        constructor() {
+            super();
+        }
+
+
+        static get is() {
+            return 'omp-analytics';
+        }
+
+        static get properties() {
+            return {
+                title: {
+                    type: String,
+                    value: "omp-analytics"
+                },
+                temperatureData: Object,
+                humidityData: Object,
+
+            }
+        }
+
+        connectedCallback() {
+            super.connectedCallback();
+            console.log(this);
+//            this.$.temperatureFetcher.generateRequest();
+//            this.$.humidityFetcher.generateRequest();
+        }
+
+
+    }
+    customElements.define(OmpAnalytics.is, OmpAnalytics);
+
+
+
+
+
+</script>
+
+
+</dom-module>

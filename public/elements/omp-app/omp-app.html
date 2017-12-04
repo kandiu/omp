@@ -43,6 +43,9 @@
                                 <li class="nav-item">
                                     <a class="nav-link" on-click="changePage" data="history">History</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" on-click="changePage" data="analytics">Analytics</a>
+                                </li>
                             </ul>
                         </div>
                     </nav>
@@ -57,6 +60,9 @@
                 </div>
                 <div page-name="history" id="execution" class="row">
                     <omp-execution class="col"></omp-execution>
+                </div>
+                <div page-name="analytics" id="analytics" class="row">
+                    <omp-analytics class="col"></omp-analytics>
                 </div>
             </iron-pages>
         </div>
