@@ -37,7 +37,7 @@ router.get('/:_username', function(req, res) {
 
 function sendUserData(userObject, res) {
 
-    let userData = {user : userObject};
+    let userData = {user : userObject, accounts: []};
 
     addPortfolios();
 

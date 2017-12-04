@@ -75,7 +75,7 @@ function getAsset(userData, symbol) {
         as.assets.forEach(function(ast) {
             if (ast.instrument_id === symbol)
                 return ast;
-        }
+        })
     });
 }
 
