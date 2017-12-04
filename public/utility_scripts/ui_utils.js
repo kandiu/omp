@@ -69,14 +69,29 @@ function udSymbols(userData, portfolioId, assetClass) {
 }
 
 
-// Exchange
-function getExchange(regObj) {
-    return regObj.exchange_id;
+function getAsset(userData, symbol) {
+
+    userData.assets.forEach(function(as) {
+        as.assets.forEach(function(ast) {
+            if (ast.instrument_id === symbol)
+                return ast;
+        }
+    });
+}
+
+
+// Tickers
+function getTickers(userData, instrument_id) {
+
+    let asset = getAsset(userData, instrument_id);
+    return asset.tickers;
 }
 
 // Currency
-function getCurrency(regObj) {
-    return regObj.currency;
+function getCurrency(instrument_id) {
+
+    let asset = getAsset(userData, instrument_id);
+    return asset.currency;
 }
 
 
@@ -95,6 +110,8 @@ function udPortfolio(userData, portfolioId) {
     return [];
 }
 
+
+/*
 function findEquity(symbol, callback) {
     ajaxRequest("GET", "/equities/" + symbol, {}, {}, callback);
 }
@@ -110,6 +127,7 @@ function findFuture(symbol, callback) {
 function findOption(symbol, callback) {
     ajaxRequest("GET", "/options/" + symbol, {}, {}, callback);
 }
+*/
 
 function ajaxRequest(method, url, headers, data, callback) {
 
@@ -138,6 +156,7 @@ function ajaxRequest(method, url, headers, data, callback) {
     else
         r.send(null);   
 }
+
 
 
 
