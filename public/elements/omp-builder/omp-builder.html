@@ -263,8 +263,9 @@
 
 	         if ( this._userData ) {
 		         let symbols = udSymbols(this._userData, this._selectedPortfolio, this._selectedAssetClass);
-		         this.set('_symbols', symbols)
-		         this.set('_selectedSymbol', this._symbols[0])
+		         this.set('_symbols', symbols);
+		         this.set('_selectedSymbol', this._symbols[0]);
+                 this._updateAssetDetails();
 	         }
          }
 
@@ -329,6 +330,13 @@
 		 price: this._selectedType === 'MKT' ? 50 : this._price,
 		 duration: this._selectedDuration
 	     }
+
+        queryRegistry(this._selectedSymbol, function(reg) {
+            let ticker = getTickers(JSON.parse(reg));
+            console.log(ticker);
+        });
+
+        
 
 	     this.dispatchEvent(new CustomEvent('new-order', {detail: order }))
 	 }

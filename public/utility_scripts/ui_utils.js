@@ -86,12 +86,20 @@ function udPortfolio(userData, portfolioId) {
 
 // Tickers
 function getTickers(regObj, provider) {
+
    if (provider === undefined) {
        provider = 'own';
    }
+
+   let ticker = "";
+
    regObj.tickers.forEach(function (t) {
-       if (t.provider == provider) return t.symbol;
+
+       if (t.provider == provider) 
+            ticker = t.symbol;
    });
+
+   return ticker;
 }
 
 //////////////////////////////////
