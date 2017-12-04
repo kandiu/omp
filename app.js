@@ -36,6 +36,7 @@ app.use('/demo', routes.demo);
 app.use('/dev', routes.dev);
 app.use('/login', routes.login);
 app.use('/registry', routes.registry);
+app.use('/order', routes.order);
 
 
 module.exports = app
