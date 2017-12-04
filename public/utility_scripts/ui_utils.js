@@ -3,7 +3,7 @@
 // TOP BAR
 
 // Portfolio ids
-// userData -> [String] 
+// userData -> [String]
 
 function udPortfolioIds(userData) {
 
@@ -35,8 +35,8 @@ function udAssetClasses(userData, portfolio_id) {
 
 function udBrokers(userData, portfolio_id) {
 
-    let brokersObj = userData.brokers.find(function(br){ 
-                        return  br.portfolio_id === portfolio_id; 
+    let brokersObj = userData.brokers.find(function(br){
+                        return  br.portfolio_id === portfolio_id;
                       });
 
     return brokersObj.brokers;
@@ -59,7 +59,7 @@ function udSymbols(userData, portfolioId, assetClass) {
                         (as) => as.asset_class === assetClass);
 
         let inst = [];
-        
+
         assets.forEach(function(as) {
             inst = inst.concat(as.instruments);
         });
@@ -103,12 +103,13 @@ function udPortfolio(userData, portfolioId) {
 
     if ( userData ){
 
-	    return userData.portfolios.find(function(pf) { 
-                return pf.symbol === portfolioId; 
+	    return userData.portfolios.find(function(pf) {
+                return pf.symbol === portfolioId;
 	    });
     }
     return [];
 }
+
 
 
 // Ticker
@@ -125,24 +126,6 @@ function queryRegistry(symbol, callback) {
     ajaxRequest("GET", "/registry/" + symbol, {}, {}, callback);
 }
 
-/*
-function findEquity(symbol, callback) {
-    ajaxRequest("GET", "/equities/" + symbol, {}, {}, callback);
-}
-
-function findIndex(symbol, callback) {
-    ajaxRequest("GET", "/indeces/" + symbol, {}, {}, callback);
->>>>>>> origin/integrate-newdb
-}
-
-function findFuture(symbol, callback) {
-    ajaxRequest("GET", "/futures/" + symbol, {}, {}, callback);
-}
-
-function findOption(symbol, callback) {
-    ajaxRequest("GET", "/options/" + symbol, {}, {}, callback);
-}
-*/
 
 function ajaxRequest(method, url, headers, data, callback) {
 
@@ -164,13 +147,34 @@ function ajaxRequest(method, url, headers, data, callback) {
             else
                 callback(r.responseText);
         }
-    }; 
 
     if (method === "POST" || method === "PUT")
         r.send(data);
     else
-        r.send(null);   
+        r.send(null);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
