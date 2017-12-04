@@ -88,7 +88,7 @@ function getTickers(userData, instrument_id) {
 }
 
 // Currency
-function getCurrency(instrument_id) {
+function getCurrency(userData, instrument_id) {
 
     let asset = getAsset(userData, instrument_id);
     return asset.currency;
