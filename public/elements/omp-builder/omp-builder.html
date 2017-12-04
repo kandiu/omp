@@ -244,7 +244,6 @@
 		      this.set('_portfolios', udPortfolioIds(this._userData));
 		      this.set('_selectedPortfolio', this._portfolios[0]);
                   }.bind(this))
-
          }
          _portfolioChanged(ev){
 	     if ( this._userData ) {
@@ -260,12 +259,17 @@
 		 let symbols = udSymbols(this._userData, this._selectedPortfolio, this._selectedAssetClass);
 		 let tickers = [];
 		 symbols.forEach(function(s) {
-		     
+            
+
+        
+
+/*		     
 		     axios.get(`/registry/${s}`)
 			  .then(function(d){
 			      console.log("####### ", d.data)
 			      tickers.push(getTickers(d.data));
 			  })
+*/
 		 })
 
 		 this.set('_symbols', tickers)

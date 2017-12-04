@@ -71,12 +71,14 @@ function udSymbols(userData, portfolioId, assetClass) {
 
 function getAsset(userData, symbol) {
 
-    userData.assets.forEach(function(as) {
-        as.assets.forEach(function(ast) {
-            if (ast.instrument_id === symbol)
-                return ast;
-        })
-    });
+    if (userData.assets != null) {
+        userData.assets.forEach(function(as) {
+            as.assets.forEach(function(ast) {
+                if (ast.instrument_id === symbol)
+                    return ast;
+            });
+        });
+    }
 }
 
 
@@ -148,10 +150,11 @@ function ajaxRequest(method, url, headers, data, callback) {
                 callback(r.responseText);
         }
 
-    if (method === "POST" || method === "PUT")
-        r.send(data);
-    else
-        r.send(null);
+        if (method === "POST" || method === "PUT")
+            r.send(data);
+        else
+            r.send(null);
+    }
 }
 
 
