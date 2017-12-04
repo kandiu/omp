@@ -50,7 +50,7 @@
             </div>
             <iron-pages selected="[[pageName]]" attr-for-selected="page-name" fallback-selection="order">
                 <div page-name="order" class="row">
-                    <omp-order id="order"  class="col"></omp-order>
+                    <omp-order id="order"  class="col" on-edit-order="_edit"></omp-order>
                 </div>
                 <div page-name="blotter" id="blotter" class="row">
                     <omp-blotter class="col"></omp-blotter>
@@ -84,6 +84,10 @@
 
 	 _newOrder(ev) {
 	     this.$.order.addOrder(ev.detail)
+	 }
+
+	 _edit(ev) {
+	     console.log(ev.detail)
 	 }
      }
      customElements.define(OmpApp.is, OmpApp);
