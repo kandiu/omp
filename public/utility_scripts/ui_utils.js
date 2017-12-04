@@ -93,6 +93,16 @@ function udPortfolio(userData, portfolioId) {
     return [];
 }
 
+// Ticker
+function getTickers(regObj, provider) {
+   if (provider === undefined) {
+       provider = 'own';
+   }
+   regObj.tickers.forEach(function (t) {
+       if (t.provider == provider) return t.symbol;
+   });
+}
+
 function queryRegistry(symbol, callback) {
     ajaxRequest("GET", "/registry/" + symbol, {}, {}, callback);
 }

@@ -257,8 +257,19 @@
          }
          _assetClassChanged(ev){
 	     if ( this._userData ) {
-		 this.set('_symbols', udSymbols(this._userData, this._selectedPortfolio, this._selectedAssetClass));
-		 this.set('_selectedSymbol', this._symbols[0]);
+		 let symbols = udSymbols(this._userData, this._selectedPortfolio, this._selectedAssetClass);
+		 let tickers = [];
+		 symbols.forEach(function(s) {
+		     
+		     axios.get(`/registry/${s}`)
+			  .then(function(d){
+			      console.log("####### ", d.data)
+			      tickers.push(getTickers(d.data));
+			  })
+		 })
+
+		 this.set('_symbols', tickers)
+		 this.set('_selectedSymbol', this._symbols[0])
 	     }
          }
 
@@ -273,24 +284,24 @@
 	     }
 	 }
 
-         _changeQuantity(el){
-             this.set("_quantity", this.get("_quantity") + parseInt(el.target.getAttribute("data")));
-         }
-         _isEquity(s){
-             return s === "Equity";
-         }
-         _isFuture(s){
-             return s === "Future";
-         }
-         _isOption(s){
-             return s === "Option";
-         }
-         _isFutureOrOption(s) {
-             return this._isFuture(s) || this._isOption(s)
-         }
-         _isMKT(s){
-             return s === "MKT"
-         }
+	 _changeQuantity(el){
+	     this.set("_quantity", this.get("_quantity") + parseInt(el.target.getAttribute("data")));
+	 }
+	 _isEquity(s){
+	     return s === "Equity";
+	 }
+	 _isFuture(s){
+	     return s === "Future";
+	 }
+	 _isOption(s){
+	     return s === "Option";
+	 }
+	 _isFutureOrOption(s) {
+	     return this._isFuture(s) || this._isOption(s)
+	 }
+	 _isMKT(s){
+	     return s === "MKT"
+	 }
 
 	 sendOrder(ev){
 	     console.log("Buy clicked")
