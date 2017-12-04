@@ -7,8 +7,8 @@ const equities = require('./equities/equities');
 const indeces = require('./indeces/indeces');
 const futures = require('./futures/futures');
 const options = require('./options/options');
-
 const order = require('./order/order');
+const book = require('./book/book');
 
 module.exports = {
 	'demo' : demoRouter,
@@ -18,5 +18,6 @@ module.exports = {
     'indeces' : indeces,
     'futures' : futures,
     'options' : options,
-    'order' : order
+    'order' : order,
+    'book' : book
 }
