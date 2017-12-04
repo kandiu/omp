@@ -1,4 +1,6 @@
 var net = require("net")
+var parser = require("./parser")
+
 var client = new net.Socket()
 var port = 4444
 var host = "localhost"
@@ -8,19 +10,30 @@ client.handler = function(data){
 };
 
 client.dataHandler = function(data){
+	let obj = JSON.parse(data);
+	obj = Object.assign({},obj.header.fields,obj.fields);
+	obj=parser.tagsToNames(obj)
+
+	for (x in obj){
+		obj[x]["value"]=obj[x]["object"];
+
+		delete obj[x]["object"];
+		delete obj[x]["isCalculated"]
+	}
+	
+	data = JSON.stringify(obj,null,4);
 	console.log("Received:" +data);
 };
 
 module.exports = {
 	connect: function(){
-
 		client.connect(port,host, function(){
 			client.on("data",client.handler);
 		});
 	},
 
-	sendOrder: function(order){
-		client.write(order.toString());
+	send: function(order){
+		client.write(JSON.stringify(order)+"\n");
 	},
 
 
@@ -29,20 +42,4 @@ module.exports = {
 	}
 }
 
-// Dummie module: TODO implement FIX interface
-
-/*module.exports.processOrder = function(order) {
-
-    let logText = "\n  ********************\n" +
-                    "  * PROCESSING ORDER *\n" +
-                    "  ********************\n\n";
-
-   
-    for (let field in order)
-        logText += "  " + field + " : " + order[field] + "\n";
-
-    logText += "\n";
-
-    console.log(logText);
-}*/
 
