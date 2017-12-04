@@ -16,14 +16,17 @@ function udPortfolioIds(userData) {
 
 function udAssetClasses(userData, portfolio_id) {
 
-    var classesObj = { assetclasses : []};
-    if ( userData && portfolio_id && userData.assetClasses ) {
-	classesObj = userData.assetClasses.find(function(ac){ 
-            return  ac.portfolio_id === portfolio_id; 
-        });
+    let classesObj = userData.assetclasses.find(function(ac) {
+                        return ac.portfolio_id === portfolio_id;
+                    });
 
-    }
-    return classesObj.assetclasses;
+    let classNames = [];
+
+    classesObj.classes.forEach(function(cl) {
+        classNames.push(cl.classname);
+    });
+
+    return classNames;
 }
 
 
@@ -49,8 +52,8 @@ function udBrokers(userData, portfolio_id) {
 function udSymbols(userData, portfolioId, assetClass) {
 
     let portfolio = udPortfolio(userData, portfolioId);
-    
-    if ( portfolio != undefined && portfolio.settings !== undefined) {
+
+    if (portfolio != undefined && portfolio.settings != undefined) {
 
         let assets = portfolio.settings.selected_assets.filter(
                         (as) => as.asset_class === assetClass);
@@ -66,15 +69,29 @@ function udSymbols(userData, portfolioId, assetClass) {
 }
 
 
-// Exchange
-// registry object -> String  //// get the registry object using queryRegistry(symbol, callback)
-function getExchange(regObj) {
-    return regObj.exchange_id;
+function getAsset(userData, symbol) {
+
+    userData.assets.forEach(function(as) {
+        as.assets.forEach(function(ast) {
+            if (ast.instrument_id === symbol)
+                return ast;
+        }
+    });
+}
+
+
+// Tickers
+function getTickers(userData, instrument_id) {
+
+    let asset = getAsset(userData, instrument_id);
+    return asset.tickers;
 }
 
 // Currency
-function getCurrency(regObj) {
-    return regObj.currency;
+function getCurrency(userData, instrument_id) {
+
+    let asset = getAsset(userData, instrument_id);
+    return asset.currency;
 }
 
 
@@ -85,13 +102,14 @@ function getCurrency(regObj) {
 function udPortfolio(userData, portfolioId) {
 
     if ( userData ){
-	return userData.portfolios.find(function(pf) { 
-            return pf.portfolio_id === portfolioId; 
-	});
 
+	    return userData.portfolios.find(function(pf) { 
+                return pf.symbol === portfolioId; 
+	    });
     }
     return [];
 }
+
 
 // Ticker
 function getTickers(regObj, provider) {
@@ -106,6 +124,25 @@ function getTickers(regObj, provider) {
 function queryRegistry(symbol, callback) {
     ajaxRequest("GET", "/registry/" + symbol, {}, {}, callback);
 }
+
+/*
+function findEquity(symbol, callback) {
+    ajaxRequest("GET", "/equities/" + symbol, {}, {}, callback);
+}
+
+function findIndex(symbol, callback) {
+    ajaxRequest("GET", "/indeces/" + symbol, {}, {}, callback);
+>>>>>>> origin/integrate-newdb
+}
+
+function findFuture(symbol, callback) {
+    ajaxRequest("GET", "/futures/" + symbol, {}, {}, callback);
+}
+
+function findOption(symbol, callback) {
+    ajaxRequest("GET", "/options/" + symbol, {}, {}, callback);
+}
+*/
 
 function ajaxRequest(method, url, headers, data, callback) {
 
@@ -127,13 +164,14 @@ function ajaxRequest(method, url, headers, data, callback) {
             else
                 callback(r.responseText);
         }
-    } 
+    }; 
 
     if (method === "POST" || method === "PUT")
         r.send(data);
     else
         r.send(null);   
 }
+
 
 
 

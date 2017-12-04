@@ -12,9 +12,15 @@ module.exports = {
   'Portfolio' : mongoose.model('Portfolio'),
   'Account' : mongoose.model('Account'),
   'Broker' : mongoose.model('Broker'),
+  'Exchange' : mongoose.model('Exchange'),
   'Book' : mongoose.model('Book'),
   'Blotter' : mongoose.model('Blotter'),
   'Execution' : mongoose.model('Execution'),
-  'Registry' : mongoose.model('Registry')
+  'Registry' : mongoose.model('Registry'),
+  'Future' : mongoose.model('Future'),
+  'Option' : mongoose.model('Option'),
+  'Equity' : mongoose.model('Equity'),
+  'Index' : mongoose.model('Index'),
+  'AssetClass' : mongoose.model('AssetClass'),
 }
 

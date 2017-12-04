@@ -16,15 +16,15 @@ var sampleOrder;
 function initializeSampleOrder() {
 
     sampleOrder = {
+                    "user_id" : "uid",
                   	"side" : "Buy",
-	                "symbol" : "test",
+	                "ticker" : "test",
 	                "quantity" : "test",
 	                "type" : "MKT",
 	                "duration" : "test",
 	                "account" : "test",
                  	"broker" : "test",
 	                "portfolio_id" : "24",
-                    "price" : "23"
                    };
 }
 

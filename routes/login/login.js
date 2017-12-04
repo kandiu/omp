@@ -5,6 +5,11 @@ const models = require('../../models');
 const User = models.User;
 const Portfolio = models.Portfolio;
 const Account = models.Account;
+const AssetClass = models.AssetClass;
+const Equity = models.Equity;
+const Index = models.Index;
+const Future = models.Future;
+const Option = models.Option;
 
 router.get('/', function(req, res){
 	res.status(200).json({});
@@ -12,17 +17,6 @@ router.get('/', function(req, res){
 
 // GET /:_username
 
-/*
-
-returns a json object containing the following fields:
-
-- user : User instance as stored in the db
-- portfolios : array of Portfolio instances related to the user ## for populating the portfolios drop-down ##
-- assetClasses : array of mappings { portfolio_id : array of asset_class } ## for populating the asset class drop-down ##
-- accounts : array of mappings { portfolio_id : array of accounts } 
-- brokers : array of mappings { portfolio_id : array of brokers } ## for populating the broker class drop-down ##
-
-*/
 
 router.get('/:_username', function(req, res) {
 
@@ -49,46 +43,51 @@ function sendUserData(userObject, res) {
 
     function addPortfolios() {
 
-        Portfolio.find({ "portfolio_id" : { $in : userObject.portfolios } }, 
+        Portfolio.find({ "symbol" : { $in : userObject.portfolios } }, 
             
             function(err, found) {
                 
                 if (err) throw err;
 
                 userData.portfolios = found;
-                addAssetClasses();
+
+                addAssetClasses(0);
         });
 
     }
 
-    function addAssetClasses() {
+    function addAssetClasses(portfolioIndex) {
 
-        let mappings = [];        
+        if (portfolioIndex == userData.portfolios.length) {
+            addAccounts(0);
+        }
 
-        userData.portfolios.forEach(function(pf) {
+        if (userData.assetclasses == undefined) 
+            userData.assetclasses = [];
 
-            let mapping = {portfolio_id : pf.portfolio_id, assetclasses : []};
-            let classes = [];
+        let pf = userData.portfolios[portfolioIndex];
 
-            if (pf.settings != undefined && pf.settings.selected_assets.length > 0) {
+        if (pf != undefined && pf.settings != undefined) {
 
-                pf.settings.selected_assets.forEach(function(sa) {
-                    mapping.assetclasses.push(sa.asset_class);
-                });
-            }
+            let mapping = { portfolio_id : pf.symbol, classes : [] };
+            let classNames = [];
 
-            else {
-                mapping.assetclasses = ['Equity', 'Future', 'Option'];
-            }
+            pf.settings.selected_assets.forEach(function(sa) { 
+                classNames.push(sa.asset_class);
+            });
 
-            mappings.push(mapping);
-        });
+            AssetClass.find({ "classname" : { $in : classNames } },
 
-        userData.assetClasses = mappings;
+                function (err, found) {
 
-        addAccounts(0);
+                    if (err) throw err;
+
+                    mapping.classes = found;
+                    userData.assetclasses.push(mapping);
+                    addAssetClasses(++portfolioIndex);
+            });
+        }
     }
-
 
     function addAccounts(portfolioIndex) {
 
@@ -96,14 +95,14 @@ function sendUserData(userObject, res) {
             addBrokers();
         }
 
-        if (userData.accounts == undefined)
+        if (userData.accounts == undefined) 
             userData.accounts = [];
 
         let pf = userData.portfolios[portfolioIndex];
 
         if (pf != undefined) {        
 
-            let mapping = {portfolio_id : pf.portfolio_id, accounts : []};
+            let mapping = {portfolio_id : pf.symbol, accounts : []};
 
             Account.find({ "account_id" : { $in : pf.accounts } }, 
                 
@@ -111,7 +110,6 @@ function sendUserData(userObject, res) {
                     
                 if (err) throw err;
 
-                mapping.pfId = pf.portfolio_id;
                 mapping.accounts = found;
 
                 userData.accounts.push(mapping);
@@ -130,7 +128,7 @@ function sendUserData(userObject, res) {
             let mapping = { portfolio_id : acc.portfolio_id, brokers : [] }; 
 
             acc.accounts.forEach(function(ac) {
-                mapping.brokers.push(ac.broker_id);
+                mapping.brokers.push(ac.broker_symbol);
             });
 
             mappings.push(mapping);
@@ -138,13 +136,105 @@ function sendUserData(userObject, res) {
 
         userData.brokers = mappings;
 
-        finish();
+        addAssets(0, 0);
     }
 
+    function addAssets(portfolioIdx, assetListIdx) {
 
+        if (portfolioIdx == userData.portfolios.length) {
+            finish();
+        }
+
+        if (userData.assets == undefined) 
+            userData.assets = [];
+
+        let pf = userData.portfolios[portfolioIdx];
+
+        if (pf != undefined &&
+            pf.settings != undefined &&
+            pf.settings.selected_assets != undefined ) {
+
+            if (assetListIdx == pf.settings.selected_assets.length) {
+                addAssets(++portfolioIdx, 0);
+            }
+            else {
+
+                let mapping = { portfolio_id : pf.symbol, 
+                                asset_selection : assetListIdx,
+                                asset_class : pf.settings.selected_assets[assetListIdx].asset_class,
+                                assets : [] }
+
+                let assetNames = [];
+
+                if (pf.settings.selected_assets[assetListIdx].instruments.length > 0)
+                    assetNames = pf.settings.selected_assets[assetListIdx].instruments;
+                
+                if (pf.settings.selected_assets[assetListIdx].underlyings.length > 0)
+                    assetNames = pf.settings.selected_assets[assetListIdx].underlyings;
+
+
+                if (mapping.asset_class === 'Equity') {
+
+                    console.log("looking for equities");
+
+                    Equity.find({ "instrument_id" : { $in : assetNames} },
+
+                        function(err, found) {
+
+                            if (err) throw err;
+
+                            mapping.assets = found;
+                            userData.assets.push(mapping);
+                            addAssets(portfolioIdx, ++assetListIdx);
+                        });
+                }
+
+                if (mapping.asset_class === 'Index') {
+
+                    Index.find({ "instrument_id" : { $in : assetNames} },
+
+                        function(err, found) {
+
+                            if (err) throw err;
+
+                            mapping.assets = found;
+                            userData.assets.push(mapping);
+                            addAssets(portfolioIdx, ++assetListIdx);
+                        });
+                }
+
+                if (mapping.asset_class === 'Future') {
+
+                    Future.find({ "instrument_id" : { $in : assetNames} },
+
+                        function(err, found) {
+
+                            if (err) throw err;
+
+                            mapping.assets = found;
+                            userData.assets.push(mapping);
+                            addAssets(portfolioIdx, ++assetListIdx);
+                        });
+                }
+
+                if (mapping.asset_class === 'Option') {
+
+                    Option.find({ "instrument_id" : { $in : assetNames} },
+
+                        function(err, found) {
+
+                            if (err) throw err;
+
+                            mapping.assets = found;
+                            userData.assets.push(mapping);
+                            addAssets(portfolioIdx, ++assetListIdx);
+                        });
+                }             
+            }
+        }
+    }
 
     function finish() {
-        res.set("Content-Type", "application/json");
         res.status(200).json(userData);
     }
 }
