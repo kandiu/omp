@@ -33,13 +33,15 @@ module.exports = {
 	},
 
 	send: function(order){
+		if (!this.connected) return;
 		client.write(JSON.stringify(order)+"\n");
 	},
 
 
 	setHandler: function(f){
 		client.dataHandler=f;
-	}
+	},
+	connected : false
 }
 
 
