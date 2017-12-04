@@ -3,7 +3,8 @@ var debug = require('debug')('omp-server');
 var app = require('../app');
 var fixclient = require("../fix/orderProcessing.js")
 
-fixclient.connect()
+var runclient = false
+if (runclient) fixclient.connect()
 
 app.set('port', process.env.PORT || 3000);
 
