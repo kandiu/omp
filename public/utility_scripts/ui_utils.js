@@ -43,8 +43,6 @@ function udBrokers(userData, portfolio_id) {
 }
 
 
-//////////////////////////////////
-// BUILDER FRAME
 
 // Symbols
 // userData, portfolio_id, assetClass -> [String]
@@ -61,45 +59,17 @@ function udSymbols(userData, portfolioId, assetClass) {
         let inst = [];
 
         assets.forEach(function(as) {
-            inst = inst.concat(as.instruments);
+
+            if (as.instruments.length > 0)
+                inst = inst.concat(as.instruments);
+            if (as.underlyings.length > 0)
+                inst = inst.concat(as.underlyings);
         });
 
         return inst;
     }
 }
 
-
-function getAsset(userData, symbol) {
-
-    if (userData.assets != null) {
-        userData.assets.forEach(function(as) {
-            as.assets.forEach(function(ast) {
-                if (ast.instrument_id === symbol)
-                    return ast;
-            });
-        });
-    }
-}
-
-
-// Tickers
-function getTickers(userData, instrument_id) {
-
-    let asset = getAsset(userData, instrument_id);
-    return asset.tickers;
-}
-
-// Currency
-function getCurrency(userData, instrument_id) {
-
-    let asset = getAsset(userData, instrument_id);
-    return asset.currency;
-}
-
-
-
-//////////////////////////////////
-// GENERAL
 
 function udPortfolio(userData, portfolioId) {
 
@@ -114,7 +84,7 @@ function udPortfolio(userData, portfolioId) {
 
 
 
-// Ticker
+// Tickers
 function getTickers(regObj, provider) {
    if (provider === undefined) {
        provider = 'own';
@@ -122,6 +92,13 @@ function getTickers(regObj, provider) {
    regObj.tickers.forEach(function (t) {
        if (t.provider == provider) return t.symbol;
    });
+}
+
+//////////////////////////////////
+// AJAX
+
+function login(uname, callback) {
+    ajaxRequest("GET", "/login/" + uname, {}, {}, callback);
 }
 
 function queryRegistry(symbol, callback) {
@@ -149,12 +126,12 @@ function ajaxRequest(method, url, headers, data, callback) {
             else
                 callback(r.responseText);
         }
-
-        if (method === "POST" || method === "PUT")
-            r.send(data);
-        else
-            r.send(null);
     }
+
+    if (method === "POST" || method === "PUT")
+        r.send(data);
+    else
+        r.send(null);
 }
 
 

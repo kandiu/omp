@@ -173,7 +173,7 @@
                  },
 
 		 _selectedSymbol: {
-		     type: Array,
+		     type: String,
 		     observer: '_symbolChanged'
 		 },
                  _selectedUser: {
@@ -238,55 +238,67 @@
          }
 
          _userChanged(ev) {
-	     axios.get(`/login/${this._selectedUser}`)
-                  .then( function(res){
-                      this.set('_userData', res.data);
-		      this.set('_portfolios', udPortfolioIds(this._userData));
-		      this.set('_selectedPortfolio', this._portfolios[0]);
-                  }.bind(this))
+
+            login(this._selectedUser, function(data) {
+
+                let ud = JSON.parse(data)
+                this.set('_userData', ud);                   
+                this._initializeFields();
+
+            }.bind(this));
          }
+
          _portfolioChanged(ev){
-	     if ( this._userData ) {
-		 this.set('_assetClasses', udAssetClasses(this._userData, this._selectedPortfolio));
-		 this.set('_selectedAssetClass', this._assetClasses[0]);
-		 this.set('_brokers', udBrokers(this._userData, this._selectedPortfolio));
-		 this.set('_selectedBroker', this._brokers[0]);
-	     }
 
+            if (this._userData) {
+		         this.set('_assetClasses', udAssetClasses(this._userData, this._selectedPortfolio));
+		         this.set('_selectedAssetClass', this._assetClasses[0]);
+		         this.set('_brokers', udBrokers(this._userData, this._selectedPortfolio));
+		         this.set('_selectedBroker', this._brokers[0]);
+                 this._updateAssetDetails();
+            }
          }
+
          _assetClassChanged(ev){
-	     if ( this._userData ) {
-		 let symbols = udSymbols(this._userData, this._selectedPortfolio, this._selectedAssetClass);
-		 let tickers = [];
-		 symbols.forEach(function(s) {
-            
 
-        
-
-/*		     
-		     axios.get(`/registry/${s}`)
-			  .then(function(d){
-			      console.log("####### ", d.data)
-			      tickers.push(getTickers(d.data));
-			  })
-*/
-		 })
-
-		 this.set('_symbols', tickers)
-		 this.set('_selectedSymbol', this._symbols[0])
-	     }
+	         if ( this._userData ) {
+		         let symbols = udSymbols(this._userData, this._selectedPortfolio, this._selectedAssetClass);
+		         this.set('_symbols', symbols)
+		         this.set('_selectedSymbol', this._symbols[0])
+	         }
          }
 
 	 _symbolChanged(ev) {
-	     if ( this._userData ){
-		 axios.get(`/registry/${this._selectedSymbol}`)
-		      .then(function(reg){
-			  console.log(reg)
-			  this.set('_currency', getCurrency(reg.data));
-			  this.set('_exchange', getExchange(reg.data));
-		      }.bind(this));
-	     }
-	 }
+
+        queryRegistry(this._selectedSymbol, function(reg) {
+              let selectedAsset = JSON.parse(reg);
+              this.set('_exchange', selectedAsset.exchange_id);
+              this.set('_currency', selectedAsset.currency); 
+        }.bind(this)); 
+	 } 
+
+    _initializeFields() {
+
+        this.set('_portfolios', udPortfolioIds(this._userData));
+        this.set('_selectedPortfolio', this._portfolios[0]);
+        this.set('_assetClasses', udAssetClasses(this._userData, this._selectedPortfolio));
+        this.set('_selectedAssetClass', this._assetClasses[0]);
+        this.set('_brokers', udBrokers(this._userData, this._selectedPortfolio));
+        this.set('_selectedBroker', this._brokers[0]);
+        this._updateAssetDetails();
+    }
+
+    _updateAssetDetails() {
+
+        this.set('_symbols', udSymbols(this._userData, this._selectedPortfolio, this._selectedAssetClass));
+        this.set('_selectedSymbol', this._symbols[0]);
+
+        queryRegistry(this._selectedSymbol, function(reg) {
+              let selectedAsset = JSON.parse(reg);
+              this.set('_exchange', selectedAsset.exchange_id);
+              this.set('_currency', selectedAsset.currency); 
+        }.bind(this)); 
+    }
 
 	 _changeQuantity(el){
 	     this.set("_quantity", this.get("_quantity") + parseInt(el.target.getAttribute("data")));
@@ -308,7 +320,7 @@
 	 }
 
 	 sendOrder(ev){
-	     console.log("Buy clicked")
+
 	     let order = {
 		 side : ev.target.getAttribute('data'),
 		 symbol: this._selectedSymbol,
@@ -322,5 +334,6 @@
 	 }
      }
      customElements.define(OmpBuilder.is, OmpBuilder);
+
     </script>
 </dom-module>
