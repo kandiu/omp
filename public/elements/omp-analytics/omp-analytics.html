@@ -30,23 +30,6 @@
 
         </vaadin-line-chart>
 
-
-        <!--<iron-ajax id="bookFetcher"-->
-                   <!--url="/book"-->
-                   <!--handle-as="json">-->
-                   <!--last-response="{{temperatureData}}"-->
-                   <!--debounce-duration="300">-->
-        <!--</iron-ajax>-->
-
-
-
-
-        <!--<iron-ajax id="humidityFetcher"-->
-                   <!--url="data/humidity"-->
-                   <!--handle-as="json"-->
-                   <!--last-response="{{humidityData}}"-->
-                   <!--debounce-duration="300"></iron-ajax>-->
-
     </template>
 
 
@@ -56,8 +39,6 @@
         constructor() {
             super();
         }
-
-
         static get is() {
             return 'omp-analytics';
         }
@@ -68,21 +49,95 @@
                     type: String,
                     value: "omp-analytics"
                 },
-                temperatureData: Object,
-                humidityData: Object,
+                openPositions: {
+                    type: Array,
+                    value: []
+                },
+                openPrice: {
+                    type: Array,
+                    value: []
+                },
             }
         }
 
         connectedCallback() {
             super.connectedCallback();
-            console.log(this);
-            this.$.bookFetcher.generateRequest();
+            //console.log(this);
+            axios.get(`/book/openpositions`)
+                .then(function(d){
+                    //console.log("####### ", d.data);
+                    this.openPositions = d.data;
+                    //console.log("Open Positions", this.openPositions);
 
-//            this.$.humidityFetcher.generateRequest();
+                    for (let k =0; k< this.openPositions.length; k++){
+                        //console.log("Value of openPositions[k]: ", this.openPositions[k]);
+                        if(this.openPositions[k].total >0){
+                            axios.get("/book/openpricepos/"+this.openPositions[k]._id)
+                                .then(function(d){
+                                    //console.log("####### ", d.data);
+                                    this.openPrice.push(d.data);
+                                    //console.log("Open Price", this.openPrice);
+                                }.bind(this));
+                        } else {
+                            axios.get("/book/openpriceneg/"+this.openPositions[k]._id)
+                                .then(function(d){
+                                    //console.log("####### ", d.data);
+                                    this.openPrice.push(d.data);
+                                }.bind(this));
+                        }
+
+                        //todo, problem in the callback
+                        //this.openPositions[k].openprice = this._calOpenPrice(this.openPrice[k], this.openPositions[k].total);
+                        console.log("Value of k: ", k);
+                        console.log("this.openPrice is array?", Array.isArray(this.openPrice));
+                        console.log("this.openPrice content: ", this.openPrice);
+                        console.log("length of this.openPrice", this.openPrice.length);
+                        console.log("value of openPrice[k] to be passed  to _calOpenPrice as p", this.openPrice[k]);
+                        console.log("Value of this.openPosition[k].total to be passed to _calOpenPrice as oq: ", this.openPositions[k].total);
+                        //console.log("Value of this.open.position[k]: ",this.openPositions[k]);
+                    }
+
+                }.bind(this));
+
+//            console.log("Value of openPostions: ", this.openPositions);
+//            console.log("Value of openPrice: ", this.openPrice );
+
+        }
+
+        _sgn(x){
+            if (x == 0){
+                return 0;
+            } else if(x>0){
+                return 1;
+            } else {
+                return -1;
+            }
         }
 
 
+        _calOpenPrice(p, oq){
+            var rq = 0;
+            var op = 0;
+            var i = p.length;
+            while ((Math.abs(rq)<= Math.abs(oq)) && (this._sgn(rq) == this._sgn(oq))){
+
+                for(i = p.length -1; i>=0; i--) {
+                    rq = rq + p.quantity;
+                    op = op + p.Quantity * p.Price;
+                }
+            }
+            i++;
+            op = op - p.price * (rq-oq);
+            op = op/oq;
+
+
+            return op;
+
+
+        }
+
     }
+
     customElements.define(OmpAnalytics.is, OmpAnalytics);
 
 
