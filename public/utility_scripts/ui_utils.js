@@ -42,6 +42,19 @@ function udBrokers(userData, portfolio_id) {
     return brokersObj.brokers;
 }
 
+// Account
+// userData, portfolio_id, brokerSymbol -> Object
+
+function udAccount(userData, portfolio_id, brokerSymbol) {
+
+    if (userData != undefined) {
+        let accountsObj = userData.accounts.find(function(ac){
+                            return  ac.portfolio_id === portfolio_id;
+                          });
+
+        return accountsObj.accounts.find(function(ac) { return ac.broker_symbol === brokerSymbol; });
+    }
+}
 
 
 // Symbols

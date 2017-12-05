@@ -213,7 +213,7 @@
 
 		 _selectedBroker: {
 		     type: String,
-		     /* observer: '_brokerChanged'*/
+		     observer: '_brokerChanged'
 		 },
 
 		 _exchange: {
@@ -228,7 +228,12 @@
 		 _price:{
 		     type: Number,
 		     value: 50
-		 }
+		 },
+
+        _selectedAccount: {
+            type: Object
+        }
+
              }
          }
          connectedCallback() {
@@ -268,6 +273,11 @@
                  this._updateAssetDetails();
 	         }
          }
+
+        _brokerChanged(ev) {
+            this._selectedAccount = udAccount(this._userData, this._selectedPortfolio, this._selectedBroker);
+            console.log(this._selectedAccount);
+        }
 
 	 _symbolChanged(ev) {
 
