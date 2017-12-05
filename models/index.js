@@ -15,6 +15,12 @@ module.exports = {
   'Book' : mongoose.model('Book'),
   'Blotter' : mongoose.model('Blotter'),
   'Execution' : mongoose.model('Execution'),
-  'Registry' : mongoose.model('Registry')
+  'Registry' : mongoose.model('Registry'),
+  'Registry1' : mongoose.model('Registry1'),
+  //'Registry2' : mongoose.model('Registry2'),
+  'Future' : mongoose.model('Future'),
+  'Equity' : mongoose.model('Equity'),
+  'Index' : mongoose.model('Index'),
+  'AssetClass' : mongoose.model('AssetClass'),
 }
 
