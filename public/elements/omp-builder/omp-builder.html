@@ -247,7 +247,7 @@
 
          }
          _portfolioChanged(ev){
-	     if ( this._userData ) {
+	     if (this._userData) {
 		 this.set('_assetClasses', udAssetClasses(this._userData, this._selectedPortfolio));
 		 this.set('_selectedAssetClass', this._assetClasses[0]);
 		 this.set('_brokers', udBrokers(this._userData, this._selectedPortfolio));

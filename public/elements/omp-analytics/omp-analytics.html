@@ -31,11 +31,12 @@
         </vaadin-line-chart>
 
 
-        <iron-ajax id="temperatureFetcher"
-                   url="data/temperature"
-                   handle-as="json"
-                   last-response="{{temperatureData}}"
-                   debounce-duration="300"></iron-ajax>
+        <!--<iron-ajax id="bookFetcher"-->
+                   <!--url="/book"-->
+                   <!--handle-as="json">-->
+                   <!--last-response="{{temperatureData}}"-->
+                   <!--debounce-duration="300">-->
+        <!--</iron-ajax>-->
 
 
 
@@ -69,14 +70,14 @@
                 },
                 temperatureData: Object,
                 humidityData: Object,
-
             }
         }
 
         connectedCallback() {
             super.connectedCallback();
             console.log(this);
-//            this.$.temperatureFetcher.generateRequest();
+            this.$.bookFetcher.generateRequest();
+
 //            this.$.humidityFetcher.generateRequest();
         }
 
