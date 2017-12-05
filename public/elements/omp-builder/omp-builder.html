@@ -48,14 +48,14 @@
                 <template is="dom-if" if="{{ _isEquity(_selectedAssetClass)}}">
                     <div class="row">
                         <div class="col">
-                            <vaadin-combo-box id="symbol" label="Symbol" items="{{_symbols}}" value="{{_selectedSymbol}}" on-value-changed="_symbolChanged"></vaadin-combo-box>
+                            <vaadin-combo-box id="symbol" label="Symbol" items="{{_tickers.tickers}}" value="{{_selectedSymbol}}" on-value-changed="_symbolChanged"></vaadin-combo-box>
                         </div>
                     </div>
                 </template>
                 <template is="dom-if" if="{{ _isFutureOrOption(_selectedAssetClass)}}">
                     <div class="row">
                         <div class="col">
-                            <vaadin-combo-box id="underlying" label="Underlying" items="{{_symbols}}" value="{{_selectedSymbol}}" on-value-change="_symbolChanged"></vaadin-combo-box>
+                            <vaadin-combo-box id="underlying" label="Underlying" items="{{_tickers.tickers}}" value="{{_selectedSymbol}}" on-value-change="_symbolChanged"></vaadin-combo-box>
                         </div>
                     </div>
                     <div class="row">
@@ -232,8 +232,15 @@
 
         _selectedAccount: {
             type: Object
-        }
+        },
 
+        _tickers: {
+            type: Object
+        },
+
+        _selectedTicker: {
+            type : String
+        }
              }
          }
          connectedCallback() {
@@ -247,7 +254,7 @@
             login(this._selectedUser, function(data) {
 
                 let ud = JSON.parse(data)
-                this.set('_userData', ud);                   
+                this.set('_userData', ud);
                 this._initializeFields();
 
             }.bind(this));
@@ -283,9 +290,9 @@
         queryRegistry(this._selectedSymbol, function(reg) {
               let selectedAsset = JSON.parse(reg);
               this.set('_exchange', selectedAsset.exchange_id);
-              this.set('_currency', selectedAsset.currency); 
-        }.bind(this)); 
-	 } 
+              this.set('_currency', selectedAsset.currency);
+        }.bind(this));
+	 }
 
     _initializeFields() {
 
@@ -306,8 +313,38 @@
         queryRegistry(this._selectedSymbol, function(reg) {
               let selectedAsset = JSON.parse(reg);
               this.set('_exchange', selectedAsset.exchange_id);
-              this.set('_currency', selectedAsset.currency); 
-        }.bind(this)); 
+              this.set('_currency', selectedAsset.currency);
+
+        }.bind(this));
+
+        let areUnderlyings = false;
+
+        let assets = udPortfolio(this._userData, this._selectedPortfolio).settings.selected_assets;
+        console.log(assets)
+        let asClass = assets.find(function(as) {
+            return as.asset_class === this._selectedAssetClass;
+        }.bind(this));
+
+        if (asClass && asClass.underlyings.length > 0) {
+            console.log("$$$$$$$$$$$$$")
+            areUnderlyings = true;
+        }
+
+        this._tickers = {tickers : [], underlyings : areUnderlyings}
+
+        let addTicker = function(reg) {
+                let tkr = getTickers(JSON.parse(reg));
+                console.log("pushing " + tkr);
+                this._tickers.tickers.push(tkr);
+        }.bind(this);
+
+        let cb = addTicker.bind(this);
+
+        this._symbols.forEach(function(s) {
+            queryRegistry(s, addTicker);
+        });
+//         this.set('_symbols', this._tickers)
+        console.log(this._tickers);
     }
 
 	 _changeQuantity(el){
@@ -346,7 +383,7 @@
             console.log(ticker);
         });
 
-        
+
 
 	     this.dispatchEvent(new CustomEvent('new-order', {detail: order }))
 	 }

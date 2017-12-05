@@ -106,13 +106,22 @@ function getTickers(regObj, provider) {
 
    let ticker = "";
 
-   regObj.tickers.forEach(function (t) {
+   if (regObj.tickers != null) {
+       regObj.tickers.forEach(function (t) {
 
-       if (t.provider == provider) 
-            ticker = t.symbol;
-   });
+           if (t.provider == provider)
+                ticker = t.symbol;
+       });
+   }
 
    return ticker;
+}
+
+function instToTicker(inst) {
+
+    queryRegistry(inst, function(reg) {
+        return getTickers(JSON.parse(reg));
+    });
 }
 
 //////////////////////////////////
@@ -154,31 +163,3 @@ function ajaxRequest(method, url, headers, data, callback) {
     else
         r.send(null);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
