@@ -16,15 +16,20 @@ function udPortfolioIds(userData) {
 
 function udAssetClasses(userData, portfolio_id) {
 
-    let classesObj = userData.assetclasses.find(function(ac) {
-                        return ac.portfolio_id === portfolio_id;
-                    });
-
     let classNames = [];
 
-    classesObj.classes.forEach(function(cl) {
-        classNames.push(cl.classname);
-    });
+    if ( userData && userData.assetclasses ) {
+	let classesObj = userData.assetclasses.find(function(ac) {
+            return ac.portfolio_id === portfolio_id;
+        });
+
+	let classNames = [];
+
+	classesObj.classes.forEach(function(cl) {
+            classNames.push(cl.classname);
+	});
+    }
+    
 
     return classNames;
 }
