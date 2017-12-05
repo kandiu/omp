@@ -276,7 +276,6 @@
 
         _brokerChanged(ev) {
             this._selectedAccount = udAccount(this._userData, this._selectedPortfolio, this._selectedBroker);
-            console.log(this._selectedAccount);
         }
 
 	 _symbolChanged(ev) {
@@ -333,6 +332,7 @@
 	 sendOrder(ev){
 
 	     let order = {
+         account : this._selectedAccount.account_id,
 		 side : ev.target.getAttribute('data'),
 		 symbol: this._selectedSymbol,
 		 quantity: this._quantity,
