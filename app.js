@@ -40,6 +40,7 @@ app.use('/indeces', routes.indeces);
 app.use('/futures', routes.futures);
 app.use('/options', routes.options);
 app.use('/order', routes.order);
+app.use('/book', routes.book);
 
 
 module.exports = app
