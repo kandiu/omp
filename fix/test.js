@@ -12,8 +12,6 @@ order = {
      symbol: "EBAY",
      ordType: "1",
      text: "text"
-
 }
-       
-fixclient.send(order);
 
+fixclient.send(order);
