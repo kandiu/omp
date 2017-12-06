@@ -51,6 +51,7 @@ public/bower_components/
 *.log
 *.sql
 *.sqlite
+fix/quickfix_initiator/bin/logs/
 
 # OS generated files #
 ######################

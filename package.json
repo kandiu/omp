@@ -7,7 +7,7 @@
     "start": "DEBUG='*' nodemon ./bin/www",
     "test": "npm run test-mocha",
     "test-mocha": "./node_modules/mocha/bin/mocha --exit -R list ./test/*",
-    "startfix" : "./fix/:startfix.sh"
+    "startfix" : "./fix/startfix.sh"
   },
   "keywords": [
     "Node.js",
