@@ -4,7 +4,6 @@ var parser = require("./parser")
 var client = new net.Socket()
 var port = 4444
 var host = "localhost"
-const eventBus = require('../pubsub')
 
 
 client.handler = function(data){
@@ -39,9 +38,9 @@ module.exports = {
 		});
 	},
 
-	send: function(order){
-		
+	send: function(order){		
 		if (!this.connected) throw "not conntected, please connect";
+
 		client.write(JSON.stringify(order)+"\n");
 	},
 

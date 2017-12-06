@@ -24,8 +24,8 @@ function startServer(httpServer) {
         io.emit('order_sent', order);
     });
 
-    eventBus.on('order_accepted', function(order){
-        io.emit('order_accepted', order);
+    eventBus.on('order_report', function(order){
+        io.emit('order_report', order);
     });
 
     eventBus.on('order_executed', function(order){

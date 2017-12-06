@@ -1,6 +1,0 @@
-!_TAG_FILE_SORTED	2	/0=unsorted, 1=sorted, 2=foldcase/
-client.dataHandler	/Users/marcel/Documents/wa_proj/omp/fix/orderProcessing.js	/^client.dataHandler = function(data){$/;"	f	language:JavaScript
-module.exports.connect	/Users/marcel/Documents/wa_proj/omp/fix/orderProcessing.js	/^	connect: function(){$/;"	m	language:JavaScript
-module.exports.connected	/Users/marcel/Documents/wa_proj/omp/fix/orderProcessing.js	/^	connected : false$/;"	p	language:JavaScript
-module.exports.send	/Users/marcel/Documents/wa_proj/omp/fix/orderProcessing.js	/^	send: function(order){$/;"	m	language:JavaScript
-module.exports.setHandler	/Users/marcel/Documents/wa_proj/omp/fix/orderProcessing.js	/^	setHandler: function(f){$/;"	m	language:JavaScript

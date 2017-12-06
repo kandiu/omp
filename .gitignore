@@ -83,6 +83,7 @@ Thumbs.db
 /devops.env
 
 
+quickfix_initiator/logs/*
 
 *FIX.4.2-*.*
 *FIXIMULATOR-OMPInitiator.body

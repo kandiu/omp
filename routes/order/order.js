@@ -6,12 +6,22 @@ const eventBus = require('../../pubsub')
 
 router.post('/', function(req, res) {
 
-    let order = req.body;
+//    let order = req.body;
 
-    eventBus.emit('order_sent', order);
+    let order = {
+    	 type: "Dummie SingleOrder",
+         account: "Acount123",
+         side: "1",
+         clOrdID: "asf1235axaf",
+         symbol: "EBAY",
+         ordType: "1",
+         text: "text"
+    }
+
+    eventBus.emit('order_report', order);
 
 
-fixclient.send(order);
+//    fixclient.send(order);
 
     res.status(204).end();
 });
