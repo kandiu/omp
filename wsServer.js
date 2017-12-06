@@ -23,6 +23,14 @@ function startServer(httpServer) {
     eventBus.on('order_sent', function(order){
         io.emit('order_sent', order);
     });
+
+    eventBus.on('order_accepted', function(order){
+        io.emit('order_accepted', order);
+    });
+
+    eventBus.on('order_executed', function(order){
+        io.emit('order_executed', order);
+    });
 }
 
 module.exports = {'startServer' : startServer};

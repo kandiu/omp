@@ -6,12 +6,7 @@ const eventBus = require('../../pubsub')
 const op = require('../../fix/orderProcessing');
 
 
-// GET /
 
-router.get('/', function(req, res) {
-
-    res.end("usage: method POST, payload JSON order object");
-});
 
 
 router.post('/', function(req, res) {
