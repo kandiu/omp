@@ -126,12 +126,26 @@ var portfolios = {
       "symbol" : 'stks-2',
       "accounts" : ['ms3','jpm2'],
       "currency" : "USD",
+      "settings" :
+      {
+        "selected_assets" : [{
+          "asset_class" : "Equity",
+          "instruments" : ['stkc1','stkc2','stkc3']
+        }]
+      }
     },
 
     {
       "symbol" : 'stks-3',
       "accounts" : ['ms3','jpm2'],
       "currency" : "USD",
+      "settings" :
+      {
+        "selected_assets" : [{
+          "asset_class" : "Equity",
+          "instruments" : ['stkc1','stkc4']
+        }]
+      }
     },
 
     {

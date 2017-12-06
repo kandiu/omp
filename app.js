@@ -29,16 +29,13 @@ function(req, res){
 }
 ));
 
-// Initialize routers 
+// Initialize routers
 
 const routes = require('./routes');
 app.use('/demo', routes.demo);
 app.use('/dev', routes.dev);
 app.use('/login', routes.login);
-app.use('/equities', routes.equities);
-app.use('/indeces', routes.indeces);
-app.use('/futures', routes.futures);
-app.use('/options', routes.options);
+app.use('/registry', routes.registry);
 app.use('/order', routes.order);
 app.use('/book', routes.book);
 

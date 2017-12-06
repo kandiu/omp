@@ -44,6 +44,7 @@
     "vaadin-button": "vaadin/vaadin-button#^1.0.4",
     "vaadin-radio-button": "vaadin/vaadin-radio-button#^1.0.0-alpha8",
     "vaadin-checkbox": "vaadin/vaadin-checkbox#^1.0.3",
+    "vaadin-split-layout": "vaadin/vaadin-split-layout#^*",
     "vaadin-grid": "vaadin/vaadin-grid#^4.0.0",
     "iron-ajax": "PolymerElements/iron-ajax#^2.0.6",
     "axios": "^0.17.1",

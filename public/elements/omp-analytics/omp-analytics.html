@@ -1,9 +1,6 @@
 
 <link rel="import" href="../../../bower_components/vaadin-charts/vaadin-line-chart.html">
 <link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
-
-
-
 <dom-module id="omp-analytics">
     <template>
         <vaadin-line-chart>
@@ -14,22 +11,16 @@
             <y-axis>
                 <chart-title>Price</chart-title>
             </y-axis>
-
             <!--<y-axis id="humidity">-->
-                <!--<chart-title>Humidity (%)</chart-title>-->
-                <!--<min>0</min>-->
-                <!--<opposite>true</opposite>-->
+            <!--<chart-title>Humidity (%)</chart-title>-->
+            <!--<min>0</min>-->
+            <!--<opposite>true</opposite>-->
             <!--</y-axis>-->
-
-
             <!--<data-series name="Humidity" type="column" data="[[humidityData]]"  y-axis = "humidity">-->
             <!--</data-series>-->
-
             <data-series name="Temperature" data="[[temperatureData]]">
             </data-series>
-
         </vaadin-line-chart>
-
     </template>
 
 

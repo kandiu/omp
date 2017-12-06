@@ -34,8 +34,8 @@
                 <!-- If necessary, the footer could be set using <template class="footer"> -->
             </vaadin-grid-column>
             <vaadin-grid-column>
-                <template class="header">Symbol</template>
-                <template>[[item.symbol]]</template>
+                <template class="header">ticker</template>
+                <template>[[item.ticker]]</template>
             </vaadin-grid-column>
             <vaadin-grid-column>
                 <template class="header">Quantity</template>
@@ -58,6 +58,7 @@
 		    <div style="display: flex">
 			<button on-click="_remove">Remove</button>
 			<button on-click="_edit">Edit</button>
+			<button on-click="_send">Send</button>
 		    </div>
 		</template>
             </vaadin-grid-column>
@@ -86,6 +87,10 @@
 	 _edit(ev){
 	     let toEdit = Object.assign({ index : ev.model.index }, ev.model.item );
 	     this.dispatchEvent(new CustomEvent('edit-order', {detail : toEdit  }))
+	 }
+
+	 _send(ev) {
+
 	 }
      }
      customElements.define(OmpOrder.is, OmpOrder);

@@ -178,7 +178,7 @@ const tickers = new Schema ({
 const RegistrySchema = exports.RegistrySchema = new Schema ({
 
 	instrument_id : {type : String, required : true, unique : true},
-	exchange_symbol : {type : String},
+	exchange_id : {type : String},
 	tickers : {type : [tickers], required : true},
 	tick_size : {type : Number, required : true},
 	currency : {type : String, required : true},
