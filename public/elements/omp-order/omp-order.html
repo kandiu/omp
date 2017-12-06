@@ -9,6 +9,7 @@
 <link rel="import" href="../../../bower_components/vaadin-radio-button/vaadin-radio-button.html">
 <link rel="import" href="../../../bower_components/vaadin-valo-theme/vaadin-grid.html">
 <link rel="import" href="../../../bower_components/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="../../../bower_components/vaadin-grid/vaadin-grid-selection-column.html">
 <link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
 
 <dom-module id="omp-order">
@@ -24,44 +25,42 @@
              text-aling:center;
          }
         </style>
-            <iron-ajax auto url="https://demo.vaadin.com/demo-data/1.0/people?count=200" handle-as="json" last-response="{{orders}}"></iron-ajax>
-        <vaadin-grid aria-label="Basic Binding Example" items="[[orders.result]]">
+        <vaadin-grid aria-label="Basic Binding Example" items="[[orders]]">
+	    <vaadin-grid-selection-column auto-select>
+	    </vaadin-grid-selection-column>
             <vaadin-grid-column lex-grow="0">
-                <template class="header">B/S</template>
-                <template>[[index]]</template>
+                <template class="header">Side</template>
+                <template>[[item.side]]</template>
                 <!-- If necessary, the footer could be set using <template class="footer"> -->
             </vaadin-grid-column>
             <vaadin-grid-column>
-                <template class="header">Underlying</template>
-                <template>[[item.firstName]]</template>
-            </vaadin-grid-column>
-            <vaadin-grid-column>
-                <template class="header">Country</template>
-                <template>[[item.lastName]]</template>
-            </vaadin-grid-column>
-            <vaadin-grid-column>
-                <template class="header">Ticker</template>
-                <template>[[item.lastName]]</template>
-            </vaadin-grid-column>
-            <vaadin-grid-column>
-                <template class="header">Maturity</template>
-                <template>[[item.lastName]]</template>
-            </vaadin-grid-column>
-            <vaadin-grid-column>
-                <template class="header">Right</template>
-                <template>[[item.lastName]]</template>
-            </vaadin-grid-column>
-            <vaadin-grid-column>
-                <template class="header">Strike</template>
-                <template>[[item.lastName]]</template>
+                <template class="header">ticker</template>
+                <template>[[item.ticker]]</template>
             </vaadin-grid-column>
             <vaadin-grid-column>
                 <template class="header">Quantity</template>
-                <template>[[item.lastName]]</template>
+                <template>[[item.quantity]]</template>
             </vaadin-grid-column>
             <vaadin-grid-column>
-                <template class="header">Limit</template>
-                <template>[[item.lastName]]</template>
+                <template class="header">Type</template>
+                <template>[[item.type]]</template>
+            </vaadin-grid-column>
+            <vaadin-grid-column>
+                <template class="header">Price</template>
+                <template>[[item.price]]</template>
+            </vaadin-grid-column>
+            <vaadin-grid-column>
+                <template class="header">Druation</template>
+                <template>[[item.duration]]</template>
+            </vaadin-grid-column>
+	    <vaadin-grid-column>
+                <template>
+		    <div style="display: flex">
+			<button on-click="_remove">Remove</button>
+			<button on-click="_edit">Edit</button>
+			<button on-click="_send">Send</button>
+		    </div>
+		</template>
             </vaadin-grid-column>
         </vaadin-grid>
     </template>
@@ -70,8 +69,29 @@
          static get is() { return 'omp-order'; }
          static get properties(){
              return {
+		 orders: {
+		     type: Array,
+		     value: () => []
+		 }
              }
          }
+
+	 addOrder(order){
+	     this.push('orders', order);
+	 }
+
+	 _remove(ev) {
+	     this.splice('orders', ev.model.index, 1);
+	 }
+
+	 _edit(ev){
+	     let toEdit = Object.assign({ index : ev.model.index }, ev.model.item );
+	     this.dispatchEvent(new CustomEvent('edit-order', {detail : toEdit  }))
+	 }
+
+	 _send(ev) {
+
+	 }
      }
      customElements.define(OmpOrder.is, OmpOrder);
     </script>

@@ -3,7 +3,7 @@
 // TOP BAR
 
 // Portfolio ids
-// userData -> [String] 
+// userData -> [String]
 
 function udPortfolioIds(userData) {
 
@@ -16,11 +16,19 @@ function udPortfolioIds(userData) {
 
 function udAssetClasses(userData, portfolio_id) {
 
-    let classesObj = userData.assetClasses.find(function(ac){ 
-                        return  ac.portfolio_id === portfolio_id; 
-                     });
+    let classNames = [];
 
-    return classesObj.assetclasses;
+    if ( userData && userData.assetclasses ) {
+
+	let classesObj = userData.assetclasses.find(function(ac) {
+            return ac.portfolio_id === portfolio_id;
+        });
+
+	classesObj.classes.forEach(function(cl) {
+            classNames.push(cl.classname);
+	});
+    }
+    return classNames;
 }
 
 
@@ -29,16 +37,27 @@ function udAssetClasses(userData, portfolio_id) {
 
 function udBrokers(userData, portfolio_id) {
 
-    let brokersObj = userData.brokers.find(function(br){ 
-                        return  br.portfolio_id === portfolio_id; 
+    let brokersObj = userData.brokers.find(function(br){
+                        return  br.portfolio_id === portfolio_id;
                       });
 
     return brokersObj.brokers;
 }
 
+// Account
+// userData, portfolio_id, brokerSymbol -> Object
 
-//////////////////////////////////
-// BUILDER FRAME
+function udAccount(userData, portfolio_id, brokerSymbol) {
+
+    if (userData != undefined) {
+        let accountsObj = userData.accounts.find(function(ac){
+                            return  ac.portfolio_id === portfolio_id;
+                          });
+
+        return accountsObj.accounts.find(function(ac) { return ac.broker_symbol === brokerSymbol; });
+    }
+}
+
 
 // Symbols
 // userData, portfolio_id, assetClass -> [String]
@@ -52,11 +71,14 @@ function udSymbols(userData, portfolioId, assetClass) {
         let assets = portfolio.settings.selected_assets.filter(
                         (as) => as.asset_class === assetClass);
 
-
         let inst = [];
-        
+
         assets.forEach(function(as) {
-            inst = inst.concat(as.instruments);
+
+            if (as.instruments.length > 0)
+                inst = inst.concat(as.instruments);
+            if (as.underlyings.length > 0)
+                inst = inst.concat(as.underlyings);
         });
 
         return inst;
@@ -64,32 +86,57 @@ function udSymbols(userData, portfolioId, assetClass) {
 }
 
 
-// Exchange
-// registry object -> String  //// get the registry object using queryRegistry(symbol, callback)
-function getExchange(regObj) {
-    return regObj.exchange_id;
-}
-
-// Currency
-function getCurrency(regObj) {
-    return regObj.currency;
-}
-
-
-
-//////////////////////////////////
-// GENERAL
-
 function udPortfolio(userData, portfolioId) {
 
-    return userData.portfolios.find(function(pf) { 
-            return pf.portfolio_id === portfolioId; 
+    if ( userData ){
+
+	    return userData.portfolios.find(function(pf) {
+                return pf.symbol === portfolioId;
+	    });
+    }
+    return [];
+}
+
+
+
+// Tickers
+function getTickers(regObj, provider) {
+
+   if (provider === undefined) {
+       provider = 'own';
+   }
+
+   let ticker = "";
+
+   if (regObj.tickers != null) {
+       regObj.tickers.forEach(function (t) {
+
+           if (t.provider == provider)
+                ticker = t.symbol;
+       });
+   }
+
+   return ticker;
+}
+
+function instToTicker(inst) {
+
+    queryRegistry(inst, function(reg) {
+        return getTickers(JSON.parse(reg));
     });
+}
+
+//////////////////////////////////
+// AJAX
+
+function login(uname, callback) {
+    ajaxRequest("GET", "/login/" + uname, {}, {}, callback);
 }
 
 function queryRegistry(symbol, callback) {
     ajaxRequest("GET", "/registry/" + symbol, {}, {}, callback);
 }
+
 
 function ajaxRequest(method, url, headers, data, callback) {
 
@@ -111,15 +158,10 @@ function ajaxRequest(method, url, headers, data, callback) {
             else
                 callback(r.responseText);
         }
-    } 
+    }
 
     if (method === "POST" || method === "PUT")
         r.send(data);
     else
-        r.send(null);   
+        r.send(null);
 }
-
-
-
-
-
