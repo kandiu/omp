@@ -22,8 +22,6 @@
             </data-series>
         </vaadin-line-chart>
     </template>
-
-
 <script>
     class OmpAnalytics extends Polymer.Element {
 
@@ -78,13 +76,13 @@
                 for (let k =0; k< this.openPositions.length; k++) {
                     this.openPositions[k].openprice = this._calOpenPrice(this.openPrice[k], this.openPositions[k].total);
                 }
-                //console.log("Values of openPositions: ", this.openPositions);
+                console.log("Values of openPositions: ", this.openPositions);
                 }.bind(this));
 
             axios.get(`/book`)
                 .then(function(d) {
                     this.book = d.data;
-                    //console.log("Values of book: ", this.book)
+                    console.log("Values of book: ", this.book)
                 }.bind(this))
         }
 
@@ -118,8 +116,5 @@
     }
 
     customElements.define(OmpAnalytics.is, OmpAnalytics);
-
 </script>
-
-
 </dom-module>
