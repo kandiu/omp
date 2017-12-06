@@ -64,40 +64,50 @@
             super.connectedCallback();
             //console.log(this);
             axios.get(`/book/openpositions`)
-                .then(function(d){
+                .then(function(d) {
                     //console.log("####### ", d.data);
                     this.openPositions = d.data;
+                }.bind(this)).then(function(){
                     //console.log("Open Positions", this.openPositions);
-
+                    var tempP = [];
                     for (let k =0; k< this.openPositions.length; k++){
                         //console.log("Value of openPositions[k]: ", this.openPositions[k]);
                         if(this.openPositions[k].total >0){
-                            axios.get("/book/openpricepos/"+this.openPositions[k]._id)
-                                .then(function(d){
-                                    //console.log("####### ", d.data);
-                                    this.openPrice.push(d.data);
-                                    //console.log("Open Price", this.openPrice);
-                                }.bind(this));
+                            tempP.push(axios.get("/book/openpricepos/"+this.openPositions[k]._id))
                         } else {
-                            axios.get("/book/openpriceneg/"+this.openPositions[k]._id)
-                                .then(function(d){
-                                    //console.log("####### ", d.data);
-                                    this.openPrice.push(d.data);
-                                }.bind(this));
+                            tempP.push(axios.get("/book/openpriceneg/" + this.openPositions[k]._id))
+                                }
                         }
+                        return Promise.all(tempP)
+                    }.bind(this)).then(function(d){
+                    d.forEach(function(s){
+                        this.openPrice.push(s.data)
+                    }.bind(this))
 
-                        //todo, problem in the callback
-                        //this.openPositions[k].openprice = this._calOpenPrice(this.openPrice[k], this.openPositions[k].total);
-                        console.log("Value of k: ", k);
-                        console.log("this.openPrice is array?", Array.isArray(this.openPrice));
-                        console.log("this.openPrice content: ", this.openPrice);
-                        console.log("length of this.openPrice", this.openPrice.length);
-                        console.log("value of openPrice[k] to be passed  to _calOpenPrice as p", this.openPrice[k]);
-                        console.log("Value of this.openPosition[k].total to be passed to _calOpenPrice as oq: ", this.openPositions[k].total);
-                        //console.log("Value of this.open.position[k]: ",this.openPositions[k]);
-                    }
 
-                }.bind(this));
+                for (let k =0; k< this.openPositions.length; k++) {
+                    this.openPositions[k].openprice = this._calOpenPrice(this.openPrice[k], this.openPositions[k].total);
+//                    console.log("this.openPrice is array?", Array.isArray(this.openPrice));
+//                    console.log("this.openPrice content: ", this.openPrice);
+//                    console.log("length of this.openPrice", this.openPrice.length);
+//                    console.log("value of this.openPositions[k]: ", this.openPositions[k]);
+                }
+
+                }.bind(this))
+
+
+//                        //todo, problem in the callback
+//                        //this.openPositions[k].openprice = this._calOpenPrice(this.openPrice[k], this.openPositions[k].total);
+//                        console.log("Value of k: ", k);
+//                        console.log("this.openPrice is array?", Array.isArray(this.openPrice));
+//                        console.log("this.openPrice content: ", this.openPrice);
+//                        console.log("length of this.openPrice", this.openPrice.length);
+//                        console.log("value of openPrice[k] to be passed  to _calOpenPrice as p", this.openPrice[k]);
+//                        console.log("Value of this.openPosition[k].total to be passed to _calOpenPrice as oq: ", this.openPositions[k].total);
+//                        //console.log("Value of this.open.position[k]: ",this.openPositions[k]);
+//                    }
+//
+//                }.bind(this));
 
 //            console.log("Value of openPostions: ", this.openPositions);
 //            console.log("Value of openPrice: ", this.openPrice );
@@ -116,24 +126,25 @@
 
 
         _calOpenPrice(p, oq){
+//            console.log("Inside method: _calOpenPrice");
+//            console.log("Value of p.length: ", p.length);
+//            console.log("Value of p: ", p[0]);
+//            console.log("Value of oq: ", oq);
             var rq = 0;
             var op = 0;
             var i = p.length;
             while ((Math.abs(rq)<= Math.abs(oq)) && (this._sgn(rq) == this._sgn(oq))){
-
+                console.log("$$$$ value of op: ", op);
                 for(i = p.length -1; i>=0; i--) {
-                    rq = rq + p.quantity;
-                    op = op + p.Quantity * p.Price;
+                    rq = rq + p[i].quantity;
+                    op = op + p[i].quantity * p[i].price;
                 }
             }
+            console.log("Value of op after the while: ", op);
             i++;
             op = op - p.price * (rq-oq);
             op = op/oq;
-
-
             return op;
-
-
         }
 
     }
