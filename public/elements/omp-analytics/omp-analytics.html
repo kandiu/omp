@@ -1,15 +1,22 @@
 
-<link rel="import" href="../../../bower_components/vaadin-charts/vaadin-line-chart.html">
+<link rel="import" href="../../../bower_components/vaadin-charts/vaadin-scatter-chart.html">
 <link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
 <dom-module id="omp-analytics">
     <template>
-        <vaadin-line-chart>
+        <vaadin-scatter-chart on-selection="selectionListener">
             <chart-title>Orders</chart-title>
-            <x-axis name="Price" type="datetime">
+            <tooltip enabled="false"></tooltip>
+
+            <!--<plot-options>-->
+                <!--<series point-start="1">-->
+                <!--</series>-->
+            <!--</plot-options>-->
+
+            <x-axis id="time" name="time" type="datetime">
                 <chart-title>Date</chart-title>
             </x-axis>
-            <y-axis>
-                <chart-title>Price</chart-title>
+            <y-axis id="q">
+                <chart-title>Quantity</chart-title>
             </y-axis>
             <!--<y-axis id="humidity">-->
             <!--<chart-title>Humidity (%)</chart-title>-->
@@ -18,11 +25,13 @@
             <!--</y-axis>-->
             <!--<data-series name="Humidity" type="column" data="[[humidityData]]"  y-axis = "humidity">-->
             <!--</data-series>-->
-            <data-series name="Temperature" data="[[temperatureData]]">
-            </data-series>
-        </vaadin-line-chart>
-    </template>
 
+            <data-series name="quantity" data="[[datas]]" y-axis="q">
+            </data-series>
+        </vaadin-scatter-chart>
+    </template>
+    <!--<script src="data:text/javascript;charset=utf-8,Polymer(%7Bis%3A'xy-chart-selection-example'%2CselectionListener%3Afunction(a)%7Bvar%20b%3Da.detail.originalEvent%2Cc%3Db.xAxis%5B0%5D.min%2Cd%3Db.xAxis%5B0%5D.max%2Cf%3Db.yAxis%5B0%5D.min%2Cg%3Db.yAxis%5B0%5D.max%2Ch%3D%7Btype%3A'arearange'%2CfillOpacity%3A0.1%2ClineWidth%3A0%7D%3Bh.data%3D%5B%5Bc%2Cf%2Cg%5D%2C%5Bd%2Cf%2Cg%5D%5D%2Ca.target.chart.addSeries(h%2C!0%2C!0)%2Cb.preventDefault()%7D%7D)%3B%0A%2F%2F%23%20sourceURL%3Dhttps%3A%2F%2Fdemo.vaadin.com%2Fvaadin-charts%2Fsrc%2Fdemos%2Fdynamic%2Fxy-chart-selection.html.js%0A"></script>-->
+</dom-module>
 
 <script>
     class OmpAnalytics extends Polymer.Element {
@@ -51,10 +60,13 @@
                 book: {
                     type: Array,
                     value: []
+                },
+                dataQuantity: {
+                    type: Array,
+                    value: []
                 }
             }
         }
-
         connectedCallback() {
             super.connectedCallback();
             axios.get(`/book/openpositions`)
@@ -84,7 +96,16 @@
             axios.get(`/book`)
                 .then(function(d) {
                     this.book = d.data;
-                    console.log("Values of book: ", this.book)
+                    let res = this.book.map(function(d) {
+                        let t =  Date.parse(d.timestamp);
+                        let v =  d.quantity;
+
+                        return [t, v]
+
+                    }.bind(this));
+
+                    this.set('datas', res)
+                    console.log("Data for chart: ", res)
                 }.bind(this))
         }
 
