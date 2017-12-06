@@ -3,7 +3,7 @@ var debug = require('debug')('omp-server');
 var app = require('../app');
 var fixclient = require("../fix/orderProcessing.js")
 
-var runclient = true
+var runclient = true //set to false if you want to not run the fix initiator
 if (runclient) fixclient.connect()
 
 var ws = require('../wsServer');
