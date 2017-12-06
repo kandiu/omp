@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-//const fixclient = require("../../fix/orderProcessing.js")
+const fixclient = require("../../fix/orderProcessing.js")
 
 const eventBus = require('../../pubsub')
 
@@ -16,7 +16,7 @@ router.post('/', function(req, res) {
     eventBus.emit('order_sent', order);
 
 
-//    fixclient.send(order);
+fixclient.send(order);
 
     res.status(204).end();
 });

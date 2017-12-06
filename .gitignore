@@ -80,3 +80,10 @@ Thumbs.db
 ##################
 /wercker.env
 /devops.env
+
+
+
+
+*FIXIMULATOR-OMPInitiator.body
+*FIXIMULATOR-OMPInitiator.header
+*FIXIMULATOR-OMPInitiator.seqnums

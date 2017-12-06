@@ -3,7 +3,7 @@ var debug = require('debug')('omp-server');
 var app = require('../app');
 var fixclient = require("../fix/orderProcessing.js")
 
-var runclient = false
+var runclient = true
 if (runclient) fixclient.connect()
 
 var ws = require('../wsServer');

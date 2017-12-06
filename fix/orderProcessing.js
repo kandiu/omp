@@ -4,6 +4,7 @@ var parser = require("./parser")
 var client = new net.Socket()
 var port = 4444
 var host = "localhost"
+const eventBus = require('../pubsub')
 
 client.handler = function(data){
 	client.dataHandler(data);
@@ -23,6 +24,7 @@ client.dataHandler = function(data){
 	
 	data = JSON.stringify(obj,null,4);
 	console.log("Received:" +data);
+	eventBus.emit('order_accepted', data);
 };
 
 module.exports = {
@@ -36,7 +38,7 @@ module.exports = {
 
 	send: function(order){
 		
-		if (!this.connected) throw new Exception("not conntected, please connect");
+		if (!this.connected) throw "not conntected, please connect";
 		client.write(JSON.stringify(order)+"\n");
 	},
 

@@ -108,15 +108,15 @@
          clOrdID: this._guid(),
 		 type: 'SingleOrder',
 		 account: m.account,
-		 side:  m.side === "buy" ? 1 : 0,
+		 side:  m.side === "buy" ? 1 : 2,
 		 text: `${m.user}|${m.portfolio}`,
 		 symbol: m.ticker,
-		 ordType: m.type == "MKT" ? 1 : 0,
+		 ordType: m.type == "MKT" ? 1 : 2,
 	     }
 
 	     axios.post('/order', order)
             .then(function(rs){
-                console.log(rs)
+                console.log("Sending :", rs)
             })
 	 }
      }
