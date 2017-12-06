@@ -11,6 +11,7 @@
 <link rel="import" href="../omp-blotter/omp-blotter.html">
 <link rel="import" href="../omp-execution/omp-execution.html">
 <link rel="import" href="../omp-order/omp-order.html">
+<link rel="import" href="../omp-analytics/omp-analytics.html">
 <dom-module id="omp-app">
     <template>
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
@@ -43,6 +44,9 @@
                                 <li class="nav-item">
                                     <a class="nav-link" on-click="changePage" data="history">History</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" on-click="changePage" data="analytics">Analytics</a>
+                                </li>
                             </ul>
                         </div>
                     </nav>
@@ -50,13 +54,16 @@
             </div>
             <iron-pages selected="[[pageName]]" attr-for-selected="page-name" fallback-selection="order">
                 <div page-name="order" class="row">
-                    <omp-order id="order"  class="col"></omp-order>
+                    <omp-order id="order"  class="col" on-edit-order="_edit"></omp-order>
                 </div>
                 <div page-name="blotter" id="blotter" class="row">
                     <omp-blotter class="col"></omp-blotter>
                 </div>
                 <div page-name="history" id="execution" class="row">
                     <omp-execution class="col"></omp-execution>
+                </div>
+                <div page-name="analytics" id="analytics" class="row">
+                    <omp-analytics class="col"></omp-analytics>
                 </div>
             </iron-pages>
         </div>
@@ -84,6 +91,10 @@
 
 	 _newOrder(ev) {
 	     this.$.order.addOrder(ev.detail)
+	 }
+
+	 _edit(ev) {
+	     console.log(ev.detail)
 	 }
      }
      customElements.define(OmpApp.is, OmpApp);
