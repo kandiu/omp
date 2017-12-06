@@ -1,15 +1,22 @@
 
-<link rel="import" href="../../../bower_components/vaadin-charts/vaadin-line-chart.html">
+<link rel="import" href="../../../bower_components/vaadin-charts/vaadin-scatter-chart.html">
 <link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
 <dom-module id="omp-analytics">
     <template>
-        <vaadin-line-chart>
+        <vaadin-scatter-chart on-selection="selectionListener">
             <chart-title>Orders</chart-title>
-            <x-axis name="Price" type="datetime">
+            <tooltip enabled="false"></tooltip>
+
+            <!--<plot-options>-->
+                <!--<series point-start="1">-->
+                <!--</series>-->
+            <!--</plot-options>-->
+
+            <x-axis id="time" name="time" type="datetime">
                 <chart-title>Date</chart-title>
             </x-axis>
-            <y-axis>
-                <chart-title>Price</chart-title>
+            <y-axis id="q">
+                <chart-title>Quantity</chart-title>
             </y-axis>
             <!--<y-axis id="humidity">-->
             <!--<chart-title>Humidity (%)</chart-title>-->
@@ -18,10 +25,12 @@
             <!--</y-axis>-->
             <!--<data-series name="Humidity" type="column" data="[[humidityData]]"  y-axis = "humidity">-->
             <!--</data-series>-->
-            <data-series name="Temperature" data="[[temperatureData]]">
+
+            <data-series name="quantity" data="[[datas]]" y-axis="q">
             </data-series>
-        </vaadin-line-chart>
+        </vaadin-scatter-chart>
     </template>
+
 <script>
     class OmpAnalytics extends Polymer.Element {
 
@@ -49,10 +58,13 @@
                 book: {
                     type: Array,
                     value: []
+                },
+                dataQuantity: {
+                    type: Array,
+                    value: []
                 }
             }
         }
-
         connectedCallback() {
             super.connectedCallback();
             axios.get(`/book/openpositions`)
@@ -82,7 +94,16 @@
             axios.get(`/book`)
                 .then(function(d) {
                     this.book = d.data;
-                    console.log("Values of book: ", this.book)
+                    let res = this.book.map(function(d) {
+                        let t =  Date.parse(d.timestamp);
+                        let v =  d.quantity;
+
+                        return [t, v]
+
+                    }.bind(this));
+
+                    this.set('datas', res)
+                    console.log("Data for chart: ", res)
                 }.bind(this))
         }
 
