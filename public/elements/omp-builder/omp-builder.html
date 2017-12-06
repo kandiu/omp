@@ -305,11 +305,20 @@
                  let tkr = getTickers(JSON.parse(reg));
                  this.push('_tickers.tickers', tkr);
              }.bind(this);
+	     
              let cb = addTicker.bind(this);
-             this._symbols.forEach(function(s) {
-                 queryRegistry(s, addTicker);
+	     let p = []
+
+	     
+             this._symbols.forEach(function(s, i) {
+                 p.push(axios.get(`/registry/${s}`))
              })
-             this.set('_selectedTicker', this._tickers.tickers[0]);
+
+	     Promise.all(p).then(function(res){
+		 res.forEach((x) => this.push('_tickers.tickers', getTickers(x.data)))
+		 this.set('_selectedTicker', this.get('_tickers.tickers.0'));
+	     }.bind(this))
+
          }
          _changeQuantity(el){
              this.set("_quantity", this.get("_quantity") + parseInt(el.target.getAttribute("data")));
@@ -341,8 +350,8 @@
              }
              queryRegistry(this._selectedSymbol, function(reg) {
                  let ticker = getTickers(JSON.parse(reg));
-                 console.log(ticker);
              });
+	     
              this.dispatchEvent(new CustomEvent('new-order', {detail: order }))
          }
      }

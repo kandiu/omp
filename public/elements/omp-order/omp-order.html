@@ -90,7 +90,17 @@
 	 }
 
 	 _send(ev) {
-
+	     let m = ev.model.item
+	     let order = {
+		 type: 'SingleOrder',
+		 account: m.account,
+		 side:  m.side === "buy" ? 1 : 0,
+		 clOrdID: `${m.account}${m.side}`,
+		 symbol: m.ticker,
+		 ordType: "1",
+		 tag: "new order"
+	     }
+	     console.log(order);
 	 }
      }
      customElements.define(OmpOrder.is, OmpOrder);
