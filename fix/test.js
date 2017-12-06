@@ -10,8 +10,8 @@ order = {
      side: "1",
      clOrdID: "asf1235axaf",
      symbol: "EBAY",
-     ordType: "1",
-     tag: "new order"
+     ordType: "1"
+
 }
        
 fixclient.send(order);
