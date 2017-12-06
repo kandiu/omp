@@ -4,11 +4,6 @@ const fixclient = require("../../fix/orderProcessing.js")
 
 const eventBus = require('../../pubsub')
 
-
-
-
-
-
 router.post('/', function(req, res) {
 
     let order = req.body;
