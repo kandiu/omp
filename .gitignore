@@ -51,7 +51,7 @@ public/bower_components/
 *.log
 *.sql
 *.sqlite
-fix/quickfix_initiator/bin/logs/
+
 
 # OS generated files #
 ######################
@@ -84,7 +84,7 @@ Thumbs.db
 
 
 
-
+*FIX.4.2-OMP*.*
 *FIXIMULATOR-OMPInitiator.body
 *FIXIMULATOR-OMPInitiator.header
 *FIXIMULATOR-OMPInitiator.seqnums
