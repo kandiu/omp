@@ -11,6 +11,7 @@ order = {
      clOrdID: "asf1235axaf",
      symbol: "EBAY",
      ordType: "1"
+
 }
        
 fixclient.send(order);
