@@ -30,7 +30,7 @@ router.get('/openpositions', function(req, res) {
                 toRet.push(found[i])
             }
         }
-        console.log(toRet);
+        //console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&",toRet);
         if (err || toRet == null)
             res.status(404).end();
         else {
@@ -55,7 +55,7 @@ router.get('/openpricepos/:_id', function(req, res) {
 });
 
 router.get('/openpriceneg/:_id', function(req, res) {
-    console.log("req.params._id", req.params._id);
+    //console.log("req.params._id", req.params._id);
     Book.find({ security_symbol: req.params._id}
         ,function(err, found) {
             if (err || found == null)
