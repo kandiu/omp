@@ -64,9 +64,6 @@
                       d.forEach(function(s){
                           this.openPrice.push(s.data)
                       }.bind(this))
-                      console.log("this.openPrice is array?", Array.isArray(this.openPrice));
-                      console.log("this.openPrice content: ", this.openPrice);
-                      console.log("length of this.openPrice", this.openPrice.length);
                   }.bind(this))
          }
          _sgn(x){
