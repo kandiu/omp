@@ -14,7 +14,8 @@ function startServer(httpServer) {
           console.log('client disconnected');
         });
 
-        socket.on('test-message', function(msg) {
+        socket.on('test_message', function(msg) {
+            io.emit("test_reply", {content : "hello from server"});
             console.log("got message: " + msg);
         });
     });

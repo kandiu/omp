@@ -10,12 +10,37 @@
 
 <h1>socket test</h1>
 
+<button onclick="sendTestMessage()">send test</button>
+
 <script src="/socket.io/socket.io.js"></script>
 <script>
 
-this.socket = io();
+const socket = io();
+
+socket.on('connect', function() {
+    console.log("connection established");
+});
+
+socket.on("connect_error", function(err) {
+    console.log("no connection");
+});
+
+socket.on("test_reply", function(rep) {
+    console.log(rep);
+})
+
+socket.on("order_sent", function(order) {
+    console.log("order_sent message for:");
+    console.log(order);
+});
 
 console.log("socket ready (sort of)");
+
+
+function sendTestMessage() {
+    console.log("sending hello");
+    socket.emit("test_message", "hello");
+}
 
 </script>
 
