@@ -80,3 +80,6 @@ Thumbs.db
 ##################
 /wercker.env
 /devops.env
+
+
+quickfix_initiator/logs/*
