@@ -27,13 +27,16 @@ client.dataHandler = function(data){
 
 module.exports = {
 	connect: function(){
+		
+		this.connected=true
 		client.connect(port,host, function(){
 			client.on("data",client.handler);
 		});
 	},
 
 	send: function(order){
-		if (!this.connected) return;
+		
+		if (!this.connected) throw new Exception("not conntected, please connect");
 		client.write(JSON.stringify(order)+"\n");
 	},
 
