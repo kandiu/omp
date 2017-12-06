@@ -11,7 +11,9 @@
 <h1>socket test</h1>
 
 <button onclick="sendTestMessage()">send test</button>
+<button onclick="submitOrder()">send order</button>
 
+<script src="./utility_scripts/ui_utils.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script>
 
@@ -40,6 +42,30 @@ console.log("socket ready (sort of)");
 function sendTestMessage() {
     console.log("sending hello");
     socket.emit("test_message", "hello");
+}
+
+
+
+
+
+
+function submitOrder() {
+
+    let sampleOrder = {
+                    "user_id" : "uid",
+                    "side" : "Buy",
+                    "ticker" : "test",
+                    "quantity" : "test",
+                    "type" : "MKT",
+                    "duration" : "test",
+                    "account" : "test",
+                    "broker" : "test",
+                    "portfolio_id" : "24",
+                   };
+
+    function cb() {};
+
+    ajaxRequest("POST", "/order", {}, JSON.stringify(sampleOrder), cb);
 }
 
 </script>

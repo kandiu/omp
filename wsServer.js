@@ -19,6 +19,10 @@ function startServer(httpServer) {
             console.log("got message: " + msg);
         });
     });
+
+    eventBus.on('order_sent', function(order){
+        io.emit('order_sent', order);
+    });
 }
 
 module.exports = {'startServer' : startServer};
