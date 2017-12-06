@@ -2,31 +2,28 @@ const express = require('express');
 const router = express.Router();
 const fixclient = require("../../fix/orderProcessing.js")
 
-
-
-//const models = require('../../models');
-const op = require('../../fix/orderProcessing');
-
-
-// GET /
-
-router.get('/', function(req, res) {
-
-    res.end("usage: method POST, payload JSON order object");
-});
-
+const eventBus = require('../../pubsub')
 
 router.post('/', function(req, res) {
 
-    let order = req.body;
+//    let order = req.body;
 
-    if (! (req.is("application/json") && validateOrder(order)))
-        res.status(400).end();
-
-    else {
-        fixclient.send(order);
-        res.status(201).end();
+    let order = {
+    	 type: "Dummie SingleOrder",
+         account: "Acount123",
+         side: "1",
+         clOrdID: "asf1235axaf",
+         symbol: "EBAY",
+         ordType: "1",
+         text: "text"
     }
+
+    eventBus.emit('order_report', order);
+
+
+//    fixclient.send(order);
+
+    res.status(204).end();
 });
 
 
@@ -38,7 +35,7 @@ function validateOrder(order) {
         order.portfolio_id != null &&
         order.ticker != null &&
         order.quantity != null &&
-        order.side != null &&              
+        order.side != null &&
         order.type != null &&
         order.duration != null ) {
 
@@ -52,11 +49,11 @@ function validateOrder(order) {
             return false;
 
         if (! checkDb(order.portfolio_id, order.account, order.broker))
-            return false; 
+            return false;
 
         return true;
     }
-        
+
     return false;
 }
 

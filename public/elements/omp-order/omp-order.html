@@ -76,6 +76,10 @@
              }
          }
 
+     connectedCallback() {
+        super.connectedCallback()
+      
+     }
 	 addOrder(order){
 	     this.push('orders', order);
 	 }
@@ -89,18 +93,31 @@
 	     this.dispatchEvent(new CustomEvent('edit-order', {detail : toEdit  }))
 	 }
 
+    _guid() {
+      function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000)
+          .toString(16)
+          .substring(1);
+      }
+      return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+        s4() + '-' + s4() + s4() + s4();
+    }
 	 _send(ev) {
 	     let m = ev.model.item
 	     let order = {
+         clOrdID: this._guid(),
 		 type: 'SingleOrder',
 		 account: m.account,
-		 side:  m.side === "buy" ? 1 : 0,
-		 clOrdID: `${m.account}${m.side}`,
+		 side:  m.side === "buy" ? 1 : 2,
+		 text: `${m.user}|${m.portfolio}`,
 		 symbol: m.ticker,
-		 ordType: "1",
-		 tag: "new order"
+		 ordType: m.type == "MKT" ? 1 : 2,
 	     }
-	     console.log(order);
+
+	     axios.post('/order', order)
+            .then(function(rs){
+                console.log("Sending :", rs)
+            })
 	 }
      }
      customElements.define(OmpOrder.is, OmpOrder);

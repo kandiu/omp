@@ -6,8 +6,13 @@ var fixclient = require("../fix/orderProcessing.js")
 var runclient = false
 if (runclient) fixclient.connect()
 
+var ws = require('../wsServer');
+
+
 app.set('port', process.env.PORT || 3000);
 
 var server = app.listen(app.get('port'), function() {
   debug('Express server listening on port ' + server.address().port);
 });
+
+ws.startServer(server);
