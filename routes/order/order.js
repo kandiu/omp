@@ -4,11 +4,6 @@ const router = express.Router();
 
 const eventBus = require('../../pubsub')
 
-
-
-
-
-
 router.post('/', function(req, res) {
 
     let order = req.body;
