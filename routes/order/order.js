@@ -1,15 +1,9 @@
 const express = require('express');
 const router = express.Router();
-<<<<<<< HEAD
 const fixclient = require("../../fix/orderProcessing.js")
 
-
-=======
 const eventBus = require('../../pubsub')
->>>>>>> feat-websocket
 
-//const models = require('../../models');
-const op = require('../../fix/orderProcessing');
 
 
 
@@ -22,19 +16,8 @@ router.post('/', function(req, res) {
     eventBus.emit('order_sent', order);
 
 
-<<<<<<< HEAD
-    else {
         fixclient.send(order);
-=======
-//    if (! validateOrder(order))
-//        res.status(400).end();
-/*    else {
-        op.processOrder(order);
->>>>>>> feat-websocket
-        res.status(201).end();
 
-    }
-    */
 });
 
 
