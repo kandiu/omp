@@ -12,7 +12,7 @@ sleep 3
 
 sleep 5
 #start server
-(cd $DIR/../ && DEBUG='*' nodemon ./bin/www) & 
+(cd $DIR/../ && DEBUG='*' START_QUICKFIX="true" nodemon ./bin/www) & 
 
 while true; do
 	sleep 1
