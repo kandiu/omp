@@ -301,15 +301,8 @@
                  areUnderlyings = true;
              }
              this._tickers = {tickers : [], underlyings : areUnderlyings}
-             let addTicker = function(reg) {
-                 let tkr = getTickers(JSON.parse(reg));
-                 this.push('_tickers.tickers', tkr);
-             }.bind(this);
-	     
-             let cb = addTicker.bind(this);
-	     let p = []
 
-	     
+	     let p = []
              this._symbols.forEach(function(s, i) {
                  p.push(axios.get(`/registry/${s}`))
              })
