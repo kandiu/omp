@@ -34,8 +34,8 @@
                 <!-- If necessary, the footer could be set using <template class="footer"> -->
             </vaadin-grid-column>
             <vaadin-grid-column>
-                <template class="header">Symbol</template>
-                <template>[[item.symbol]]</template>
+                <template class="header">ticker</template>
+                <template>[[item.ticker]]</template>
             </vaadin-grid-column>
             <vaadin-grid-column>
                 <template class="header">Quantity</template>
@@ -53,6 +53,15 @@
                 <template class="header">Druation</template>
                 <template>[[item.duration]]</template>
             </vaadin-grid-column>
+	    <vaadin-grid-column>
+                <template>
+		    <div style="display: flex">
+			<button on-click="_remove">Remove</button>
+			<button on-click="_edit">Edit</button>
+			<button on-click="_send">Send</button>
+		    </div>
+		</template>
+            </vaadin-grid-column>
         </vaadin-grid>
     </template>
     <script>
@@ -68,8 +77,30 @@
          }
 
 	 addOrder(order){
-	     console.log(order);
 	     this.push('orders', order);
+	 }
+
+	 _remove(ev) {
+	     this.splice('orders', ev.model.index, 1);
+	 }
+
+	 _edit(ev){
+	     let toEdit = Object.assign({ index : ev.model.index }, ev.model.item );
+	     this.dispatchEvent(new CustomEvent('edit-order', {detail : toEdit  }))
+	 }
+
+	 _send(ev) {
+	     let m = ev.model.item
+	     let order = {
+		 type: 'SingleOrder',
+		 account: m.account,
+		 side:  m.side === "buy" ? 1 : 0,
+		 clOrdID: `${m.account}${m.side}`,
+		 symbol: m.ticker,
+		 ordType: "1",
+		 tag: "new order"
+	     }
+	     console.log(order);
 	 }
      }
      customElements.define(OmpOrder.is, OmpOrder);
