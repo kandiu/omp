@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>web-socket test</title>
+</head>
+
+<body >
+
+<h1>socket test</h1>
+
+<button onclick="sendTestMessage()">send test</button>
+<button onclick="submitOrder()">send order</button>
+
+<script src="./utility_scripts/ui_utils.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+
+const socket = io();
+
+socket.on('connect', function() {
+    console.log("connection established");
+});
+
+socket.on("connect_error", function(err) {
+    console.log("no connection");
+});
+
+socket.on("test_reply", function(rep) {
+    console.log(rep);
+})
+
+socket.on("order_sent", function(order) {
+    console.log("order_sent message for:");
+    console.log(order);
+});
+
+console.log("socket ready (sort of)");
+
+
+function sendTestMessage() {
+    console.log("sending hello");
+    socket.emit("test_message", "hello");
+}
+
+
+
+
+
+
+function submitOrder() {
+
+    let sampleOrder = {
+                    "user_id" : "uid",
+                    "side" : "Buy",
+                    "ticker" : "test",
+                    "quantity" : "test",
+                    "type" : "MKT",
+                    "duration" : "test",
+                    "account" : "test",
+                    "broker" : "test",
+                    "portfolio_id" : "24",
+                   };
+
+    function cb() {};
+
+    ajaxRequest("POST", "/order", {}, JSON.stringify(sampleOrder), cb);
+}
+
+</script>
+
+</body>
+</html>
