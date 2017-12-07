@@ -21,7 +21,6 @@ module.exports = {
   'Option' : mongoose.model('Option'),
   'Equity' : mongoose.model('Equity'),
   'Index' : mongoose.model('Index'),
-  'AssetClass' : mongoose.model('AssetClass'),
-  'FillOrCancel' : mongoose.model('FillOrCancel')
+  'AssetClass' : mongoose.model('AssetClass')
 }
 

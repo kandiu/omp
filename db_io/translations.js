@@ -1,9 +1,9 @@
 
 const models = require('../models');
-const FillOrCancel = models.FillOrCancel;
+const Execution = models.Execution;
 const Blotter = models.Blotter;
 
-function reportToFillOrCancel(report) {
+function reportToExecution(report) {
 
     let dataObj = {
 
@@ -20,7 +20,7 @@ function reportToFillOrCancel(report) {
     }
 
     try {
-        let focObj = new FillOrCancel(dataObj);
+        let focObj = new Execution(dataObj);
         return focObj;
     }
     catch (err) {
@@ -36,6 +36,6 @@ function reportToBlotter(report) {
 
 module.exports = {
 
-    'reportToFillOrCancel' : reportToFillOrCancel,
+    'reportToExecution' : reportToExecution,
     'reportToBlotter' : reportToBlotter
 }

@@ -1,12 +1,12 @@
 const eventBus = require('../pubsub');
 const models = require('../models');
-const FillOrCancel = models.FillOrCancel;
+const Execution = models.Execution;
 const Blotter = models.Blotter;
 
 
-// FillOrCancel
+// Execution
 
-function writeFillOrCancel(data, next) {
+function writeExecution(data, next) {
 
     data.save(function(err, saved) {
         if (! err) 
@@ -14,9 +14,9 @@ function writeFillOrCancel(data, next) {
     });
 }
 
-function readFillOrCancel(order_id, next) {
+function readExecution(order_id, next) {
 
-    FillOrCancel.findOne({"order_id" : order_id}, function(err, found) {
+    Execution.findOne({"order_id" : order_id}, function(err, found) {
         if (! err) {
             next(found);
         }
@@ -47,8 +47,8 @@ function readBlotter(order_id, next) {
 
 module.exports = {
 
-    'writeFillOrCancel' : writeFillOrCancel, 
-    'readFillOrCancel' : readFillOrCancel,
+    'writeExecution' : writeExecution, 
+    'readExecution' : readExecution,
     'writeBlotter' : writeBlotter,
     'readBlotter' : readBlotter,
 }

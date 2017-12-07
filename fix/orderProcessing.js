@@ -61,27 +61,30 @@ function processAsNew(order) {
 
 function processAsExecution(order) {
 
-    let dbObj = translate.reportToFillOrCancel(order);
+    let dbObj = translate.reportToExecution(order);
 
-    dbRw.writeFillOrCancel(dbObj, function(saved) {
-        dbRw.readFillOrCancel(saved.order_id, function(found) {
+    dbRw.writeExecution(dbObj, function(saved) {
+        dbRw.readExecution(saved.order_id, function(found) {
             eventBus.emit("order_executed", found);
         });
     });
 }
 
+// We assume a cancel event may not occur
+/*
 function processAsCanceled(order) {
 
-    let dbObj = translate.reportToFillOrCancel(order);
+    let dbObj = translate.reportToExecution(order);
 
-    dbRw.writeFillOrCancel(dbObj, function(saved) {
-        dbRw.readFillOrCancel(saved.order_id, function(found) {
+    dbRw.writeExecution(dbObj, function(saved) {
+        dbRw.readExecution(saved.order_id, function(found) {
             eventBus.emit("order_canceled", found);
         });
     });
 }
+*/
 
-function processAsRejected(order) {
+function processAsRejected(order) { 
 
     eventBus.emit("order_rejected", order);
 }
