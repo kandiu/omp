@@ -52,6 +52,7 @@ public/bower_components/
 *.sql
 *.sqlite
 
+
 # OS generated files #
 ######################
 .DS_Store
@@ -80,3 +81,11 @@ Thumbs.db
 ##################
 /wercker.env
 /devops.env
+
+
+quickfix_initiator/logs/*
+
+*FIX.4.2-*.*
+*FIXIMULATOR-OMPInitiator.body
+*FIXIMULATOR-OMPInitiator.header
+*FIXIMULATOR-OMPInitiator.seqnums

@@ -5,6 +5,7 @@ var client = new net.Socket()
 var port = 4444
 var host = "localhost"
 
+
 client.handler = function(data){
 	client.dataHandler(data);
 };
@@ -20,23 +21,26 @@ client.dataHandler = function(data){
 		delete obj[x]["object"];
 		delete obj[x]["isCalculated"]
 	}
-	
+
 	data = JSON.stringify(obj,null,4);
 	console.log("Received:" +data);
+
+	eventBus.emit('order_accepted', data);
+
 };
 
 module.exports = {
 	connect: function(){
-		
+
 		this.connected=true
 		client.connect(port,host, function(){
 			client.on("data",client.handler);
 		});
 	},
 
-	send: function(order){
-		
-		if (!this.connected) throw new Exception("not conntected, please connect");
+	send: function(order){		
+		if (!this.connected) throw "not conntected, please connect";
+
 		client.write(JSON.stringify(order)+"\n");
 	},
 
@@ -46,5 +50,3 @@ module.exports = {
 	},
 	connected : false
 }
-
-
