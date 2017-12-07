@@ -82,9 +82,9 @@ Thumbs.db
 /wercker.env
 /devops.env
 
+!fix/quickfix_initiator
 
-quickfix_initiator/logs/*
-
+fix/quickfix_initiator/logs/*
 *FIX.4.2-*.*
 *FIXIMULATOR-OMPInitiator.body
 *FIXIMULATOR-OMPInitiator.header

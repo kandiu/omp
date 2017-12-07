@@ -19,7 +19,7 @@ public class OMPInitiatorApplication implements Application {
 	
 	
 	public void onCreate(SessionID sessionId) {
-
+		
 	}
 	 
 	public void onLogon(SessionID sessionId) {
@@ -69,7 +69,7 @@ public class OMPInitiatorApplication implements Application {
 		
 		System.out.println("running");
 		
-		Session.sendToTarget(new NewOrderSingle(new ClOrdID("123"), new HandlInst(), new Symbol("AMZN"), new Side(), new TransactTime(), new OrdType(OrdType.LIMIT)),sessionId);
+		
 		listen();
 	}
 	
