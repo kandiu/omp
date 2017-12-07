@@ -20,16 +20,25 @@ function startServer(httpServer) {
         });
     });
 
-    eventBus.on('order_sent', function(order){
-        io.emit('order_sent', order);
-    });
 
     eventBus.on('order_report', function(order){
         io.emit('order_report', order);
     });
 
+    eventBus.on('order_acknowledged', function(order){
+        io.emit('order_acknowledged', order);
+    });
+
     eventBus.on('order_executed', function(order){
         io.emit('order_executed', order);
+    });
+
+    eventBus.on('order_canceled', function(order){
+        io.emit('order_canceled', order);
+    });
+
+    eventBus.on('order_rejected', function(order){
+        io.emit('order_rejected', order);
     });
 }
 

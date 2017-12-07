@@ -281,3 +281,4 @@ mongoose.model('Future', FutureSchema);
 mongoose.model('Option', OptionSchema);
 mongoose.model('Equity', EquitySchema);
 mongoose.model('Index', IndexSchema);
+mongoose.model('FillOrCancel', FillOrCancelSchema);

@@ -6,8 +6,9 @@ const eventBus = require('../../pubsub')
 
 router.post('/', function(req, res) {
 
-//    let order = req.body;
+    let order = req.body;
 
+/*
     let order = {
     	 type: "Dummie SingleOrder",
          account: "Acount123",
@@ -18,19 +19,20 @@ router.post('/', function(req, res) {
          text: "text"
     }
 
-    eventBus.emit('order_report', order);
 
+    eventBus.emit('order_report', order); 
+*/
 
-//    fixclient.send(order);
+    fixclient.send(order);
 
-    res.status(204).end();
+    res.status(204).end(); 
 });
 
 
 function validateOrder(order) {
 
     if( order.user_id != null &&
-        order.account != null &&
+        order.account != null && 
         order.broker != null &&
         order.portfolio_id != null &&
         order.ticker != null &&

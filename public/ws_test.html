@@ -10,8 +10,50 @@
 
 <h1>socket test</h1>
 
-<button onclick="sendTestMessage()">send test</button>
-<button onclick="submitOrder()">send order</button>
+
+<div>
+    <button onclick="sendTestMessage()">send test</button>
+</div>
+<p></p>
+<div>
+    <p>account</p>
+    <input type="text", id="account", value="gs2">
+</div>
+<p></p>
+<div>
+    <p>ordType</p>
+    <input type="text", id="ordType", value="1">
+</div>
+<p></p>
+<div>
+    <p>side</p>
+    <input type="text", id="side", value="1">
+</div>
+<p></p>
+<div>
+    <p>ordQty</p>
+    <input type="text", id="qty", value="0">
+</div>
+<p></p>
+<div>
+    <p>symbol</p>
+    <input type="text", id="symbol", value="SPX">
+</div>
+<p></p>
+<div>
+    <p>text</p>
+    <input type="text", id="txt", value="igor|futs-1">
+</div>
+<p></p>
+<div>
+    <p>type</p>
+    <input type="text", id="type", value="SingleOrder">
+</div>
+<p></p>
+<p></p>
+<div>
+    <button onclick="submitOrder()">send order</button>
+</div>
 
 <script src="./utility_scripts/ui_utils.js"></script>
 <script src="/socket.io/socket.io.js"></script>
@@ -31,10 +73,36 @@ socket.on("test_reply", function(rep) {
     console.log(rep);
 })
 
-socket.on("order_sent", function(order) {
-    console.log("order_sent message for:");
+
+
+/*
+socket.on("order_report", function(order) {
+    console.log("order_report:");
     console.log(order);
 });
+*/
+
+socket.on("order_acknowledged", function(order) {
+    console.log("order_acknowledged:");
+    console.log(order);
+});
+
+socket.on("order_executed", function(order) {
+    console.log("order_executed:");
+    console.log(order);
+});
+
+socket.on("order_canceled", function(order) {
+    console.log("order_canceled:");
+    console.log(order);
+});
+
+socket.on("order_rejected", function(order) {
+    console.log("order_rejected:");
+    console.log(order);
+});
+
+
 
 console.log("socket ready (sort of)");
 
@@ -45,30 +113,67 @@ function sendTestMessage() {
 }
 
 
+function idGen() {
 
+    function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000)
+          .toString(16)
+          .substring(1);
+    }
+
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+        s4() + '-' + s4() + s4() + s4();
+}
 
 
 
 function submitOrder() {
 
     let sampleOrder = {
-                    "user_id" : "uid",
-                    "side" : "Buy",
-                    "ticker" : "test",
-                    "quantity" : "test",
-                    "type" : "MKT",
-                    "duration" : "test",
-                    "account" : "test",
-                    "broker" : "test",
-                    "portfolio_id" : "24",
+
+        account : document.getElementById("account").value,
+        clOrdID : idGen(),
+        ordType : document.getElementById("ordType").value,
+        ordQty : document.getElementById("qty").value,
+        side : document.getElementById("side").value,
+        symbol : document.getElementById("symbol").value,
+        text : document.getElementById("txt").value,
+        type : document.getElementById("type").value
                    };
 
     function cb() {};
 
-    ajaxRequest("POST", "/order", {}, JSON.stringify(sampleOrder), cb);
+    ajaxRequest("POST", "/order", {"Content-Type" : "application/json"}, JSON.stringify(sampleOrder), cb);
+
+    console.log("SENT ORDER:");
+    console.log(sampleOrder);
 }
 
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 </body>
 </html>
