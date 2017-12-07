@@ -123,31 +123,32 @@ const ExchangeSchema = exports.ExchangeSchema = new Schema ({
 const BookSchema = exports.BookSchema = new Schema ({
 	order_id : {type : String, required : true},
 	timestamp : {type : Date, required : true},
-	quantity : {type : Number, required : true}, 
-	price : {type : Number, required : true},
+	quantity : {type : Number, required : true}, //LastShares signed
+	price : {type : Number, required : true}, //LastPrice
 	security_id : {type : String, required : true},
 	security_symbol : {type : String, required : true},
 	execution_broker_symbol : {type : String, required : true},
 	clearing_broker_symbol : {type : String, required : true},
 	exchange_symbol : {type : String, required : true},
 	account_id : {type : String, required : true},
-	order_tag : {type : String}, // to be verified
+	portfolio_id : {type : String}, 
 });
 
+// Accepted (Acknowledged) order must be stored here
 const BlotterSchema = exports.BlotterSchema = new Schema ({
-	order_id : {type : String, required : true, unique : true},
-	symbol : {type : String, required : true},
-	creation_time : {type : Date, required : true},
-	timestamp : {type : Date, required : true}, // all amendation
-	type : {type : String, required : true},
-	action : {type : String, required : true},
+	order_id : {type : String, required : true, unique : true}, //CIOrdID
+	symbol : {type : String, required : true}, //Symbol
+	creation_time : {type : Date, required : true}, //SendingTime
+	timestamp : {type : Date, required : true}, //TransactTime
+	type : {type : String, required : true}, //OrdType
+	action : {type : String, required : true}, //side
 	quantity : {type : String, required : true},
-	price : {type : Number, required : true},
-	duration : {type : String, required : true},
-	status : {type : String, required : true},
-	tag : {type : String, required : true},
-	broker : {type : String, required : true},
-	account : {type : String, required : true}
+	price : {type : Number, required : true}, //avgPx
+	duration : {type : String, required : true}, 
+	status : {type : String, required : true}, // "accepted"
+	tag : {type : String, required : true}, //Text
+	broker : {type : String, required : true}, //TargetCompID
+	account : {type : String, required : true} //from text field
 });
 
 const FillOrCancelSchema = exports.FillOrCancelSchema  = new Schema ({

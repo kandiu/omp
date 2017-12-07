@@ -11,8 +11,9 @@ order = {
      clOrdID: "asf1235axaf",
      symbol: "EBAY",
      ordType: "1",
-     text: "text"
-
+     text: "text",
+     //orderQty: "10",
+     //currency: "USD",
 }
        
 fixclient.send(order);

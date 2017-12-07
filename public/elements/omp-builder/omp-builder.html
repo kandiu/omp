@@ -303,9 +303,9 @@
              this._tickers = {tickers : [], underlyings : areUnderlyings}
 
 	     let p = []
-             this._symbols.forEach(function(s, i) {
-                 p.push(axios.get(`/registry/${s}`))
-             })
+         this._symbols.forEach(function(s, i) {
+             p.push(axios.get(`/registry/${s}`))
+         })
 
 	     Promise.all(p).then(function(res){
 		 res.forEach((x) => this.push('_tickers.tickers', getTickers(x.data)))
