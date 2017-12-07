@@ -12,7 +12,7 @@ order = {
      symbol: "EBAY",
      ordType: "1",
      text: "text",
-     //orderQty: "10",
+     orderQty: "10",
      //currency: "USD",
 }
        
