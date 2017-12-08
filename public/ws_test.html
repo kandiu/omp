@@ -104,6 +104,11 @@ socket.on("order_report", function(order) {
 });
 */
 
+socket.on("order_report", function(order) {
+    console.log("order_report:");
+    console.log(order);
+});
+
 socket.on("order_acknowledged", function(order) {
     console.log("order_acknowledged:");
     console.log(order);
