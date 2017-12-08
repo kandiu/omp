@@ -52,10 +52,10 @@ function seed(done){
 
 describe('submit an order', function(){
 
-        before(utils.dropDb);
+//        before(utils.dropDb);
         before(seed);
-        after(utils.dropDb);
-        after(seed);
+//        after(utils.dropDb);
+//        after(seed);
 
     describe('POST /order', function(){
 
