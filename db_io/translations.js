@@ -3,6 +3,9 @@ const models = require('../models');
 const Execution = models.Execution;
 const Blotter = models.Blotter;
 
+
+/// Temporary: to be replaced
+
 function reportToExecution(report) {
 
     let dataObj = {
@@ -33,9 +36,71 @@ function reportToBlotter(report) {
     return report;
 }
 
+/// end Temporary: to be replaced
+
+
+function orderToBlotter(order) {
+
+    let blotterData = {
+
+        order_id : order.order_id,
+        external_order_id : "...",
+        symbol : order.symbol,
+        creation_time : order.creation_time,
+        timestamp : new Date(),
+        type : order.type,
+        action : order.action,
+        quantity : order.quantity,
+        price : order.price,
+        duration : order.duration,
+        status : order.status,
+        tag : "...",
+        broker : "...",
+        account : order.account_id,
+        portfolio : order.portfolio_id,
+        exchange : order.exchange
+
+    };
+
+    try {
+        let blotterObj = new Blotter(blotterData);
+        return blotterObj;
+    }
+    catch (err) {
+        console.error(err);
+    }
+}
+
+
+
+
+
+
+
+
 
 module.exports = {
 
     'reportToExecution' : reportToExecution,
-    'reportToBlotter' : reportToBlotter
+    'reportToBlotter' : reportToBlotter,
+    'orderToBlotter' : orderToBlotter
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

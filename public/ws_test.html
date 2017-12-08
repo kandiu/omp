@@ -10,45 +10,67 @@
 
 <h1>socket test</h1>
 
-
-<div>
-    <button onclick="sendTestMessage()">send test</button>
-</div>
-<p></p>
-<div>
-    <p>account</p>
-    <input type="text", id="account", value="gs2">
-</div>
-<p></p>
-<div>
-    <p>ordType</p>
-    <input type="text", id="ordType", value="1">
-</div>
-<p></p>
-<div>
-    <p>side</p>
-    <input type="text", id="side", value="1">
-</div>
-<p></p>
-<div>
-    <p>ordQty</p>
-    <input type="text", id="qty", value="0">
-</div>
 <p></p>
 <div>
     <p>symbol</p>
     <input type="text", id="symbol", value="SPX">
 </div>
 <p></p>
-<div>
-    <p>text</p>
-    <input type="text", id="txt", value="igor|futs-1">
-</div>
-<p></p>
+
 <div>
     <p>type</p>
-    <input type="text", id="type", value="SingleOrder">
+    <input type="text", id="type", value="MKT">
 </div>
+<p></p>
+
+<div>
+    <p>action</p>
+    <input type="text", id="action", value="BUY">
+</div>
+<p></p>
+
+<div>
+    <p>quantity</p>
+    <input type="text", id="quantity", value="1">
+</div>
+<p></p>
+
+<div>
+    <p>price</p>
+    <input type="text", id="price", value="50">
+</div>
+<p></p>
+
+<div>
+    <p>duration</p>
+    <input type="text", id="duration", value="1">
+</div>
+<p></p>
+
+<div>
+    <p>portfolio</p>
+    <input type="text", id="portfolio", value="stks-1">
+</div>
+<p></p>
+
+<div>
+    <p>account</p>
+    <input type="text", id="account", value="gs1">
+</div>
+<p></p>
+
+<div>
+    <p>currency</p>
+    <input type="text", id="currency", value="CHF">
+</div>
+<p></p>
+
+<div>
+    <p>exchange</p>
+    <input type="text", id="exchange", value="IBIS">
+</div>
+<p></p>
+
 <p></p>
 <p></p>
 <div>
@@ -131,14 +153,20 @@ function submitOrder() {
 
     let sampleOrder = {
 
-        account : document.getElementById("account").value,
-        clOrdID : idGen(),
-        ordType : document.getElementById("ordType").value,
-        ordQty : document.getElementById("qty").value,
-        side : document.getElementById("side").value,
+        order_id : idGen(),
         symbol : document.getElementById("symbol").value,
-        text : document.getElementById("txt").value,
-        type : document.getElementById("type").value
+        creation_time : new Date,
+        type : document.getElementById("type").value,
+        action : document.getElementById("action").value,
+        quantity : document.getElementById("quantity").value,
+        price : document.getElementById("price").value,
+        duration : document.getElementById("duration").value,
+        status : "sent",
+        portfolio_id : document.getElementById("portfolio").value,
+        account_id : document.getElementById("account").value,
+        currency : document.getElementById("currency").value,
+        exchange : document.getElementById("exchange").value
+
                    };
 
     function cb() {};
