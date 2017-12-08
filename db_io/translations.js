@@ -2,6 +2,7 @@
 const models = require('../models');
 const Execution = models.Execution;
 const Blotter = models.Blotter;
+const Book = models.Book;
 
 
 
@@ -22,7 +23,7 @@ function orderToBlotter(order) {
         price : order.price,
         duration : order.duration,
         status : order.status,
-        tag : "...",
+        tag : "xxx|" + order.portfolio_id,
         broker : "...",
         account : order.account_id,
         portfolio : order.portfolio_id,
@@ -50,7 +51,7 @@ function orderToFix(order) {
         clOrdID : order.order_id,
         symbol : order.symbol,
         orderQty : order.quantity,
-//        text : "xxx|" + order.portfolio_id
+        text : "xxx|" + order.portfolio_id
     };
 
     if (order.action.toLowerCase() == 'buy')
@@ -66,15 +67,62 @@ function orderToFix(order) {
     return fixObj;
 }
 
+// BLOTTER + EXEC_ID TO BOOK
 
+function blExecCurrToBook(blotter, exec_id, curr) {
 
+    let bookData = {
+
+        order_id : exec_id,
+        timestamp : blotter.timestamp,
+        quantity : blotter.quantity,
+        price : blotter.price,
+        security_symbol : blotter.symbol,
+        execution_broker_symbol : blotter.broker,
+        clearing_broker_symbol : blotter.broker,
+        currency : curr,
+        exchange_symbol : blotter.exchange,
+        account_id : blotter.account,
+        portfolio : blotter.portfolio
+    };
+
+    try {
+        let bookObj = new Book(bookData);
+        return bookObj;
+    }
+    catch (err) {
+        console.error(err);
+    }
+}
+
+// DATE STRING TO DATE
+
+function parseDateString(dateString) {
+
+    let Y = dateString.substring(0,4);
+    let M = dateString.substring(4,6);
+    let D = dateString.substring(6,8);
+    let h = dateString.substring(9,11);
+    let m = dateString.substring(12,14);
+    let s = dateString.substring(15,17);
+    let ms = dateString.substring(18,21);
+    
+    let date = new Date(Y,M,D,h,m,s,ms);
+
+    console.log("DATE STRING: " + dateString);
+    console.log("DATE: " + date);
+
+    return date;
+}
 
 
 
 module.exports = {
 
     'orderToBlotter' : orderToBlotter,
-    'orderToFix' : orderToFix
+    'orderToFix' : orderToFix,
+    'blExecCurrToBook' : blExecCurrToBook,
+    'parseDateString' : parseDateString
 }
 
 

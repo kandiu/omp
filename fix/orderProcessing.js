@@ -73,13 +73,11 @@ function processAsExecution(report) {
 
     setBlotterFields(report, function() {
 
-        addBookEntry(report, function() {
+        dbRw.readBlotter(order_id, function(blotter) {
 
-            dbRw.readBlotter(order_id, function(found) {
-
-                eventBus.emit("order_executed", found);
-            });       
-        });
+            eventBus.emit("order_executed", blotter);
+            addBookEntry(blotter, report.execID.value);                       
+        });       
     });   
 }
 
@@ -91,7 +89,7 @@ function setBlotterFields(report, next) {
     let data = {
 
         external_order_id : report.orderID.value,
-        timestamp : parseDateString(report.sendingTime.value),
+        timestamp : translate.parseDateString(report.sendingTime.value),
         broker : report.senderCompID.value
     };
 
@@ -108,28 +106,17 @@ function setBlotterFields(report, next) {
     dbRw.updateBlotter(order_id, data, next);   
 }
 
-function addBookEntry(report, next) {
+function addBookEntry(blotter, exec_id) {
 
-    next();
-}
+    dbRw.readAccount(blotter.account, function(account) {
 
+        let bookObj = translate.blExecCurrToBook(blotter, exec_id, account.currency);
 
-function parseDateString(dateString) {
-
-    let Y = dateString.substring(0,4);
-    let M = dateString.substring(4,6);
-    let D = dateString.substring(6,8);
-    let h = dateString.substring(9,11);
-    let m = dateString.substring(12,14);
-    let s = dateString.substring(15,17);
-    let ms = dateString.substring(18,21);
-    
-    let date = new Date(Y,M,D,h,m,s,ms);
-
-    console.log("DATE STRING: " + dateString);
-    console.log("DATE: " + date);
-
-    return date;
+        dbRw.writeBook(bookObj, function(book) {
+            
+            eventBus.emit("new_book_entry", book);
+        });
+    });
 }
 
 

@@ -40,6 +40,10 @@ function startServer(httpServer) {
     eventBus.on('order_rejected', function(order){
         io.emit('order_rejected', order);
     });
+
+    eventBus.on('new_book_entry', function(order){
+        io.emit('new_book_entry', order);
+    });
 }
 
 module.exports = {'startServer' : startServer};

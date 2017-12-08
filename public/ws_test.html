@@ -91,18 +91,10 @@ socket.on("connect_error", function(err) {
     console.log("no connection");
 });
 
-socket.on("test_reply", function(rep) {
-    console.log(rep);
+socket.on("test_reply", function(report) {
+    console.log(report);
 })
 
-
-
-/*
-socket.on("order_report", function(order) {
-    console.log("order_report:");
-    console.log(order);
-});
-*/
 
 socket.on("order_report", function(order) {
     console.log("order_report:");
@@ -127,6 +119,11 @@ socket.on("order_canceled", function(order) {
 socket.on("order_rejected", function(order) {
     console.log("order_rejected:");
     console.log(order);
+});
+
+socket.on("new_book_entry", function(book) {
+    console.log("new_book_entry:");
+    console.log(book);
 });
 
 
