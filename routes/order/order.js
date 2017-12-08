@@ -9,9 +9,11 @@ router.post('/', function(req, res) {
     let order = req.body;
 
     let blotterObj = translate.orderToBlotter(order);
-    dbIo.writeBlotter(blotterObj, function() {});
+    let fixObj = translate.orderToFix(order);
 
-//    fixclient.send(order);
+    dbIo.writeBlotter(blotterObj, function() {
+        fixclient.send(fixObj);            
+    });
 
     res.status(204).end( ); 
 });

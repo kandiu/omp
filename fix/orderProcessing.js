@@ -43,8 +43,6 @@ client.dataHandler = function(data){
     else if (status == 8) {
         processAsRejected(obj);
     }
-
-
 };
 
 
@@ -61,28 +59,15 @@ function processAsNew(order) {
 
 function processAsExecution(order) {
 
-    let dbObj = translate.reportToExecution(order);
+//    let dbObj = translate.reportToExecution(order);
 
-    dbRw.writeExecution(dbObj, function(saved) {
-        dbRw.readExecution(saved.order_id, function(found) {
-            eventBus.emit("order_executed", found);
-        });
-    });
+//    dbRw.writeExecution(dbObj, function(saved) {
+//        dbRw.readExecution(saved.order_id, function(found) {
+            eventBus.emit("order_executed", order);
+//        });
+//    });
 }
 
-// We assume a cancel event may not occur
-/*
-function processAsCanceled(order) {
-
-    let dbObj = translate.reportToExecution(order);
-
-    dbRw.writeExecution(dbObj, function(saved) {
-        dbRw.readExecution(saved.order_id, function(found) {
-            eventBus.emit("order_canceled", found);
-        });
-    });
-}
-*/
 
 function processAsRejected(order) { 
 
