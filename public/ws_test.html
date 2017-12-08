@@ -10,8 +10,72 @@
 
 <h1>socket test</h1>
 
-<button onclick="sendTestMessage()">send test</button>
-<button onclick="submitOrder()">send order</button>
+<p></p>
+<div>
+    <p>symbol</p>
+    <input type="text", id="symbol", value="SPX">
+</div>
+<p></p>
+
+<div>
+    <p>type</p>
+    <input type="text", id="type", value="MKT">
+</div>
+<p></p>
+
+<div>
+    <p>action</p>
+    <input type="text", id="action", value="BUY">
+</div>
+<p></p>
+
+<div>
+    <p>quantity</p>
+    <input type="text", id="quantity", value="1">
+</div>
+<p></p>
+
+<div>
+    <p>price</p>
+    <input type="text", id="price", value="50">
+</div>
+<p></p>
+
+<div>
+    <p>duration</p>
+    <input type="text", id="duration", value="1">
+</div>
+<p></p>
+
+<div>
+    <p>portfolio</p>
+    <input type="text", id="portfolio", value="stks-1">
+</div>
+<p></p>
+
+<div>
+    <p>account</p>
+    <input type="text", id="account", value="gs1">
+</div>
+<p></p>
+
+<div>
+    <p>currency</p>
+    <input type="text", id="currency", value="CHF">
+</div>
+<p></p>
+
+<div>
+    <p>exchange</p>
+    <input type="text", id="exchange", value="IBIS">
+</div>
+<p></p>
+
+<p></p>
+<p></p>
+<div>
+    <button onclick="submitOrder()">send order</button>
+</div>
 
 <script src="./utility_scripts/ui_utils.js"></script>
 <script src="/socket.io/socket.io.js"></script>
@@ -27,14 +91,42 @@ socket.on("connect_error", function(err) {
     console.log("no connection");
 });
 
-socket.on("test_reply", function(rep) {
-    console.log(rep);
+socket.on("test_reply", function(report) {
+    console.log(report);
 })
 
-socket.on("order_sent", function(order) {
-    console.log("order_sent message for:");
+
+socket.on("order_report", function(order) {
+    console.log("order_report:");
     console.log(order);
 });
+
+socket.on("order_acknowledged", function(order) {
+    console.log("order_acknowledged:");
+    console.log(order);
+});
+
+socket.on("order_executed", function(order) {
+    console.log("order_executed:");
+    console.log(order);
+});
+
+socket.on("order_canceled", function(order) {
+    console.log("order_canceled:");
+    console.log(order);
+});
+
+socket.on("order_rejected", function(order) {
+    console.log("order_rejected:");
+    console.log(order);
+});
+
+socket.on("new_book_entry", function(book) {
+    console.log("new_book_entry:");
+    console.log(book);
+});
+
+
 
 console.log("socket ready (sort of)");
 
@@ -45,30 +137,73 @@ function sendTestMessage() {
 }
 
 
+function idGen() {
 
+    function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000)
+          .toString(16)
+          .substring(1);
+    }
+
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+        s4() + '-' + s4() + s4() + s4();
+}
 
 
 
 function submitOrder() {
 
     let sampleOrder = {
-                    "user_id" : "uid",
-                    "side" : "Buy",
-                    "ticker" : "test",
-                    "quantity" : "test",
-                    "type" : "MKT",
-                    "duration" : "test",
-                    "account" : "test",
-                    "broker" : "test",
-                    "portfolio_id" : "24",
+
+        order_id : idGen(),
+        symbol : document.getElementById("symbol").value,
+        creation_time : new Date,
+        type : document.getElementById("type").value,
+        action : document.getElementById("action").value,
+        quantity : document.getElementById("quantity").value,
+        price : document.getElementById("price").value,
+        duration : document.getElementById("duration").value,
+        status : "sent",
+        portfolio_id : document.getElementById("portfolio").value,
+        account_id : document.getElementById("account").value,
+        currency : document.getElementById("currency").value,
+        exchange : document.getElementById("exchange").value
+
                    };
 
     function cb() {};
 
-    ajaxRequest("POST", "/order", {}, JSON.stringify(sampleOrder), cb);
+    ajaxRequest("POST", "/order", {"Content-Type" : "application/json"}, JSON.stringify(sampleOrder), cb);
+
+    console.log("SENT ORDER:");
+    console.log(sampleOrder);
 }
 
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 </body>
 </html>

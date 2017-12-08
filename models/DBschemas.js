@@ -121,33 +121,38 @@ const ExchangeSchema = exports.ExchangeSchema = new Schema ({
 });
 
 const BookSchema = exports.BookSchema = new Schema ({
-	order_id : {type : String, required : true},
-	timestamp : {type : Date, required : true},
-	quantity : {type : Number, required : true}, 
-	price : {type : Number, required : true},
-	security_id : {type : String, required : true},
-	security_symbol : {type : String, required : true},
-	execution_broker_symbol : {type : String, required : true},
-	clearing_broker_symbol : {type : String, required : true},
-	exchange_symbol : {type : String, required : true},
-	account_id : {type : String, required : true},
-	order_tag : {type : String}, // to be verified
+	order_id : {type : String, required : true}, //ExecID
+	timestamp : {type : Date, required : true}, //SendingTime
+	quantity : {type : Number, required : true}, //CumQty signed
+	price : {type : Number, required : true}, //LastPrice
+	security_id : {type : String}, //neglect
+	security_symbol : {type : String, required : true}, //Symbol
+	execution_broker_symbol : {type : String, required : true}, //SenderCompID
+	clearing_broker_symbol : {type : String, required : true}, //SenderCompID
+	currency : {type: String}, //from BlotterSchema
+	exchange_symbol : {type : String, required : true}, //from BlotterSchema
+	account_id : {type : String, required : true}, //from BlotterSchema
+	portfolio_id : {type : String}, //from BlotterSchema
 });
 
+// Accepted (Acknowledged) order must be stored here
 const BlotterSchema = exports.BlotterSchema = new Schema ({
-	order_id : {type : String, required : true, unique : true},
-	symbol : {type : String, required : true},
-	creation_time : {type : Date, required : true},
-	timestamp : {type : Date, required : true}, // all amendation
-	type : {type : String, required : true},
-	action : {type : String, required : true},
-	quantity : {type : String, required : true},
-	price : {type : Number, required : true},
-	duration : {type : String, required : true},
-	status : {type : String, required : true},
-	tag : {type : String, required : true},
-	broker : {type : String, required : true},
-	account : {type : String, required : true}
+	order_id : {type : String, required : true, unique : true}, //CIOrdID
+	external_order_id : {type : String}, //OrderdID
+	symbol : {type : String, required : true}, //Symbol
+	creation_time : {type : Date, required : true}, //SendingTime
+	timestamp : {type : Date, required : true}, //SendingTime
+	type : {type : String, required : true}, //OrdType
+	action : {type : String, required : true}, //Side
+	quantity : {type : String, required : true}, //CumQty
+	price : {type : Number, required : true}, //LastPx
+	duration : {type : String, required : true}, //from UI ("DAY" or "GTC")
+	status : {type : String, required : true}, // OrdStatus or "Sent"
+	tag : {type : String, required : true}, //Text 
+	broker : {type : String, required : true}, //SenderCompID
+	account : {type : String, required : true}, //from UI
+	portfolio : {type : String, required : true}, //from UI
+	exchange : {type : String, required : true}, //from UI
 });
 
 const FillOrCancelSchema = exports.FillOrCancelSchema  = new Schema ({

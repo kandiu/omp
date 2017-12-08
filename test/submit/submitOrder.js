@@ -16,16 +16,20 @@ var sampleOrder;
 function initializeSampleOrder() {
 
     sampleOrder = {
-                    "user_id" : "uid",
-                  	"side" : "Buy",
-	                "ticker" : "test",
-	                "quantity" : "test",
-	                "type" : "MKT",
-	                "duration" : "test",
-	                "account" : "test",
-                 	"broker" : "test",
-	                "portfolio_id" : "24",
-                   };
+        account_id : "gs1",
+        action : "BUY",
+        creation_time : new Date(),
+        currency : "CHF",
+        duration : "1",
+        exchange : "IBIS",
+        order_id : "e965c5db-200c-75f1-9108-2bae3fe250a0",
+        portfolio_id : "stks-1",
+        price : "50",
+        quantity : "1",
+        status : "sent",
+        symbol : "SPX",
+        type : "MKT"
+    };
 }
 
 function submitOrder(order, expectedStatusCode, done) {
@@ -49,7 +53,7 @@ function seed(done){
 describe('submit an order', function(){
 
 //        before(utils.dropDb);
-//        before(seed);
+        before(seed);
 //        after(utils.dropDb);
 //        after(seed);
 
