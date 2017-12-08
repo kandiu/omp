@@ -37,41 +37,85 @@ client.dataHandler = function(data){
     else if (status == 2) {
         processAsExecution(obj);
     }
-    else if (status == 4) {
-        processAsCanceled(obj);
-    }
     else if (status == 8) {
         processAsRejected(obj);
     }
 };
 
 
-function processAsNew(order) {
+function processAsNew(report) {
 
-//    let dbObj = translate.reportToBlotter(order);
+    setBlotterFields(report, function() {
 
-//    dbRw.writeBlotter(dbObj, function(saved) {
-//        dbRw.readBlotter(saved.order_id, function(found) {
-            eventBus.emit("order_acknowledged", order);
-//        });
-//    });
+        let order_id = report.clOrdID.value;
+
+        dbRw.readBlotter(order_id, function(found) {
+            eventBus.emit("order_acknowledged", found);
+        });
+    });
 }
 
-function processAsExecution(order) {
+function processAsRejected(report) { 
+
+    setBlotterFields(report, function() {
+
+        let order_id = report.clOrdID.value;
+
+        dbRw.readBlotter(order_id, function(found) {
+            eventBus.emit("order_rejected", found);
+        });
+    });
+}
+
+function processAsExecution(report) {
 
 //    let dbObj = translate.reportToExecution(order);
 
 //    dbRw.writeExecution(dbObj, function(saved) {
 //        dbRw.readExecution(saved.order_id, function(found) {
-            eventBus.emit("order_executed", order);
+            eventBus.emit("order_executed", report);
 //        });
 //    });
 }
 
 
-function processAsRejected(order) { 
+function setBlotterFields(report, next) {
 
-    eventBus.emit("order_rejected", order);
+    let order_id = report.clOrdID.value;
+
+    let data = {
+
+        external_order_id : report.orderID.value,
+        timestamp : parseDateString(report.sendingTime.value),
+        broker : report.senderCompID.value
+    };
+
+    if (report.ordStatus.value == 0)
+        data.status = "new";
+    else if (report.ordStatus.value == 8)
+        data.status = "rejected";
+
+    dbRw.updateBlotter(order_id, data, next);
+
+    
+}
+
+function parseDateString(dateString) {
+
+    let Y = dateString.substring(0,4);
+    let M = dateString.substring(4,6);
+    let D = dateString.substring(6,8);
+    let h = dateString.substring(9,11);
+    let m = dateString.substring(12,14);
+    let s = dateString.substring(15,17);
+    let ms = dateString.substring(18,21);
+    
+    let date = new Date(Y,M,D,h,m,s,ms);
+
+    console.log("DATE STRING: " + dateString);
+    console.log("DATE: " + date);
+
+    return date;
 }
 
 

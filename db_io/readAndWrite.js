@@ -21,8 +21,19 @@ function readBlotter(order_id, next) {
             next(found);
         }
     });
-
 }
+
+// data: { fieldX : valueX, fieldY : valueY, ...}
+function updateBlotter(order_id, data, next) { 
+
+    Blotter.update({ "order_id" : order_id }, { $set: data }, function(err, done) {
+        if (! err) {
+            next();
+        }
+    });
+}
+
+
 
 // EXECUTION
 
@@ -50,6 +61,7 @@ module.exports = {
 
     'writeBlotter' : writeBlotter,
     'readBlotter' : readBlotter,
+    'updateBlotter' : updateBlotter,
     'writeExecution' : writeExecution, 
     'readExecution' : readExecution,
 }

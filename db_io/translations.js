@@ -15,7 +15,7 @@ function orderToBlotter(order) {
         external_order_id : "...",
         symbol : order.symbol,
         creation_time : order.creation_time,
-        timestamp : new Date(),
+        timestamp : new Date(0,0,0),
         type : order.type,
         action : order.action,
         quantity : order.quantity,
@@ -49,17 +49,18 @@ function orderToFix(order) {
         account : order.account_id,
         clOrdID : order.order_id,
         symbol : order.symbol,
-        text : "xxx|" + order.portfolio_id
+        orderQty : order.quantity,
+//        text : "xxx|" + order.portfolio_id
     };
 
-    if (order.action == 'BUY')
+    if (order.action.toLowerCase() == 'buy')
         fixObj.side = 1;
-    else
-        fixobj.side = 2;
+    else if (order.action.toLowerCase() == 'sell')
+        fixObj.side = 2;
 
-    if (order.type == 'MKT')
+    if (order.type.toLowerCase() == 'mkt')
         fixObj.ordType = 1;
-    else
+    else if (order.type.toLowerCase() == 'lmt')
         fixObj.ordType = 2;
 
     return fixObj;
