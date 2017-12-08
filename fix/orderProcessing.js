@@ -69,13 +69,18 @@ function processAsRejected(report) {
 
 function processAsExecution(report) {
 
-//    let dbObj = translate.reportToExecution(order);
+    let order_id = report.clOrdID.value;
 
-//    dbRw.writeExecution(dbObj, function(saved) {
-//        dbRw.readExecution(saved.order_id, function(found) {
-            eventBus.emit("order_executed", report);
-//        });
-//    });
+    setBlotterFields(report, function() {
+
+        addBookEntry(report, function() {
+
+            dbRw.readBlotter(order_id, function(found) {
+
+                eventBus.emit("order_executed", found);
+            });       
+        });
+    });   
 }
 
 
@@ -94,11 +99,20 @@ function setBlotterFields(report, next) {
         data.status = "new";
     else if (report.ordStatus.value == 8)
         data.status = "rejected";
+    else if (report.ordStatus.value == 2) {
+        data.status = "fill";
+        data.price = report.lastPx.value;
+        data.quantity = report.cumQty.value;
+    }
 
-    dbRw.updateBlotter(order_id, data, next);
-
-    
+    dbRw.updateBlotter(order_id, data, next);   
 }
+
+function addBookEntry(report, next) {
+
+    next();
+}
+
 
 function parseDateString(dateString) {
 
