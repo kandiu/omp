@@ -12,17 +12,12 @@ function startServer(httpServer) {
 
         sessions.push({sock : socket, user : "xxx"});
 
-        console.log(sessions.length + " clients connected");
-
         socket.on('disconnect', function() {
 
-            sessionsObj = sessions.find(function(so) 
-                          { return so.sock == socket; });
+            sessionsObj = sessions.find(so => so.sock == socket);
 
             let idx = sessions.indexOf(sessionsObj);
             sessions.splice(idx, 1);
-            console.log(sessions.length + " clients connected");
-
         });
 
         socket.on('session_user', function(user) {
@@ -31,8 +26,6 @@ function startServer(httpServer) {
                           { return so.sock == socket; });
 
             sessionsObj.user = user;
-
-            console.log("SESSIONS:");
 
             sessions.forEach(function(s) { 
 
@@ -52,20 +45,15 @@ function startServer(httpServer) {
     });
 
     eventBus.on('order_acknowledged', function(blotter){
-        checkUser(blotter);
-        io.emit('order_acknowledged', blotter);
+        sendToUser(blotter, 'order_acknowledged');
     });
 
     eventBus.on('order_executed', function(blotter){
-        io.emit('order_executed', blotter);
-    });
-
-    eventBus.on('order_canceled', function(blotter){
-        io.emit('order_canceled', blotter);
+        sendToUser(blotter, 'order_executed');
     });
 
     eventBus.on('order_rejected', function(blotter){
-        io.emit('order_rejected', blotter);
+        sendToUser(blotter, 'order_rejected');
     });
 
     eventBus.on('new_book_entry', function(blotter){
@@ -74,10 +62,15 @@ function startServer(httpServer) {
 }
 
 
-function checkUser(blotter) {
+function sendToUser(blotter, messageType) {
 
     dbRw.blotterUser(blotter, function(user) {
-        console.log("SENDING TO: " + user);
+
+        let relevantSessions = sessions.filter(s => s.user == user)
+
+        relevantSessions.forEach(function(s) {
+            s.sock.emit(messageType, blotter);
+        });
     });
 }
 
@@ -87,17 +80,6 @@ function updateSessions() {
         io.emit('session_poll');
     }
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 module.exports = {'startServer' : startServer,
