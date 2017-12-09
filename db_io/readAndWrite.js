@@ -4,6 +4,8 @@ const Execution = models.Execution;
 const Blotter = models.Blotter;
 const Account = models.Account;
 const Book = models.Book;
+const User = models.User;
+const Portfolio = models.Portfolio;
 
 
 // BLOTTER
@@ -65,7 +67,39 @@ function readBook(exec_id, next) {
     });
 }
 
+// USER
 
+function readUser(uname, next) {
+
+    User.findOne({"name" : uname}, function(err, found) {
+        if (! err) {
+            next(found);
+        }
+    });
+}
+
+function blotterUser(blotter, next) {
+
+    User.find({}, function(err, users) {
+
+        let user = users.find(function(u) {
+                    return u.portfolios.includes(blotter.portfolio);                
+                   });
+
+        next(user.name);
+    });
+}
+
+// PORTFOLIO
+
+function readPortfolio(portfolio_id, next) {
+
+    Portfolio.findOne({"symbol" : portfolio_id}, function(err, found) {
+        if (! err) {
+            next(found);
+        }
+    });
+}
 
 
 module.exports = {
@@ -75,7 +109,10 @@ module.exports = {
     'updateBlotter' : updateBlotter,
     'readAccount' : readAccount,
     'writeBook' : writeBook,
-    'readBook' : readBook
+    'readBook' : readBook,
+    'readUser' : readUser,
+    'readPortfolio' : readPortfolio,
+    'blotterUser' : blotterUser,
 }
 
 

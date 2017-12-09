@@ -101,8 +101,8 @@ socket.on("connect_error", function(err) {
     console.log("no connection");
 });
 
-socket.on("test_reply", function(report) {
-    console.log(report);
+socket.on("test_reply", function(msg) {
+    console.log(msg);
 })
 
 
@@ -141,9 +141,7 @@ socket.on("session_poll", function(book) {
     socket.emit("session_user", user);
 });
 
-
-
-console.log("socket ready (sort of)");
+changeUser();
 
 
 function sendTestMessage() {
@@ -198,6 +196,9 @@ function changeUser() {
 
     let select = document.getElementById("user_select");
     user = select.options[select.selectedIndex].text;
+    let url = "/login/" + user;
+    function cb() {};
+    ajaxRequest("GET", url, {}, {}, cb);
     console.log("USER: " + user);
 }
 

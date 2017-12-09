@@ -1,15 +1,13 @@
 const express = require('express');
 const router = express.Router();
+const ws = require('../../wsServer');
 
 const models = require('../../models');
 const User = models.User;
 const Portfolio = models.Portfolio;
 const Account = models.Account;
 const AssetClass = models.AssetClass;
-const Equity = models.Equity;
-const Index = models.Index;
-const Future = models.Future;
-const Option = models.Option;
+
 
 router.get('/', function(req, res){
 	res.status(200).json({});
@@ -141,6 +139,7 @@ function sendUserData(userObject, res) {
 
     function finish() {
         res.status(200).json(userData);
+        ws.updateSessions();
     }
 }
 
