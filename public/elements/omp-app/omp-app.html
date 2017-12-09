@@ -96,16 +96,19 @@
                 console.log("no connection");
             });
 
-            this.socket.on("test_reply", function(rep) {
-                console.log(rep);
+            this.socket.on("order_acknowledged", function(blotter) {
+                console.log("order_acknowledged");
+                console.log(blotter);
             })
 
-            this.socket.on("order_sent", function(order) {
-                console.log("order_sent message for:");
-                console.log(order);
-            });
-            this.socket.on('order_report', function(data){
-                console.log("Report: ", data);
+            this.socket.on("order_rejected", function(blotter) {
+                console.log("order_rejected");
+                console.log(blotter);
+            })
+
+            this.socket.on("order_executed", function(blotter) {
+                console.log("order_executed");
+                console.log(blotter);
             })
 
        }
