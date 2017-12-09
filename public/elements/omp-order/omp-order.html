@@ -125,6 +125,7 @@
 	     axios.post('/order', order)
             .then(function(rs){
                 console.log("Sending :", rs)
+                console.log("order: " + JSON.stringify(order))
             })
 	 }
      }
