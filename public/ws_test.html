@@ -10,6 +10,15 @@
 
 <h1>socket test</h1>
 
+
+<select id="user_select" onchange="changeUser()">
+    <option value="igor" selected>igor</selected>
+    <option value="uma">uma</selected>
+    <option value="marcel">marcel</selected>
+    <option value="robert">robert</selected>
+    <option value="eljon">eljon</selected>
+</select>
+
 <p></p>
 <div>
     <p>symbol</p>
@@ -82,6 +91,7 @@
 <script>
 
 const socket = io();
+var user = "igor";
 
 socket.on('connect', function() {
     console.log("connection established");
@@ -124,6 +134,11 @@ socket.on("order_rejected", function(order) {
 socket.on("new_book_entry", function(book) {
     console.log("new_book_entry:");
     console.log(book);
+});
+
+socket.on("session_poll", function(book) {
+    console.log("poll_request:");
+    socket.emit("session_user", user);
 });
 
 
@@ -177,6 +192,13 @@ function submitOrder() {
 
     console.log("SENT ORDER:");
     console.log(sampleOrder);
+}
+
+function changeUser() {
+
+    let select = document.getElementById("user_select");
+    user = select.options[select.selectedIndex].text;
+    console.log("USER: " + user);
 }
 
 </script>

@@ -3,15 +3,19 @@ function startServer(httpServer) {
 
     const io = require('socket.io')(httpServer);
     const eventBus = require('./pubsub');
-    console.log("initialized socket.io");
 
+    var sessions = [];
 
     io.on('connection', function(socket) {
 
-        console.log("client connected");
+        sessions.push(socket);
+
+        console.log(sessions.length + " clients connected");
 
         socket.on('disconnect', function(){
-          console.log('client disconnected');
+            let idx = sessions.indexOf(socket);
+            sessions.splice(idx, 1);
+            console.log(sessions.length + " clients connected");
         });
 
         socket.on('test_message', function(msg) {
