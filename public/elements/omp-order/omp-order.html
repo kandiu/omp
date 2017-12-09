@@ -105,13 +105,21 @@
 	 _send(ev) {
 	     let m = ev.model.item
 	     let order = {
-         clOrdID: this._guid(),
-		 type: 'SingleOrder',
-		 account: m.account,
-		 side:  m.side === "buy" ? 1 : 2,
-		 text: `${m.user}|${m.portfolio}`,
-		 symbol: m.ticker,
-		 ordType: m.type == "MKT" ? 1 : 2,
+
+            order_id : this._guid(),
+            symbol : m.ticker,
+            creation_time : new Date(),
+            type : m.type,
+            action : m.side,
+            quantity : m.quantity,
+            price : m.price,
+            duration : m.duration,
+            status : "sent",
+            portfolio_id : "stks-1", // TODO retrieve selected portfolio
+            account_id : "gs1",      // TODO retrieve selected account
+            currency : "CHF",        // TODO retrieve selected currency
+            exchange : "IBIS"        // TODO retrieve selected exchange
+
 	     }
 
 	     axios.post('/order', order)
