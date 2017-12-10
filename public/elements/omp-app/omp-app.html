@@ -48,6 +48,10 @@
                             <a class="nav-link" on-click="changePage" data="analytics">Analytics</a>
                         </li>
                     </ul>
+		    <div class="form-inline my-2 my-lg-0">
+			<button class="btn mr-2 btn-secondary" on-click="_sendSelected">Send</button>
+			<button class="btn btn-secondary " on-click="_removeSelected">Remove</button>
+		    </div>
                 </div>
             </nav>
         </div>
@@ -69,64 +73,72 @@
 </div>
 </template>
 <script>
-   class OmpApp extends Polymer.Element{
-       static get is() { return 'omp-app'; }
-       static get properties(){
-           return {
-               title: {
-                   type: String,
-                   value: "Order Management System TEST"
-               },
-               pageName: {
-                   type: String,
-                   value: "order"
-               }
-           }
-       }
+ class OmpApp extends Polymer.Element{
+     static get is() { return 'omp-app'; }
+     static get properties(){
+         return {
+             title: {
+                 type: String,
+                 value: "Order Management System TEST"
+             },
+             pageName: {
+                 type: String,
+                 value: "order"
+             }
+         }
+     }
 
-       connectedCallback() {
-            super.connectedCallback();
-            this.socket = io();
+     connectedCallback() {
+         super.connectedCallback();
+         this.socket = io();
 
-            this.socket.on('connect', function() {
-                console.log("connection established");
-            });
+         this.socket.on('connect', function() {
+             console.log("connection established");
+         });
 
-            this.socket.on("connect_error", function(err) {
-                console.log("no connection");
-            });
+         this.socket.on("connect_error", function(err) {
+             console.log("no connection");
+         });
 
-            this.socket.on("order_acknowledged", function(blotter) {
-                console.log("order_acknowledged");
-                console.log(blotter);
-            })
+         this.socket.on("order_acknowledged", function(blotter) {
+             console.log("order_acknowledged");
+             console.log(blotter);
+         })
 
-            this.socket.on("order_rejected", function(blotter) {
-                console.log("order_rejected");
-                console.log(blotter);
-            })
+         this.socket.on("order_rejected", function(blotter) {
+             console.log("order_rejected");
+             console.log(blotter);
+         })
 
-            this.socket.on("order_executed", function(blotter) {
-                console.log("order_executed");
-                console.log(blotter);
-            })
+         this.socket.on("order_executed", function(blotter) {
+             console.log("order_executed");
+             console.log(blotter);
+         })
 
-       }
-       changePage(ev){
-           console.log(ev.target.getAttribute('data'));
-           this.set('pageName', ev.target.getAttribute('data'));
-       }
+     }
+     changePage(ev){
+         console.log(ev.target.getAttribute('data'));
+         this.set('pageName', ev.target.getAttribute('data'));
+     }
 
-       _newOrder(ev) {
-          this.$.order.addOrder(ev.detail)
-      }
+     
+     _newOrder(ev) {
+         this.$.order.addOrder(ev.detail)
+     }
 
-      _edit(ev) {
-          console.log(ev.detail)
-      }
+     _edit(ev) {
+         console.log(ev.detail)
+     }
+
+     _sendSelected(ev) {
+	 this.$.order._sendSelected()
+     }
+     _removeSelected(ev) {
+	 this.$.order._removeSelected()
+     }
 
 
-  }
-  customElements.define(OmpApp.is, OmpApp);
+ }
+ customElements.define(OmpApp.is, OmpApp);
 </script>
 </dom-module>
