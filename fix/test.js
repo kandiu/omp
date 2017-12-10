@@ -13,8 +13,7 @@ order = {
      ordType: "1",
      text: "text",
      orderQty: "10",
-     //currency: "USD",
+     currency: "USD",
 }
-       
-fixclient.send(order);
 
+fixclient.send(order);

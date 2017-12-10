@@ -1,9 +1,16 @@
 
-<link rel="import" href="../../../bower_components/vaadin-charts/vaadin-scatter-chart.html">
+<link rel="import" href="../../../bower_components/vaadin-charts/vaadin-line-chart.html">
+<link rel="import" href="../../../bower_components/vaadin-charts/vaadin-column-chart.html">
 <link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
 
 <dom-module id="omp-analytics">
     <template>
+        <style>
+            #chart{
+                width: 100%;
+                height: 70%;
+            }
+        </style>
 
         <vaadin-grid aria-label="Basic Binding Example" items="[[openPositions]]">
             <vaadin-grid-column lex-grow="0">
@@ -19,15 +26,10 @@
                 <template>[[item.openprice]]</template>
             </vaadin-grid-column>
         </vaadin-grid>
-
-        <vaadin-scatter-chart on-selection="selectionListener">
+<div id="chart">
+        <vaadin-line-chart on-selection="selectionListener">
             <chart-title>Orders</chart-title>
-            <tooltip enabled="false"></tooltip>
 
-            <!--<plot-options>-->
-                <!--<series point-start="1">-->
-                <!--</series>-->
-            <!--</plot-options>-->
 
             <x-axis id="time" name="time" type="datetime">
                 <chart-title>Date</chart-title>
@@ -35,10 +37,20 @@
             <y-axis id="q">
                 <chart-title>Quantity</chart-title>
             </y-axis>
-            <data-series name="quantity" data="[[datas]]" y-axis="q">
+
+            <y-axis id="price">
+                <chart-title>Price</chart-title>
+                <opposite>true</opposite>
+            </y-axis>
+
+            <data-series name="quantity" type="column" data="[[datas]]" y-axis="q">
             </data-series>
 
-        </vaadin-scatter-chart>
+            <data-series name="price" type="scatter" data="[[prices]]"y-axis="price">
+            </data-series>
+
+        </vaadin-line-chart>
+</div>
 
 
     </template>
@@ -113,13 +125,30 @@
                     let res = this.book.map(function(d) {
                         let t =  Date.parse(d.timestamp);
                         let v =  d.quantity;
+                        let price =  d.quantity;
 
                         return [t, v];
                     }.bind(this));
 
                     this.set('datas', res)
-                    console.log("Data for chart: ", res);
+                    console.log("Data for chart datas: ", res);
                     console.log("###### Value of openPrice: ", this.openPrice)
+                }.bind(this));
+
+            axios.get(`/book`)
+                .then(function(d) {
+                    this.book = d.data;
+
+                    let res = this.book.map(function(d) {
+                        let t =  Date.parse(d.timestamp);
+                        let price =  d.price;
+
+                        return [t, price];
+                    }.bind(this));
+
+                    this.set('prices', res)
+                    console.log("Data for chart prices: ", prices);
+
                 }.bind(this))
         }
 
@@ -155,3 +184,4 @@
     customElements.define(OmpAnalytics.is, OmpAnalytics);
 </script>
 </dom-module>
+

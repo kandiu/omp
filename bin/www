@@ -3,8 +3,8 @@ var debug = require('debug')('omp-server');
 var app = require('../app');
 var fixclient = require("../fix/orderProcessing.js")
 
-var runclient = true
-if (runclient) fixclient.connect()
+
+if (process.env.START_QUICKFIX === "true") fixclient.connect()
 
 var ws = require('../wsServer');
 
