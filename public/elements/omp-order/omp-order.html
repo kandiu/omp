@@ -81,6 +81,10 @@
 	     order.order_id = this._guid()
 	     this.push('orders', order);
          }
+
+	 updateOrder(order){
+	     this.set(`orders.${order.index}`, order)
+	 }
          _remove(ev) {
 	     let index = ev;
 	     if ( ev instanceof MouseEvent ) index = ev.model.index;
