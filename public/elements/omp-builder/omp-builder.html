@@ -99,7 +99,7 @@
                 <div class="row">
                     <div class="col">
                         <template is="dom-if" if="{{ _isMKT(_selectedType)}}">
-                            <vaadin-text-field readonly value="50" label="Price"></vaadin-text-field>
+                            <vaadin-text-field readonly value="" label="Price"></vaadin-text-field>
                         </template>
                         <template is="dom-if" if="{{ !_isMKT(_selectedType) }}">
                             <vaadin-text-field value="{{_price}}" label="Price"></vaadin-text-field>
@@ -164,7 +164,7 @@
                  },
                  _quantity: {
                      type: Number,
-                     value: 50
+                     value: 0
                  },
                  _selectedType: {
                      type: String,
@@ -220,7 +220,7 @@
                  },
                  _price:{
                      type: Number,
-                     value: 50
+                     //value: 50
                  },
                  _selectedAccount: {
                      type: Object
@@ -344,6 +344,16 @@
              return s === "MKT"
          }
          createOrder(ev){
+            let errmsg = "";
+            if (this._quantity <= 0) {errmsg += "Quantity must be strictly positive\n";}
+            if (this._selectedType === 'LMT' && this._price <= 0) {
+                errmsg += "A limit price must be strictly positive\n";
+            }
+
+            if (errmsg != "") {
+                alert(errmsg);
+                return
+            }
 	     
              let order = {
                  account: this._selectedAccount.account_id,
@@ -353,10 +363,10 @@
                  ticker: this._selectedTicker,
                  quantity: this._quantity,
                  type: this._selectedType,
-                 price: this._selectedType === 'MKT' ? 50 : this._price,
+                 price: this._selectedType === 'LMT' ? 0 : this._price,
                  duration: this._selectedDuration,
-		 asset_class: this._selectedAssetClass,
-		 broker: this._selectedBroker,
+		         asset_class: this._selectedAssetClass,
+		         broker: this._selectedBroker,
              }
              queryRegistry(this._selectedSymbol, function(reg) {
                  let ticker = getTickers(JSON.parse(reg));
