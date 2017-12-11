@@ -357,6 +357,8 @@
                  duration: this._selectedDuration,
 		 asset_class: this._selectedAssetClass,
 		 broker: this._selectedBroker,
+		 currency: this._currency,
+		 exchange: this._exchange
              }
              queryRegistry(this._selectedSymbol, function(reg) {
                  let ticker = getTickers(JSON.parse(reg));
