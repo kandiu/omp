@@ -16,133 +16,125 @@
     <template>
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
         <style >
-        label{
-           text-transform: uppercase !important;
-       }
-       .container-fluid {
-           height:100% !important;
-       }
-       */
-   </style>
-   <div class="container">
-    <div class="row mt-4">
-        <omp-builder id="builder" class="col" on-new-order="_newOrder" on-update-order="_updateOrder"></omp-builder>
-    </div>
-</div>
-<div class="container-fluid">
-    <div class="row">
-        <div class="col">
-            <nav class="navbar navbar-expand-lg navbar-light bg-light ">
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav mr-auto">
-                        <li class="nav-item active">
-                            <a class="nav-link" on-click="changePage" data="order">Order</span></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" on-click="changePage" data="blotter">Blotter</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" on-click="changePage" data="history">History</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" on-click="changePage" data="analytics">Analytics</a>
-                        </li>
-                    </ul>
-		    <div class="form-inline my-2 my-lg-0">
-			<button class="btn mr-2 btn-secondary" on-click="_sendSelected">Send</button>
-			<button class="btn btn-secondary " on-click="_removeSelected">Remove</button>
-		    </div>
-                </div>
-            </nav>
-        </div>
-    </div>
-    <iron-pages selected="[[pageName]]" attr-for-selected="page-name" fallback-selection="order">
-        <div page-name="order" class="row">
-            <omp-order id="order"  class="col" on-edit-order="_edit"></omp-order>
-        </div>
-        <div page-name="blotter" class="row">
-            <omp-blotter id="blotter" class="col"></omp-blotter>
-        </div>
-        <div page-name="history" class="row">
-            <omp-execution id="execution"  class="col"></omp-execution>
-        </div>
-        <div page-name="analytics" id="analytics" class="row">
-            <omp-analytics class="col"></omp-analytics>
-        </div>
-    </iron-pages>
-</div>
-</template>
-<script>
- class OmpApp extends Polymer.Element{
-     static get is() { return 'omp-app'; }
-     static get properties(){
-         return {
-             title: {
-                 type: String,
-                 value: "Order Management System TEST"
-             },
-             pageName: {
-                 type: String,
-                 value: "order"
-             },
-
+         label{
+             text-transform: uppercase !important;
+	 }
+	 .container-fluid {
+             height:100% !important;
+	 }
+	 */
+	</style>
+	<div class="container">
+	    <div class="row mt-4">
+		<omp-builder id="builder" class="col" on-new-order="_newOrder" on-update-order="_updateOrder"></omp-builder>
+	    </div>
+	</div>
+	<div class="container-fluid">
+	    <div class="row">
+		<div class="col">
+		    <nav class="navbar navbar-expand-lg navbar-light bg-light ">
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			    <ul class="navbar-nav mr-auto">
+				<li class$="nav-item {{_isActivePage(pageName, 'order')}}">
+				    <a class="nav-link" on-click="changePage" data="order">Order</span></a>
+				</li>
+				<li class$="nav-item {{_isActivePage(pageName, 'blotter')}}">
+				    <a class="nav-link" on-click="changePage" data="blotter">Blotter</a>
+				</li>
+				<li class$="nav-item {{_isActivePage(pageName, 'history')}}">
+				    <a class="nav-link" on-click="changePage" data="history">History</a>
+				</li>
+				<li class$="nav-item {{_isActivePage(pageName, 'analytics')}}">
+				    <a class="nav-link" on-click="changePage" data="analytics">Analytics</a>
+				</li>
+			    </ul>
+			    <div class="form-inline my-2 my-lg-0">
+				<button class="btn mr-2 btn-secondary" on-click="_sendSelected">Send</button>
+				<button class="btn btn-secondary " on-click="_removeSelected">Remove</button>
+			    </div>
+			</div>
+		    </nav>
+		</div>
+	    </div>
+	    <iron-pages selected="[[pageName]]" attr-for-selected="page-name" fallback-selection="order">
+		<div page-name="order" class="row">
+		    <omp-order id="order"  class="col" on-edit-order="_edit"></omp-order>
+		</div>
+		<div page-name="blotter" class="row">
+		    <omp-blotter id="blotter" class="col"></omp-blotter>
+		</div>
+		<div page-name="history" class="row">
+		    <omp-execution id="execution"  class="col"></omp-execution>
+		</div>
+		<div page-name="analytics" id="analytics" class="row">
+		    <omp-analytics class="col"></omp-analytics>
+		</div>
+	    </iron-pages>
+	</div>
+    </template>
+    <script>
+     class OmpApp extends Polymer.Element{
+         static get is() { return 'omp-app'; }
+         static get properties(){
+             return {
+                 title: {
+                     type: String,
+                     value: "Order Management System TEST"
+                 },
+                 pageName: {
+                     type: String,
+                     value: "order"
+                 },
+             }
          }
+         connectedCallback() {
+             super.connectedCallback();
+             this.socket = io();
+             this.socket.on('connect', function() {
+                 console.log("connection established");
+             });
+             this.socket.on("connect_error", function(err) {
+                 console.log("no connection");
+             });
+             this.socket.on("order_acknowledged", function(data) {
+                 console.log("order_acknowledged");
+                 this.$.blotter.addReport(data);
+             }.bind(this))
+             this.socket.on("order_rejected", function(data) {
+                 console.log("order_rejected");
+                 this.$.execution.addReport(data);
+		 this.$.blotter.removeReport(data);
+             }.bind(this))
+             this.socket.on("order_executed", function(data) {
+                 console.log("order_executed");
+                 this.$.execution.addReport(data);
+		 this.$.blotter.removeReport(data);
+             }.bind(this))
+         }
+         changePage(ev){
+             this.set('pageName', ev.target.getAttribute('data'));
+         }
+         _newOrder(ev) {
+             this.$.order.addOrder(ev.detail)
+         }
+         _updateOrder(ev) {
+             this.$.order.updateOrder(ev.detail)
+         }
+         _edit(ev) {
+             this.$.builder._edit(ev.detail)
+         }
+         _sendSelected(ev) {
+             this.$.order._sendSelected()
+         }
+         _removeSelected(ev) {
+             this.$.order._removeSelected()
+         }
+
+	 _isActivePage(page, current){
+	     if ( page === current ) return "active";
+	     return "";
+	 }
      }
-
-     connectedCallback() {
-         super.connectedCallback();
-         this.socket = io();
-
-         this.socket.on('connect', function() {
-             console.log("connection established");
-         });
-
-         this.socket.on("connect_error", function(err) {
-             console.log("no connection");
-         });
-
-         this.socket.on("order_acknowledged", function(data) {
-             console.log("order_acknowledged");
-	     this.$.blotter.addReport(data);
-         }.bind(this))
-
-         this.socket.on("order_rejected", function(data) {
-             console.log("order_rejected");
-             console.log(data);
-         }.bind(this))
-
-         this.socket.on("order_executed", function(data) {
-             console.log("order_executed");
-             console.log(data);
-         }.bind(this))
-
-     }
-     changePage(ev){
-         this.set('pageName', ev.target.getAttribute('data'));
-     }
-
-     
-     _newOrder(ev) {
-         this.$.order.addOrder(ev.detail)
-     }
-
-     _updateOrder(ev) {
-         this.$.order.updateOrder(ev.detail)
-     }
-
-     _edit(ev) {
-	 this.$.builder._edit(ev.detail)
-     }
-
-     _sendSelected(ev) {
-	 this.$.order._sendSelected()
-     }
-     _removeSelected(ev) {
-	 this.$.order._removeSelected()
-     }
-
-
- }
- customElements.define(OmpApp.is, OmpApp);
-</script>
+     customElements.define(OmpApp.is, OmpApp);
+    </script>
 </dom-module>

@@ -83,6 +83,13 @@
 	     this.push('reports', data);
 	 }
 
+	 removeReport(data){
+	     let i = this.reports.findIndex(function(r){
+		 return data.order_id === r.order_id
+	     })
+
+	     if ( i > -1 ) this.splice('reports', i, 1);
+	 }
      }
      customElements.define(OmpBlotter.is, OmpBlotter);
     </script>
