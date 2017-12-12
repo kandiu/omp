@@ -20,7 +20,7 @@ function startServer(httpServer) {
             sessions.splice(idx, 1);
         });
 
-        socket.on('session_user', function(user) {
+        socket.on('user-changed', function(user) {
 
             sessionsObj = sessions.find(function(so) 
                           { return so.sock == socket; });
@@ -66,6 +66,8 @@ function sendToUser(blotter, messageType) {
 
     dbRw.blotterUser(blotter, function(user) {
 
+        console.log("LOOKING FOR " + user);
+
         let relevantSessions = sessions.filter(s => s.user == user)
 
         relevantSessions.forEach(function(s) {
@@ -74,17 +76,8 @@ function sendToUser(blotter, messageType) {
     });
 }
 
-function updateSessions() {
 
-    if (io != null) {
-        io.emit('session_poll');
-    }
-}
-
-
-module.exports = {'startServer' : startServer,
-                  'updateSessions' : updateSessions
-                };
+module.exports = {'startServer' : startServer };
 
 
 

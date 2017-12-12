@@ -89,3 +89,4 @@ fix/quickfix_initiator/logs/*
 *FIXIMULATOR-OMPInitiator.body
 *FIXIMULATOR-OMPInitiator.header
 *FIXIMULATOR-OMPInitiator.seqnums
+*.DS_Store

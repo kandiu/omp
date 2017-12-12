@@ -136,10 +136,6 @@ socket.on("new_book_entry", function(book) {
     console.log(book);
 });
 
-socket.on("session_poll", function(book) {
-    console.log("poll_request:");
-    socket.emit("session_user", user);
-});
 
 changeUser();
 
@@ -200,6 +196,8 @@ function changeUser() {
     function cb() {};
     ajaxRequest("GET", url, {}, {}, cb);
     console.log("USER: " + user);
+
+    socket.emit("user-changed", user);
 }
 
 </script>

@@ -27,6 +27,26 @@ function readBlotter(order_id, next) {
     });
 }
 
+function deleteBlotter(order_id) {
+
+    Blotter.remove({ "order_id" : order_id }, function(err) {
+        if (err)
+            console.log("ERROR DELETING BLOTTER: " + err);
+        console.log("DELETED blotter " + order_id);
+    });
+}
+
+function clearBlotters() {
+
+    Blotter.remove({}, function(err) {
+        if (err)
+            console.log(err);
+            console.log("CLEARED BLOTTERS");
+    });
+}
+
+
+
 // data: { fieldX : valueX, fieldY : valueY, ...}
 function updateBlotter(order_id, data, next) { 
 
@@ -101,18 +121,68 @@ function readPortfolio(portfolio_id, next) {
     });
 }
 
+function portfolioList(pfIdList, next) {
+
+    Portfolio.find({ "symbol" : { $in : pfIdList } }, function(err, found) {
+
+        if (! err) {
+            next(found);
+        }
+    });
+} 
+
+// EXECUTION
+
+function writeExecution(execObj, next) {
+
+    execObj.save(function(err, saved) {
+        if (! err) { 
+            console.log("SAVED EXECUTION");
+            console.log(saved);
+        }   
+
+        else
+            console.log("ERROR SAVING EXECUTION: " + err);
+       
+    });
+}
+
+function readExecutions(next) {
+
+    Execution.find({}, function(err, found) {
+        if (! err) {
+            next(found);
+        }
+    });
+}
+
+function clearExecutions() {
+
+    Execution.remove({}, function(err) {
+        if (err)
+            console.log(err);
+            console.log("CLEARED EXECUTIONS");
+    });
+}
+
 
 module.exports = {
 
     'writeBlotter' : writeBlotter,
     'readBlotter' : readBlotter,
     'updateBlotter' : updateBlotter,
+    'deleteBlotter' : deleteBlotter,
+    'clearBlotters' : clearBlotters,
+    'blotterUser' : blotterUser,
     'readAccount' : readAccount,
-    'writeBook' : writeBook,
     'readBook' : readBook,
     'readUser' : readUser,
     'readPortfolio' : readPortfolio,
-    'blotterUser' : blotterUser,
+    'writeExecution' : writeExecution,
+    'readExecutions' : readExecutions,
+    'clearExecutions' : clearExecutions,
+    'writeBook' : writeBook,
+    'readBook' : readBook
 }
 
 

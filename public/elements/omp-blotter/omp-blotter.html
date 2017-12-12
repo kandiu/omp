@@ -1,119 +1,96 @@
 
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
-
 <link rel="import" href="../../../bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="../../../bower_components/vaadin-valo-theme/color.html">
 <link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
-
-
-
-
 <dom-module id="omp-blotter">
-  <template>
-    <style include="valo-colors">
-    
-    </style>
-    <dom-bind>
-	
-	<template is="dom-bind">
-            <!-- Fetch an array of users to be shown in the grid -->
-        <iron-ajax auto url="https://demo.vaadin.com/demo-data/1.0/people?count=200" handle-as="json" last-response="{{users}}"></iron-ajax>
-
-        <!-- The array is set as the <vaadin-grid>'s "items" property -->
-          <vaadin-grid aria-label="Basic Binding Example" items="[[users.result]]" theme="">
-
-          <vaadin-grid-column width="50px" flex-grow="0">
-            <template class="header">#</template>
-            <template>[[index]]</template>
-            <!-- If necessary, the footer could be set using <template class="footer"> -->
-            </vaadin-grid-column>
-
-            <vaadin-grid-column>
-              <template class="header">ACT</template>
-              <template>[[item.firstName]]</template>
-            </vaadin-grid-column> 
-
-            <vaadin-grid-column>
-              <template class="header">CANC</template>
-              <template>[[item.lastName]]</template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column>
-              <template class="header">SYMBOL</template>
-              <template>[[item.lastName]]</template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column>
-              <template class="header">ENT TIME</template>
-              <template>[[item.lastName]]</template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column>
-              <template class="header">TIME</template>
-              <template>[[item.lastName]]</template>
-            </vaadin-grid-column>
-
-
-            <vaadin-grid-column>
-              <template class="header">TYPE</template>
-              <template>[[item.lastName]]</template>
-            </vaadin-grid-column>
-
-
-            <vaadin-grid-column>
-              <template class="header">ACTION</template>
-              <template>[[item.lastName]]</template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column>
-              <template class="header">QUANTITY</template>
-              <template>[[item.lastName]]</template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column>
-              <template class="header">PRICE</template>
-              <template>[[item.lastName]]</template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column>
-              <template class="header">DURATION</template>
-              <template>[[item.lastName]]</template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column>
-              <template class="header">TAG</template>
-              <template>[[item.lastName]]</template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column>
-              <template class="header">BROKER</template>
-              <template>[[item.lastName]]</template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column>
-              <template class="header">ACCOUNT</template>
-              <template>[[item.lastName]]</template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column>
-              <template class="header">STATUS</template>
-              <template>[[item.lastName]]</template>
-            </vaadin-grid-column>
-
-          </vaadin-grid>
-      </template>
-    </dom-bind>  
-
-  </template>
-
+    <template>
+	<style include="valo-colors">
+	</style>
+	<vaadin-grid items="{{reports}}" theme="">
+	    <vaadin-grid-column>
+		<template class="header">ACT</template>
+		<template>[[item.action]]</template>
+	    </vaadin-grid-column>
+	    <vaadin-grid-column>
+		<template class="header">CANC</template>
+		<template>[[item.lastName]]</template>
+	    </vaadin-grid-column>
+	    <vaadin-grid-column>
+		<template class="header">SYMBOL</template>
+		<template>[[item.symbol]]</template>
+	    </vaadin-grid-column>
+	    <vaadin-grid-column>
+		<template class="header">ENT TIME</template>
+		<template>[[item.creation_time]]</template>
+	    </vaadin-grid-column>
+	    <vaadin-grid-column>
+		<template class="header">TIME</template>
+		<template>[[item.timestamp]]</template>
+	    </vaadin-grid-column>
+	    <vaadin-grid-column>
+		<template class="header">TYPE</template>
+		<template>[[item.type]]</template>
+	    </vaadin-grid-column>
+	    <vaadin-grid-column>
+		<template class="header">ACTION</template>
+		<template>[[item.action]]</template>
+	    </vaadin-grid-column>
+	    <vaadin-grid-column>
+		<template class="header">QUANTITY</template>
+		<template>[[item.quantity]]</template>
+	    </vaadin-grid-column>
+	    <vaadin-grid-column>
+		<template class="header">PRICE</template>
+		<template>[[item.price]]</template>
+	    </vaadin-grid-column>
+	    <vaadin-grid-column>
+		<template class="header">DURATION</template>
+		<template>[[item.duration]]</template>
+	    </vaadin-grid-column>
+	    <vaadin-grid-column>
+		<template class="header">TAG</template>
+		<template>[[item.tag]]</template>
+	    </vaadin-grid-column>
+	    <vaadin-grid-column>
+		<template class="header">BROKER</template>
+		<template>[[item.broker]]</template>
+	    </vaadin-grid-column>
+	    <vaadin-grid-column>
+		<template class="header">ACCOUNT</template>
+		<template>[[item.account]]</template>
+	    </vaadin-grid-column>
+	    <vaadin-grid-column>
+		<template class="header">STATUS</template>
+		<template>[[item.status]]</template>
+	    </vaadin-grid-column>
+	</vaadin-grid>
+    </template>
     <script>
-      class OmpBlotter extends Polymer.Element{
-        static get is() { return 'omp-blotter'; }
+     class OmpBlotter extends Polymer.Element{
+         static get is() { return 'omp-blotter'; }
+         static get properties(){
+             return {
+		 reports: {
+                     type: Array,
+                     value: () => []
+		 }
+             }
+         }
 
-        static get properties(){}
+	 addReport(data){
+	     console.log(data);
+	     this.push('reports', data);
+	 }
 
-      }
-      customElements.define(OmpBlotter.is, OmpBlotter);
+	 removeReport(data){
+	     let i = this.reports.findIndex(function(r){
+		 return data.order_id === r.order_id
+	     })
+
+	     if ( i > -1 ) this.splice('reports', i, 1);
+	 }
+     }
+     customElements.define(OmpBlotter.is, OmpBlotter);
     </script>
-
-  </dom-module>
+</dom-module>
