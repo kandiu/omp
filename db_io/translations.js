@@ -95,6 +95,35 @@ function blExecCurrToBook(blotter, exec_id, curr) {
     }
 }
 
+
+// BLOTTER TO EXECUTION
+
+function blotterToExecution(blotter) {
+
+    let executionData = {
+
+        order_id : blotter.order_id,
+        symbol : blotter.symbol,
+        timestamp : blotter.timestamp,
+        action : blotter.action,
+        quantity : blotter.quantity,
+        price : blotter.price,
+        status : blotter.status,
+        tag : blotter.tag,    
+        broker : blotter.broker,
+        account : blotter.account
+    }
+
+    try {
+        let executionObj = new Execution(executionData);
+        return executionObj;
+    }
+    catch (err) {
+        console.error(err);
+    }
+}
+
+
 // DATE STRING TO DATE
 
 function parseDateString(dateString) {
@@ -122,6 +151,7 @@ module.exports = {
     'orderToBlotter' : orderToBlotter,
     'orderToFix' : orderToFix,
     'blExecCurrToBook' : blExecCurrToBook,
+    'blotterToExecution' : blotterToExecution,
     'parseDateString' : parseDateString
 }
 
