@@ -1,6 +1,8 @@
 
 <link rel="import" href="../../../bower_components/vaadin-charts/vaadin-line-chart.html">
 <link rel="import" href="../../../bower_components/vaadin-charts/vaadin-column-chart.html">
+
+
 <link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
 
 <dom-module id="omp-analytics">
@@ -8,7 +10,7 @@
         <style>
             #chart{
                 width: 100%;
-                height: 70%;
+                height: 60%;
             }
         </style>
 
@@ -27,9 +29,8 @@
             </vaadin-grid-column>
         </vaadin-grid>
 <div id="chart">
-        <vaadin-line-chart on-selection="selectionListener">
+        <vaadin-line-chart on-selection="selectionListener" timeline>
             <chart-title>Orders</chart-title>
-
 
             <x-axis id="time" name="time" type="datetime">
                 <chart-title>Date</chart-title>
@@ -48,6 +49,14 @@
 
             <data-series name="price" type="scatter" data="[[prices]]"y-axis="price">
             </data-series>
+            <navigator enabled="false"></navigator>
+
+
+            <range-selector selected="2">
+                <button-theme fill="#7DADB2" stroke="BLACK" stroke-width="1">
+                    <chart-style color="#2282e2"></chart-style>
+                </button-theme>
+            </range-selector>
 
         </vaadin-line-chart>
 </div>
