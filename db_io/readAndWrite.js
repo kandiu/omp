@@ -111,17 +111,22 @@ function readUser(uname, next) {
 
 function blotterUser(blotter, next) {
 
+    portfolioUser(blotter.portfolio, next);
+}
+
+function portfolioUser(portfolio_id, next) {
+
     User.find({}, function(err, users) {
 
         let user = users.find(function(u) {
-                    return u.portfolios.includes(blotter.portfolio);                
+                    return u.portfolios.includes(portfolio_id);                
                    });
 
         next(user.name);
     });
 }
 
-// PORTFOLIO
+// PORTFOLIO 
 
 function readPortfolio(portfolio_id, next) {
 
@@ -150,7 +155,7 @@ function writeExecution(execObj, next) {
         if (! err) { 
             console.log("SAVED EXECUTION");
             console.log(saved);
-        }   
+        }    
 
         else
             console.log("ERROR SAVING EXECUTION: " + err);
@@ -205,11 +210,12 @@ module.exports = {
     'updateBlotter' : updateBlotter,
     'deleteBlotter' : deleteBlotter,
     'clearBlotters' : clearBlotters,
-    'blotterUser' : blotterUser,
     'readAccount' : readAccount,
     'accountList' : accountList,
     'readBook' : readBook,
     'readUser' : readUser,
+    'portfolioUser' : portfolioUser,
+    'blotterUser' : blotterUser,
     'readPortfolio' : readPortfolio,
     'portfolioList' : portfolioList,
     'writeExecution' : writeExecution,
