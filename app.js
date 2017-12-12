@@ -12,6 +12,10 @@ mongoose.connect('mongodb://localhost/' + config.mongoDbName, {
   useMongoClient: true,
 });
 
+const dbRw = require('./db_io/readAndWrite');
+dbRw.clearBlotters();
+dbRw.clearExecutions();
+
 
 //configure app
 app.use(logger('dev'));
