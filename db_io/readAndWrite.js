@@ -6,6 +6,7 @@ const Account = models.Account;
 const Book = models.Book;
 const User = models.User;
 const Portfolio = models.Portfolio;
+const AssetClass = models.AssetClass;
 
 
 // BLOTTER
@@ -67,6 +68,16 @@ function readAccount(account_id, next) {
         }
     });
 }
+
+function accountList(acIdList, next) {
+
+    Account.find({ "account_id" : { $in : acIdList } }, function(err, found) {
+
+        if (! err) {
+            next(found);
+        }
+    });
+} 
 
 // BOOK
 
@@ -165,6 +176,27 @@ function clearExecutions() {
     });
 }
 
+// ASSETCLASS
+
+function readAssetClass(classname, next) {
+
+    AssetClass.findOne({"classname" : classname}, function(err, found) {
+        if (! err) {
+            next(found);
+        }
+    });
+}
+
+function assetClassList(acIdList, next) {
+
+    AssetClass.find({ "classname" : { $in : acIdList } }, function(err, found) {
+
+        if (! err) {
+            next(found);
+        }
+    });
+} 
+
 
 module.exports = {
 
@@ -175,12 +207,16 @@ module.exports = {
     'clearBlotters' : clearBlotters,
     'blotterUser' : blotterUser,
     'readAccount' : readAccount,
+    'accountList' : accountList,
     'readBook' : readBook,
     'readUser' : readUser,
     'readPortfolio' : readPortfolio,
+    'portfolioList' : portfolioList,
     'writeExecution' : writeExecution,
     'readExecutions' : readExecutions,
     'clearExecutions' : clearExecutions,
+    'readAssetClass' : readAssetClass,
+    'assetClassList' : assetClassList,
     'writeBook' : writeBook,
     'readBook' : readBook
 }

@@ -1,12 +1,6 @@
 const express = require('express');
 const router = express.Router();
-
-const models = require('../../models');
-const User = models.User;
-const Portfolio = models.Portfolio;
-const Account = models.Account;
-const AssetClass = models.AssetClass;
-
+const dbRw = require('../../db_io/readAndWrite');
 
 router.get('/', function(req, res){
 	res.status(200).json({});
@@ -20,13 +14,13 @@ router.get('/:_username', function(req, res) {
     let uname = req.params._username;
     let userData = {};
 
-    User.findOne({'name' : uname}, function(err, found) {
-
-        if (err || found == null) 
-            res.status(404).end();           
-        else {
-            sendUserData(found, res);
+    dbRw.readUser(uname, function(found) {
+        if (found) {
+            sendUserData(found, res); 
         }
+        else {
+            res.status(404).end();  
+        }   
     }); 
 });
 
@@ -40,17 +34,10 @@ function sendUserData(userObject, res) {
 
     function addPortfolios() {
 
-        Portfolio.find({ "symbol" : { $in : userObject.portfolios } }, 
-            
-            function(err, found) {
-                
-                if (err) throw err;
-
-                userData.portfolios = found;
-
-                addAssetClasses(0);
+        dbRw.portfolioList(userObject.portfolios, function(pfs) {
+            userData.portfolios = pfs;
+            addAssetClasses(0);
         });
-
     }
 
     function addAssetClasses(portfolioIndex) {
@@ -73,11 +60,7 @@ function sendUserData(userObject, res) {
                 classNames.push(sa.asset_class);
             });
 
-            AssetClass.find({ "classname" : { $in : classNames } },
-
-                function (err, found) {
-
-                    if (err) throw err;
+            dbRw.assetClassList(classNames, function(found) {
 
                     mapping.classes = found;
                     userData.assetclasses.push(mapping);
@@ -101,16 +84,10 @@ function sendUserData(userObject, res) {
 
             let mapping = {portfolio_id : pf.symbol, accounts : []};
 
-            Account.find({ "account_id" : { $in : pf.accounts } }, 
-                
-            function(err, found) {
-                    
-                if (err) throw err;
+            dbRw.accountList(pf.accounts, function(found) { 
 
                 mapping.accounts = found;
-
                 userData.accounts.push(mapping);
-
                 addAccounts(++portfolioIndex);
             });
         }      
