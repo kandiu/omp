@@ -4,6 +4,9 @@ const Execution = models.Execution;
 const Blotter = models.Blotter;
 const Account = models.Account;
 const Book = models.Book;
+const User = models.User;
+const Portfolio = models.Portfolio;
+const AssetClass = models.AssetClass;
 
 
 // BLOTTER
@@ -66,6 +69,16 @@ function readAccount(account_id, next) {
     });
 }
 
+function accountList(acIdList, next) {
+
+    Account.find({ "account_id" : { $in : acIdList } }, function(err, found) {
+
+        if (! err) {
+            next(found);
+        }
+    });
+} 
+
 // BOOK
 
 function writeBook(bookObj, next) {
@@ -85,6 +98,54 @@ function readBook(exec_id, next) {
     });
 }
 
+// USER
+
+function readUser(uname, next) {
+
+    User.findOne({"name" : uname}, function(err, found) {
+        if (! err) {
+            next(found);
+        }
+    });
+}
+
+function blotterUser(blotter, next) {
+
+    portfolioUser(blotter.portfolio, next);
+}
+
+function portfolioUser(portfolio_id, next) {
+
+    User.find({}, function(err, users) {
+
+        let user = users.find(function(u) {
+                    return u.portfolios.includes(portfolio_id);                
+                   });
+
+        next(user.name);
+    });
+}
+
+// PORTFOLIO 
+
+function readPortfolio(portfolio_id, next) {
+
+    Portfolio.findOne({"symbol" : portfolio_id}, function(err, found) {
+        if (! err) {
+            next(found);
+        }
+    });
+}
+
+function portfolioList(pfIdList, next) {
+
+    Portfolio.find({ "symbol" : { $in : pfIdList } }, function(err, found) {
+
+        if (! err) {
+            next(found);
+        }
+    });
+} 
 
 // EXECUTION
 
@@ -94,7 +155,7 @@ function writeExecution(execObj, next) {
         if (! err) { 
             console.log("SAVED EXECUTION");
             console.log(saved);
-        }   
+        }    
 
         else
             console.log("ERROR SAVING EXECUTION: " + err);
@@ -120,7 +181,26 @@ function clearExecutions() {
     });
 }
 
+// ASSETCLASS
 
+function readAssetClass(classname, next) {
+
+    AssetClass.findOne({"classname" : classname}, function(err, found) {
+        if (! err) {
+            next(found);
+        }
+    });
+}
+
+function assetClassList(acIdList, next) {
+
+    AssetClass.find({ "classname" : { $in : acIdList } }, function(err, found) {
+
+        if (! err) {
+            next(found);
+        }
+    });
+} 
 
 
 module.exports = {
@@ -128,13 +208,22 @@ module.exports = {
     'writeBlotter' : writeBlotter,
     'readBlotter' : readBlotter,
     'updateBlotter' : updateBlotter,
+    'deleteBlotter' : deleteBlotter,
     'clearBlotters' : clearBlotters,
     'readAccount' : readAccount,
-    'writeBook' : writeBook,
-    'deleteBlotter' : deleteBlotter,
+    'accountList' : accountList,
+    'readBook' : readBook,
+    'readUser' : readUser,
+    'portfolioUser' : portfolioUser,
+    'blotterUser' : blotterUser,
+    'readPortfolio' : readPortfolio,
+    'portfolioList' : portfolioList,
     'writeExecution' : writeExecution,
     'readExecutions' : readExecutions,
     'clearExecutions' : clearExecutions,
+    'readAssetClass' : readAssetClass,
+    'assetClassList' : assetClassList,
+    'writeBook' : writeBook,
     'readBook' : readBook
 }
 

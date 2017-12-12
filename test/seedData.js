@@ -46,7 +46,7 @@ var users = {
   ]
 };
 
-var assetclasses = {
+var assetclasses = { 
   name : 'AssetClass',
   data : [
     {

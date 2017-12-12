@@ -8,14 +8,15 @@ router.post('/', function(req, res) {
 
     let order = req.body;
 
-    let blotterObj = translate.orderToBlotter(order);
-    let fixObj = translate.orderToFix(order);
+    translate.orderToBlotter(order, function(blotterObj) {
 
-    dbIo.writeBlotter(blotterObj, function() {
-        fixclient.send(fixObj);            
-    });
+    let fixObj = translate.orderToFix(order);
+        dbIo.writeBlotter(blotterObj, function() {
+            fixclient.send(fixObj);            
+        });
 
     res.status(204).end( ); 
+    });
 });
 
 

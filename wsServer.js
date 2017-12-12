@@ -1,17 +1,36 @@
+const dbRw = require('./db_io/readAndWrite');
+
+var io = null;
+var sessions = [];
 
 function startServer(httpServer) {
 
-    const io = require('socket.io')(httpServer);
+    io = require('socket.io')(httpServer);
     const eventBus = require('./pubsub');
-    console.log("initialized socket.io");
-
 
     io.on('connection', function(socket) {
 
-        console.log("client connected");
+        sessions.push({sock : socket, user : "xxx"});
 
-        socket.on('disconnect', function(){
-          console.log('client disconnected');
+        socket.on('disconnect', function() {
+
+            sessionsObj = sessions.find(so => so.sock == socket);
+
+            let idx = sessions.indexOf(sessionsObj);
+            sessions.splice(idx, 1);
+        });
+
+        socket.on('user-changed', function(user) {
+
+            sessionsObj = sessions.find(function(so) 
+                          { return so.sock == socket; });
+
+            sessionsObj.user = user;
+
+            sessions.forEach(function(s) { 
+
+                console.log(s.user);
+            });
         });
 
         socket.on('test_message', function(msg) {
@@ -21,29 +40,44 @@ function startServer(httpServer) {
     });
 
 
-    eventBus.on('order_report', function(order){
-        io.emit('order_report', order);
+    eventBus.on('order_report', function(report){
+        io.emit('order_report', report);
     });
 
-    eventBus.on('order_acknowledged', function(order){
-        io.emit('order_acknowledged', order);
+    eventBus.on('order_acknowledged', function(blotter){
+        sendToUser(blotter, 'order_acknowledged');
     });
 
-    eventBus.on('order_executed', function(order){
-        io.emit('order_executed', order);
+    eventBus.on('order_executed', function(blotter){
+        sendToUser(blotter, 'order_executed');
     });
 
-    eventBus.on('order_canceled', function(order){
-        io.emit('order_canceled', order);
+    eventBus.on('order_rejected', function(blotter){
+        sendToUser(blotter, 'order_rejected');
     });
 
-    eventBus.on('order_rejected', function(order){
-        io.emit('order_rejected', order);
-    });
-
-    eventBus.on('new_book_entry', function(order){
-        io.emit('new_book_entry', order);
+    eventBus.on('new_book_entry', function(blotter){
+        io.emit('new_book_entry', blotter);
     });
 }
 
-module.exports = {'startServer' : startServer};
+
+function sendToUser(blotter, messageType) {
+
+    dbRw.blotterUser(blotter, function(user) {
+
+        console.log("LOOKING FOR " + user);
+
+        let relevantSessions = sessions.filter(s => s.user == user)
+
+        relevantSessions.forEach(function(s) {
+            s.sock.emit(messageType, blotter);
+        });
+    });
+}
+
+
+module.exports = {'startServer' : startServer };
+
+
+

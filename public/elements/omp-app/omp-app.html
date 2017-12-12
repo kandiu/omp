@@ -26,7 +26,8 @@
 	</style>
 	<div class="container">
 	    <div class="row mt-4">
-		<omp-builder id="builder" class="col" on-new-order="_newOrder" on-update-order="_updateOrder"></omp-builder>
+		<omp-builder id="builder" class="col" on-new-order="_newOrder" on-update-order="_updateOrder"
+                    on-session-changed="_sessionChanged"></omp-builder>
 	    </div>
 	</div>
 	<div class="container-fluid">
@@ -91,8 +92,9 @@
              super.connectedCallback();
              this.socket = io();
              this.socket.on('connect', function() {
+                 this.socket.emit("user-changed", this.$.builder._selectedUser);
                  console.log("connection established");
-             });
+             }.bind(this));
              this.socket.on("connect_error", function(err) {
                  console.log("no connection");
              });
@@ -129,6 +131,11 @@
          _removeSelected(ev) {
              this.$.order._removeSelected()
          }
+
+        _sessionChanged(ev) {
+            if (this.socket)
+                this.socket.emit("user-changed", ev.detail);
+        }
 
 	 _isActivePage(page, current){
 	     if ( page === current ) return "active";
