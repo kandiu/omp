@@ -64,15 +64,11 @@ function startServer(httpServer) {
 
 function sendToUser(blotter, messageType) {
 
-    dbRw.blotterUser(blotter, function(user) {
+    let relevantSessions = sessions.filter(s => s.user == blotter.user)
 
-        console.log("LOOKING FOR " + user);
+    relevantSessions.forEach(function(s) {
+    s.sock.emit(messageType, blotter);
 
-        let relevantSessions = sessions.filter(s => s.user == user)
-
-        relevantSessions.forEach(function(s) {
-            s.sock.emit(messageType, blotter);
-        });
     });
 }
 
