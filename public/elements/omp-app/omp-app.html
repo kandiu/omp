@@ -112,6 +112,21 @@
                  this.$.execution.addReport(data);
 		 this.$.blotter.removeReport(data);
              }.bind(this))
+
+
+	     axios.get('/blotters')
+		 .then(function(res){
+		     res.data.forEach(function(d){
+			 this.$.blotter.addReport(d);
+		     }.bind(this))
+		 }.bind(this))
+
+	     axios.get('/executions')
+		 .then(function(res){
+		     res.data.forEach(function(d){
+			 this.$.excution.addReport(d);
+		     }.bind(this))
+		 }.bind(this))
          }
          changePage(ev){
              this.set('pageName', ev.target.getAttribute('data'));
@@ -132,10 +147,10 @@
              this.$.order._removeSelected()
          }
 
-        _sessionChanged(ev) {
-            if (this.socket)
-                this.socket.emit("user-changed", ev.detail);
-        }
+         _sessionChanged(ev) {
+             if (this.socket)
+                 this.socket.emit("user-changed", ev.detail);
+         }
 
 	 _isActivePage(page, current){
 	     if ( page === current ) return "active";

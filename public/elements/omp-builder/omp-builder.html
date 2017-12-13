@@ -344,14 +344,15 @@
          return s === "MKT"
      }
      createOrder(ev){
-        let errmsg = "";
-        if (this._quantity <= 0) {errmsg += "Quantity must be strictly positive\n";}
+        let errmsg = [];
+        if (this._quantity <= 0) {errmsg.push( "Quantity must be strictly positive\n");}
         if (this._selectedType === 'LMT' && this._price <= 0) {
-            errmsg += "A limit price must be strictly positive\n";
+            errmsg.push("A limit price must be strictly positive\n");
         }
 
-        if (errmsg != "") {
-            alert(errmsg);
+	 
+         if (errmsg.length > 0) {
+            alert(errmsg.join('\n'));
             return
         }
 
