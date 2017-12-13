@@ -56,9 +56,9 @@ var assetclass = mongoose.model('AssetClass', AssetClassSchema);
 //var query = assetclass.find({}).select('derivative');
 // TODO: query inside middleware in order to do validation
 
-/* 
+/*
  * Middleware checking if the asset class symbol is consistent
- * with the asset class name as provided for by the "ac" map 
+ * with the asset class name as provided for by the "ac" map
  */
 AssetClassSchema.post('save', function(doc, next) {
 	if (ac[doc.classname] != doc.symbol) {
@@ -78,7 +78,7 @@ const PortfolioSchema = exports.PortfolioSchema = new Schema ({
 	settings : {type : SettingsSchema},
 });
 
-/* 
+/*
  * Middleware checking if instruments and underlyings are mutually exclusive
  */
 PortfolioSchema.post('save', function(doc, next) {
@@ -121,6 +121,7 @@ const ExchangeSchema = exports.ExchangeSchema = new Schema ({
 });
 
 const BookSchema = exports.BookSchema = new Schema ({
+	user : {type : String},
 	order_id : {type : String, required : true}, //ExecID
 	timestamp : {type : Date, required : true}, //SendingTime
 	quantity : {type : Number, required : true}, //CumQty signed
@@ -137,6 +138,7 @@ const BookSchema = exports.BookSchema = new Schema ({
 
 // Accepted (Acknowledged) order must be stored here
 const BlotterSchema = exports.BlotterSchema = new Schema ({
+	user : {type : String},
 	order_id : {type : String, required : true, unique : true}, //CIOrdID
 	external_order_id : {type : String}, //OrderdID
 	symbol : {type : String, required : true}, //Symbol
@@ -148,7 +150,7 @@ const BlotterSchema = exports.BlotterSchema = new Schema ({
 	price : {type : Number, required : true}, //LastPx
 	duration : {type : String, required : true}, //from UI ("DAY" or "GTC")
 	status : {type : String, required : true}, // OrdStatus or "Sent"
-	tag : {type : String, required : true}, //Text 
+	tag : {type : String, required : true}, //Text
 	broker : {type : String, required : true}, //SenderCompID
 	account : {type : String, required : true}, //from UI
 	portfolio : {type : String, required : true}, //from UI
@@ -158,7 +160,7 @@ const BlotterSchema = exports.BlotterSchema = new Schema ({
 const FillOrCancelSchema = exports.FillOrCancelSchema  = new Schema ({
 	order_id : {type : String, required : true, unique : true},
 	symbol : {type : String, required : true},
-	timestamp : {type : Date, required : true}, 
+	timestamp : {type : Date, required : true},
 	action : {type : String, required : true},
 	quantity : {type : String, required : true},
 	price : {type : Number, required : true},
@@ -173,11 +175,11 @@ const tickers = new Schema ({
 	symbol : {type : String, required : true},
 }, {_id : false});
 
-/* 
- * Discriminator: there are two parts in any registry: the former is 
+/*
+ * Discriminator: there are two parts in any registry: the former is
  * common to each registry (i.e. all fields in Registry_2_Schema) the latter
  * must change according to the asset class (e.g. EquitySchema, IndexSchema).
- * Both parts are glued together by the discriminatoryKey and the 
+ * Both parts are glued together by the discriminatoryKey and the
  * Registry_2_Schema assumes a different form according to the discriminatoryKey
  */
 const RegistrySchema = exports.RegistrySchema = new Schema ({
@@ -192,7 +194,7 @@ const RegistrySchema = exports.RegistrySchema = new Schema ({
 /*
  * Middleware: after saving it checks if for each registry
  * the ticker schema has at least the 'own' provider with a
- * non empty symbol 
+ * non empty symbol
  */
 RegistrySchema.post('save', function(doc, next) {
 	doc.tickers.forEach(function(t) {
@@ -205,7 +207,7 @@ RegistrySchema.post('save', function(doc, next) {
 
 /* All schemas below are the 'polymorphic' part of the Registry Schema*/
 const EquitySchema = exports.EquitySchema = new Schema (
-	{class : 
+	{class :
 		{
 			right : {type : String, required : true},
 			isin : {type : String , required : true},
@@ -215,7 +217,7 @@ const EquitySchema = exports.EquitySchema = new Schema (
 			supersector : {type : String},
 			sector : {type : String}
 		}
-	}, 
+	},
 	{discriminatorKey : 'type'}
 );
 
@@ -229,12 +231,12 @@ const FutureSchema = exports.FutureSchema = new Schema (
 			first_notice_date : {type : Date},
 			settlement : {type : String, required : true},
 		}
-	}, 
+	},
 	{discriminatorKey : 'type'}
 );
 
 const OptionSchema = exports.OptionSchema = new Schema (
-	{class : 
+	{class :
 		{
 			multiplier : {type : Number , required : true},
 			underlying : {type : String, required : true},
@@ -245,13 +247,13 @@ const OptionSchema = exports.OptionSchema = new Schema (
 			settlement : {type : String, required : true},
 			exercise_type : {type : String, required : true}
 		}
-	}, 
+	},
 	{discriminatorKey : 'type'}
 );
 
 
 const IndexSchema = exports.IndexSchema = new Schema (
-	{class : 
+	{class :
 		{
 			asset_class : {type : String, required : true},
 			country : {type : String, required : true},
@@ -259,7 +261,7 @@ const IndexSchema = exports.IndexSchema = new Schema (
 			supersector : {type : String},
 			sector : {type : String}
 		}
-	}, 
+	},
 	{discriminatorKey : 'type'}
 );
 

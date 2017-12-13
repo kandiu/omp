@@ -30,7 +30,7 @@ client.dataHandler = function(data){
     eventBus.emit("order_report", obj);
 
     let status = obj.ordStatus.value;
-    
+
     if (status == 0) {
         processAsNew(obj);
     }
@@ -55,7 +55,7 @@ function processAsNew(report) {
     });
 }
 
-function processAsRejected(report) { 
+function processAsRejected(report) {
 
     setBlotterFields(report, function() {
 
@@ -75,12 +75,12 @@ function processAsExecution(report) {
 
         dbRw.readBlotter(order_id, function(blotter) {
 
-            addBookEntry(blotter, report.execID.value); 
-            dbRw.writeExecution(translate.blotterToExecution(blotter), function() {}); 
+            addBookEntry(blotter, report.execID.value);
+            dbRw.writeExecution(translate.blotterToExecution(blotter), function() {});
             dbRw.deleteBlotter(order_id);
-            eventBus.emit("order_executed", blotter);                 
-        });       
-    });   
+            eventBus.emit("order_executed", blotter);
+        });
+    });
 }
 
 
@@ -105,7 +105,7 @@ function setBlotterFields(report, next) {
         data.quantity = report.cumQty.value;
     }
 
-    dbRw.updateBlotter(order_id, data, next);   
+    dbRw.updateBlotter(order_id, data, next);
 }
 
 function addBookEntry(blotter, exec_id) {
@@ -115,7 +115,10 @@ function addBookEntry(blotter, exec_id) {
         let bookObj = translate.blExecCurrToBook(blotter, exec_id, account.currency);
 
         dbRw.writeBook(bookObj, function(book) {
-            
+
+			console.log("BOOK OBJECT:");
+			console.log(book);
+
             eventBus.emit("new_book_entry", book);
         });
     });
@@ -132,7 +135,7 @@ module.exports = {
 	},
 
 	send: function(order){
-		
+
 		if (!this.connected) throw "not conntected, please connect";
 		client.write(JSON.stringify(order)+"\n");
 	},

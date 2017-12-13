@@ -374,8 +374,8 @@
 	     errmsg.push("Select a duration");
 	 }
 
-	 
-	 
+
+
          if (errmsg.length > 0) {
              alert(errmsg.join('\n'));
              return
@@ -396,7 +396,7 @@
              currency: this._currency,
              exchange: this._exchange,
 	 }
-	 
+
 	 queryRegistry(this._selectedSymbol, function(reg) {
              let ticker = getTickers(JSON.parse(reg));
 	 });
