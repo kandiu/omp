@@ -4,17 +4,20 @@
 
 
 <link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
-<!--<link rel="import" href="./chartexemple.html">-->
+<link rel="import" href="./chartexemple.html">
 
 <dom-module id="omp-analytics">
     <template>
         <style>
             #chart{
                 width: 100%;
-                height: 60%;
+                height: 40%;
             }
             /*/!*[@id="highcharts-0"]/svg/g[2]/g[1]/text*/
         </style>
+        <div>
+            <iframe src="/elements/omp-analytics/chartexemple.html" width="100%" height="500px" frameBorder="0"></iframe>
+        </div>
 
         <vaadin-grid aria-label="Basic Binding Example" items="[[openPositions]]">
             <vaadin-grid-column lex-grow="0">
@@ -31,192 +34,202 @@
             </vaadin-grid-column>
         </vaadin-grid>
 
-
-        <!-- TradingView Widget BEGIN -->
-
-
-
         <div id="chart">
-        <vaadin-line-chart on-selection="selectionListener" timeline>
-            <chart-title>Orders</chart-title>
+            <vaadin-line-chart on-selection="selectionListener" timeline>
+                <chart-title>Orders</chart-title>
 
-            <x-axis id="time" name="time" type="datetime">
-                <chart-title>Date</chart-title>
-            </x-axis>
-            <y-axis id="q">
-                <chart-title>Quantity</chart-title>
-                <opposite>true</opposite>
-            </y-axis>
-            <!--<y-axis id="price">-->
+                <x-axis id="time" name="time" type="datetime">
+                    <chart-title>Date</chart-title>
+                </x-axis>
+                <y-axis id="q">
+                    <chart-title>Quantity</chart-title>
+                    <opposite>true</opposite>
+                </y-axis>
+                <!--<y-axis id="price">-->
                 <!--<chart-title>Price</chart-title>-->
                 <!--<opposite>true</opposite>-->
-            <!--</y-axis>-->
-            <data-series name="quantity" type="column" data="[[datas]]" y-axis="q">
-            </data-series>
+                <!--</y-axis>-->
+                <data-series name="quantity" type="column" data="[[datas]]" y-axis="q">
+                </data-series>
 
-            <!--<data-series name="price" type="scatter" data="[[prices]]"y-axis="price">-->
-            <!--</data-series>-->
-
-
-            <range-selector selected="4" id="rangeSelector" enable="false">
-                <button-theme fill="#7DADB2" stroke="#121212" stroke-width="0" width="100"  >
-                    <chart-style color="white" ></chart-style>
-                </button-theme>
-            </range-selector>
-
-            <navigator enabled="true" margin="75">
-                <series color="white" line-width="0">
-                </series>
-            </navigator>
-
-        </vaadin-line-chart>
-
-</div>
+                <!--<data-series name="price" type="scatter" data="[[prices]]"y-axis="price">-->
+                <!--</data-series>-->
 
 
+                <range-selector selected="4" id="rangeSelector" enable="false">
+                    <button-theme fill="#7DADB2" stroke="#121212" stroke-width="0" width="100"  >
+                        <chart-style color="white" ></chart-style>
+                    </button-theme>
+                </range-selector>
+
+                <navigator enabled="true" margin="75">
+                    <series color="white" line-width="0">
+                    </series>
+                </navigator>
+
+            </vaadin-line-chart>
 
 
-        <!--<import src='./chartexemple.html'/>-->
+        </div>
 
     </template>
 
-<script>
-    class OmpAnalytics extends Polymer.Element {
+    <script>
+        class OmpAnalytics extends Polymer.Element {
 
-        constructor() {
-            super();
-        }
-        static get is() {
-            return 'omp-analytics';
-        }
-
-        static get properties() {
-            return {
-                title: {
-                    type: String,
-                    value: "omp-analytics"
-                },
-                openPositions: {
-                    type: Array,
-                    value: []
-                },
-                openPrice: {
-                    type: Array,
-                    value: []
-                },
-                book: {
-                    type: Array,
-                    value: []
-                },
-                dataQuantity: {
-                    type: Array,
-                    value: []
-                },
+            constructor() {
+                super();
             }
-        }
-        connectedCallback() {
-            super.connectedCallback();
-            this.socket = io();
-            this.socket.on('new_book_entry', function(data) {
-                console.log("new entry in the book: ", data);
-            }.bind(this));
+            static get is() {
+                return 'omp-analytics';
+            }
 
-            axios.get(`/book/openpositions`)
-                .then(function (d) {
-                    this.openPositions = d.data;
+            static get properties() {
+                return {
+                    title: {
+                        type: String,
+                        value: "omp-analytics"
+                    },
+                    openPositions: {
+                        type: Array,
+                        value: []
+                    },
+                    openPrice: {
+                        type: Array,
+                        value: []
+                    },
+                    book: {
+                        type: Array,
+                        value: []
+                    },
+                    dataQuantity: {
+                        type: Array,
+                        value: []
+                    },
 
-                }.bind(this)).then(function () {
-                var tempP = [];
-                for (let k = 0; k < this.openPositions.length; k++) {
-                    if (this.openPositions[k].total > 0) {
-                        tempP.push(axios.get("/book/openpricepos/" + this.openPositions[k]._id))
-                    } else {
-                        tempP.push(axios.get("/book/openpriceneg/" + this.openPositions[k]._id))
+                    currUser: {
+                        type: String
                     }
                 }
-                return Promise.all(tempP)
-            }.bind(this)).then(function (d) {
-                d.forEach(function (s) {
-                    this.openPrice.push(s.data)
+            }
+
+//        ready(){
+//            super.ready();
+//            console.log("ready");
+//            var el = this.shadowRoot.querySelector("#test")
+//            el.appendChild(document.createElement("p"))
+//        }
+            connectedCallback() {
+                super.connectedCallback();
+                this.socket = io();
+                this.socket.on('new_book_entry', function(data) {
+                    console.log("new entry in the book: ", data);
                 }.bind(this));
 
-                for (let k = 0; k < this.openPositions.length; k++) {
-                    this.openPositions[k].openprice = this._calOpenPrice(this.openPrice[k], this.openPositions[k].total);
-                }
-                console.log("Values of openPositions: ", this.openPositions);
-            }.bind(this));
+                this._fetchBook.bind(this)(this.currUser);
 
-            axios.get(`/book`)
-                .then(function (d) {
-                    this.book = d.data;
 
-                    let res = this.book.map(function (d) {
-                        let t = Date.parse(d.timestamp);
-                        let v = d.quantity;
-                        let price = d.quantity;
+            }
 
-                        return [t, v];
+            _fetchBook(){
+                axios.get(`/book/openpositions/`+this.currUser)
+                    .then(function (d) {
+                        this.openPositions = d.data;
+
+                    }.bind(this)).then(function () {
+                    var tempP = [];
+                    for (let k = 0; k < this.openPositions.length; k++) {
+                        if (this.openPositions[k].total > 0) {
+                            tempP.push(axios.get("/book/openpricepos/" + this.openPositions[k]._id))
+                        } else {
+                            tempP.push(axios.get("/book/openpriceneg/" + this.openPositions[k]._id))
+                        }
+                    }
+                    return Promise.all(tempP)
+                }.bind(this)).then(function (d) {
+                    d.forEach(function (s) {
+                        this.openPrice.push(s.data)
                     }.bind(this));
 
-                    this.set('datas', res)
-                    console.log("Data for chart datas: ", res);
-                    console.log("###### Value of openPrice: ", this.openPrice)
+                    for (let k = 0; k < this.openPositions.length; k++) {
+                        this.openPositions[k].openprice = this._calOpenPrice(this.openPrice[k], this.openPositions[k].total);
+                    }
+                    console.log("Values of openPositions: ", this.openPositions);
                 }.bind(this));
 
-            axios.get(`/book`)
-                .then(function (d) {
-                    this.book = d.data;
+                axios.get(`/book`)
+                    .then(function (d) {
+                        this.book = d.data;
 
-                    let res = this.book.map(function (d) {
-                        let t = Date.parse(d.timestamp);
-                        let price = d.price;
+                        let res = this.book.map(function (d) {
+                            let t = Date.parse(d.timestamp);
+                            let v = d.quantity;
+                            let price = d.quantity;
 
-                        return [t, price];
+                            return [t, v];
+                        }.bind(this));
+
+                        this.set('datas', res)
+                        console.log("Data for chart datas: ", res);
+                        console.log("###### Value of openPrice: ", this.openPrice)
                     }.bind(this));
 
-                    this.set('prices', res)
+                axios.get(`/book`)
+                    .then(function (d) {
+                        this.book = d.data;
 
-                }.bind(this));
+                        let res = this.book.map(function (d) {
+                            let t = Date.parse(d.timestamp);
+                            let price = d.price;
 
+                            return [t, price];
+                        }.bind(this));
 
+                        this.set('prices', res)
 
-        }
-        _sgn(x){
-            if (x == 0){
-                return 0;
-            } else if(x>0){
-                return 1;
-            } else {
-                return -1;
+                    }.bind(this));
             }
-        }
-
-
-        _calOpenPrice(p, oq) {
-            var op = 0;
-            var i = p.length;
-            var rq = 0;
-            for (i = p.length - 1; i >= 0; i--) {
-                if (this._sgn([p[i].quantity]) == this._sgn(oq)) {
-                    rq = rq + p[i].quantity;
-                    op = op + p[i].quantity * p[i].price;
-                }
-                if((Math.abs(rq)>= Math.abs(oq))){
-                    break;
+            _sgn(x){
+                if (x == 0){
+                    return 0;
+                } else if(x>0){
+                    return 1;
+                } else {
+                    return -1;
                 }
             }
-            op = op / oq;
-            return op;
-        }
+
+
+            _calOpenPrice(p, oq) {
+                var op = 0;
+                var i = p.length;
+                var rq = 0;
+                for (i = p.length - 1; i >= 0; i--) {
+                    if (this._sgn([p[i].quantity]) == this._sgn(oq)) {
+                        rq = rq + p[i].quantity;
+                        op = op + p[i].quantity * p[i].price;
+                    }
+                    if((Math.abs(rq)>= Math.abs(oq))){
+                        break;
+                    }
+                }
+                op = op / oq;
+                return op;
+            }
+
+            userChanged(details){
+                console.log("From anal: ", details)
+                this.currUser = details;
+            }
 
 //    _makeTab(){
 //        var str = document.createElement("chartexemple");
 //        var elem = this.shadowRoot.querySelector('#trad');
 //        elem.appendChild(str);
 //    }
-    }
+        }
 
-    customElements.define(OmpAnalytics.is, OmpAnalytics);
-</script>
+        customElements.define(OmpAnalytics.is, OmpAnalytics);
+    </script>
 </dom-module>
 
