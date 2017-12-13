@@ -1,5 +1,6 @@
 
 const models = require('../models');
+const dbRw = require('./readAndWrite');
 const Execution = models.Execution;
 const Blotter = models.Blotter;
 const Book = models.Book;
@@ -8,36 +9,42 @@ const Book = models.Book;
 
 // ORDER TO BLOTTER
 
-function orderToBlotter(order) {
+function orderToBlotter(order, next) {
 
-    let blotterData = {
+    if (order.exchange == undefined || order.exchange == "")
+        order.exchange = "_";
 
-        order_id : order.order_id,
-        external_order_id : "...",
-        symbol : order.symbol,
-        creation_time : order.creation_time,
-        timestamp : new Date(0,0,0),
-        type : order.type,
-        action : order.action,
-        quantity : order.quantity,
-        price : order.price,
-        duration : order.duration,
-        status : order.status,
-        tag : "xxx|" + order.portfolio_id,
-        broker : "...",
-        account : order.account_id,
-        portfolio : order.portfolio_id,
-        exchange : order.exchange
+    dbRw.portfolioUser(order.portfolio_id, function(user) {
 
-    };
+        let blotterData = {
 
-    try {
-        let blotterObj = new Blotter(blotterData);
-        return blotterObj;
-    }
-    catch (err) {
-        console.error(err);
-    }
+            order_id : order.order_id,
+            external_order_id : "...",
+            symbol : order.symbol,
+            creation_time : order.creation_time,
+            timestamp : new Date(0,0,0),
+            type : order.type,
+            action : order.action,
+            quantity : order.quantity,
+            price : order.price,
+            duration : order.duration,
+            status : order.status,
+            tag : user + "|" + order.portfolio_id,
+            broker : "...",
+            account : order.account_id,
+            portfolio : order.portfolio_id,
+            exchange : order.exchange
+
+        };
+
+        try {
+            let blotterObj = new Blotter(blotterData);
+            next(blotterObj);
+        }
+        catch (err) {
+            console.error(err);
+        }
+    });
 }
 
 // ORDER TO FIX
@@ -95,6 +102,35 @@ function blExecCurrToBook(blotter, exec_id, curr) {
     }
 }
 
+
+// BLOTTER TO EXECUTION
+
+function blotterToExecution(blotter) {
+
+    let executionData = {
+
+        order_id : blotter.order_id,
+        symbol : blotter.symbol,
+        timestamp : blotter.timestamp,
+        action : blotter.action,
+        quantity : blotter.quantity,
+        price : blotter.price,
+        status : blotter.status,
+        tag : blotter.tag,    
+        broker : blotter.broker,
+        account : blotter.account
+    }
+
+    try {
+        let executionObj = new Execution(executionData);
+        return executionObj;
+    }
+    catch (err) {
+        console.error(err);
+    }
+}
+
+
 // DATE STRING TO DATE
 
 function parseDateString(dateString) {
@@ -122,6 +158,7 @@ module.exports = {
     'orderToBlotter' : orderToBlotter,
     'orderToFix' : orderToFix,
     'blExecCurrToBook' : blExecCurrToBook,
+    'blotterToExecution' : blotterToExecution,
     'parseDateString' : parseDateString
 }
 

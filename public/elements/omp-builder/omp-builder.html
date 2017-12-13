@@ -14,388 +14,387 @@
     <template>
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
         <style>
-         .section-title{
-             text-transform: uppercase;
-             font-weight: bold;
-         }
-         #quantity {
-             border-radius: 0px;
-             text-aling:center;
-         }
-        </style>
-        <div id="topbar" class="row">
-            <div class="col-3">
-                <vaadin-combo-box id="user" label="User" items="{{_users}}" value="{{_selectedUser}}"></vaadin-combo-box>
+        .section-title{
+         text-transform: uppercase;
+         font-weight: bold;
+     }
+     #quantity {
+         border-radius: 0px;
+         text-aling:center;
+     }
+ </style>
+ <div id="topbar" class="row">
+    <div class="col-3">
+        <vaadin-combo-box id="user" label="User" items="{{_users}}" value="{{_selectedUser}}"></vaadin-combo-box>
+    </div>
+    <div class="col-3">
+        <vaadin-combo-box id="portfolio" label="Portfolio" items="[[_portfolios]]" value="{{_selectedPortfolio}}"></vaadin-combo-box>
+    </div>
+    <div class="col-3">
+        <vaadin-combo-box id="asset-class" label="Asset class" items="[[_assetClasses]]" value="{{_selectedAssetClass}}"></vaadin-combo-box>
+    </div>
+    <div class="col-3">
+        <vaadin-combo-box id="broker" label="Broker" items="[[_brokers]]" value="{{_selectedBroker}}"></vaadin-combo-box>
+    </div>
+</div>
+<div class="row mt-4">
+    <div class="col-4">
+        <!-- ASSET DETAIL -->
+        <div class="row">
+            <div class="col">
+                <div class="section-title">ASSET DETAILS</div>
             </div>
-            <div class="col-3">
-                <vaadin-combo-box id="portfolio" label="Portfolio" items="[[_portfolios]]" value="{{_selectedPortfolio}}"></vaadin-combo-box>
+        </div>
+        <template is="dom-if" if="{{ _isEquity(_selectedAssetClass)}}">
+            <div class="row">
+                <div class="col">
+                    <vaadin-combo-box id="symbol" label="Symbol" items="{{_tickers.tickers}}" value="{{_selectedTicker}}" on-value-changed="_tickerChanged"></vaadin-combo-box>
+                </div>
             </div>
-            <div class="col-3">
-                <vaadin-combo-box id="asset-class" label="Asset class" items="[[_assetClasses]]" value="{{_selectedAssetClass}}"></vaadin-combo-box>
+        </template>
+        <template is="dom-if" if="{{ _isFutureOrOption(_selectedAssetClass)}}">
+            <div class="row">
+                <div class="col">
+                    <vaadin-combo-box id="underlying" label="Underlying" items="{{_tickers.tickers}}" value="{{_selectedTicker}}" on-value-change="_tickerChanged"></vaadin-combo-box>
+                </div>
             </div>
-            <div class="col-3">
-                <vaadin-combo-box id="broker" label="Broker" items="[[_brokers]]" value="{{_selectedBroker}}"></vaadin-combo-box>
+            <div class="row">
+                <div class="col">
+                    <vaadin-date-picker label="Maturity">
+                    </vaadin-date-picker>
+                </div>
+            </div>
+            <template is="dom-if" if="{{ _isOption(_selectedAssetClass)}}">
+                <vaadin-text-field  id="strike" value="" label="Strike"></vaadin-text-field>
+            </template>
+        </template>
+        <div class="row">
+            <div class="col">
+                <vaadin-text-field id="exchange" label="Exchange" value="{{_exchange}}"></vaadin-text-field>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <vaadin-text-field readonly value="{{_currency}}" label="Currency"></vaadin-text-field>
+            </div>
+        </div>
+    </div>
+    <div class="col-4">
+        <!-- ORDER SETTIGS -->
+        <div class="row">
+            <div class="col">
+                <div class="section-title">ORDER SETTINGS</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <vaadin-combo-box id="type" label="Type" value="{{_selectedType}}"></vaadin-combo-box>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <vaadin-combo-box id="duration" label="Duration" value="{{_selectedDuration}}"></vaadin-combo-box>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <template is="dom-if" if="{{ _isMKT(_selectedType)}}">
+                    <vaadin-text-field readonly value="" label="Price"></vaadin-text-field>
+                </template>
+                <template is="dom-if" if="{{ !_isMKT(_selectedType) }}">
+                    <vaadin-text-field value="{{_price}}" label="Price"></vaadin-text-field>
+                </template>
+            </div>
+        </div>
+    </div>
+    <div class="col-4">
+        <!-- QUANTITY -->
+        <div class="row">
+            <div class="col">
+                <div class="section-title mb-4">QUANTITY</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button type="button" class="btn btn-light" on-click="_changeQuantity" data="10">10</button>
+                    <button type="button" class="btn btn-light" on-click="_changeQuantity" data="20">20</button>
+                    <button type="button" class="btn btn-light" on-click="_changeQuantity" data="50">50</button>
+                    <button type="button" class="btn btn-light" on-click="_changeQuantity" data="100">100</button>
+                    <button type="button" class="btn btn-light" on-click="_changeQuantity" data="200">200</button>
+                    <button type="button" class="btn btn-light" on-click="_changeQuantity" data="300">300</button>
+                </div>
             </div>
         </div>
         <div class="row mt-4">
-            <div class="col-4">
-                <!-- ASSET DETAIL -->
-                <div class="row">
-                    <div class="col">
-                        <div class="section-title">ASSET DETAILS</div>
-                    </div>
-                </div>
-                <template is="dom-if" if="{{ _isEquity(_selectedAssetClass)}}">
-                    <div class="row">
-                        <div class="col">
-                            <vaadin-combo-box id="symbol" label="Symbol" items="{{_tickers.tickers}}" value="{{_selectedTicker}}" on-value-changed="_tickerChanged"></vaadin-combo-box>
-                        </div>
-                    </div>
-                </template>
-                <template is="dom-if" if="{{ _isFutureOrOption(_selectedAssetClass)}}">
-                    <div class="row">
-                        <div class="col">
-                            <vaadin-combo-box id="underlying" label="Underlying" items="{{_tickers.tickers}}" value="{{_selectedTicker}}" on-value-change="_tickerChanged"></vaadin-combo-box>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <vaadin-date-picker label="Maturity">
-                            </vaadin-date-picker>
-                        </div>
-                    </div>
-                    <template is="dom-if" if="{{ _isOption(_selectedAssetClass)}}">
-                        <vaadin-text-field  id="strike" value="" label="Strike"></vaadin-text-field>
-                    </template>
-                </template>
-                <div class="row">
-                    <div class="col">
-                        <vaadin-text-field id="exchange" label="Exchange" value="{{_exchange}}"></vaadin-text-field>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <vaadin-text-field readonly value="{{_currency}}" label="Currency"></vaadin-text-field>
-                    </div>
-                </div>
-            </div>
-            <div class="col-4">
-                <!-- ORDER SETTIGS -->
-                <div class="row">
-                    <div class="col">
-                        <div class="section-title">ORDER SETTINGS</div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <vaadin-combo-box id="type" label="Type" value="{{_selectedType}}"></vaadin-combo-box>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <vaadin-combo-box id="duration" label="Duration" value="{{_selectedDuration}}"></vaadin-combo-box>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <template is="dom-if" if="{{ _isMKT(_selectedType)}}">
-                            <vaadin-text-field readonly value="" label="Price"></vaadin-text-field>
-                        </template>
-                        <template is="dom-if" if="{{ !_isMKT(_selectedType) }}">
-                            <vaadin-text-field value="{{_price}}" label="Price"></vaadin-text-field>
-                        </template>
-                    </div>
-                </div>
-            </div>
-            <div class="col-4">
-                <!-- QUANTITY -->
-                <div class="row">
-                    <div class="col">
-                        <div class="section-title mb-4">QUANTITY</div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <div class="btn-group" role="group" aria-label="Basic example">
-                            <button type="button" class="btn btn-light" on-click="_changeQuantity" data="10">10</button>
-                            <button type="button" class="btn btn-light" on-click="_changeQuantity" data="20">20</button>
-                            <button type="button" class="btn btn-light" on-click="_changeQuantity" data="50">50</button>
-                            <button type="button" class="btn btn-light" on-click="_changeQuantity" data="100">100</button>
-                            <button type="button" class="btn btn-light" on-click="_changeQuantity" data="200">200</button>
-                            <button type="button" class="btn btn-light" on-click="_changeQuantity" data="300">300</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="row mt-4">
-                    <div class="col">
-                        <div class="btn-group" role="group" aria-label="Basic example">
-                            <button type="button" class="btn btn-secondary" on-click="_changeQuantity" data="1">+</button>
-                            <input id="quantity" type="text" class="form-control" value="{{_quantity}}">
-                            <button type="button" class="btn btn-secondary" on-click="_changeQuantity" data="-1">-</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row my-2">
-
-
             <div class="col">
-		<template is="dom-if" if="{{_isEditing}}"><span class="badge badge-pill badge-warning">Editing</span></template>                
-                    <div class="btn-group float-right" role="group" aria-label="Basic example">
-			<button type="button" class="btn btn-success" on-click="createOrder" data="buy">BUY</button>
-			<button type="button" class="btn btn-danger" on-click="createOrder" data="sell">SELL</button>
-                    </div>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button type="button" class="btn btn-secondary" on-click="_changeQuantity" data="1">+</button>
+                    <input id="quantity" type="text" class="form-control" value="{{_quantity}}">
+                    <button type="button" class="btn btn-secondary" on-click="_changeQuantity" data="-1">-</button>
+                </div>
             </div>
         </div>
-    </template>
-    <script>
-     class OmpBuilder extends Polymer.Element{
-         static get is() { return 'omp-builder'; }
-         static get properties(){
-             return {
-                 _users: {
-                     type: Array,
-                     value: () => ['igor', 'uma', 'marcel', 'eljon', 'robert']
-                 },
-                 _userData: {
-                     type: Object,
-                     value: () => {}
-                 },
-                 _quantity: {
-                     type: Number,
-                     value: 0
-                 },
-                 _selectedType: {
-                     type: String,
-                     value: "MKT"
-                 },
-                 _symbols:{
-                     type: Array,
-                     value: () => []
-                 },
-                 _selectedSymbol: {
-                     type: String,
-                     observer: '_symbolChanged'
-                 },
-                 _selectedUser: {
-                     type: String,
-                     value: 'igor',
-                     observer: '_userChanged'
-                 },
-                 _currency: {
-                     type: String,
-                     value: "CHF"
-                 },
-                 _portfolios: {
-                     type: Array,
-                     value: () => [],
-                 },
-                 _selectedPortfolio: {
-                     type: String,
-                     observer: '_portfolioChanged'
-                 },
-                 _assetClasses: {
-                     type: Array,
-                     value: () => []
-                 },
-                 _selectedAssetClass: {
-                     type: String,
-                     observer: '_assetClassChanged'
-                 },
-                 _brokers: {
-                     type: Array,
-                     value: () => []
-                 },
-                 _selectedBroker: {
-                     type: String,
-                     observer: '_brokerChanged'
-                 },
-                 _exchange: {
-                     type: String,
-                 },
-                 _selectedDuration: {
-                     type: String,
-                     value: "DAY"
-                 },
-                 _price:{
-                     type: Number,
-                     //value: 50
-                 },
-                 _selectedAccount: {
-                     type: Object
-                 },
-                 _tickers: {
-                     type: Object
-                 },
-                 _selectedTicker: {
-                     type : String,
-                     value: ""
-                 },
-
-		 _isEditing: {
-		     type: Boolean,
-		     value: false
-		 },
-		 _editingIndex: {
-		     type: Number,
-		     value: -1
-		 }
+    </div>
+</div>
+<div class="row my-2">
+    <div class="col">
+        <template is="dom-if" if="{{_isEditing}}"><span class="badge badge-pill badge-warning">Editing</span></template>
+        <div class="btn-group float-right" role="group" aria-label="Basic example">
+            <button type="button" class="btn btn-success" on-click="createOrder" data="buy">BUY</button>
+            <button type="button" class="btn btn-danger" on-click="createOrder" data="sell">SELL</button>
+        </div>
+    </div>
+</div>
+</template>
+<script>
+ class OmpBuilder extends Polymer.Element{
+     static get is() { return 'omp-builder'; }
+     static get properties(){
+         return {
+             _users: {
+                 type: Array,
+                 value: () => ['igor', 'uma', 'marcel', 'eljon', 'robert']
+             },
+             _userData: {
+                 type: Object,
+                 value: () => {}
+             },
+             _quantity: {
+                 type: Number,
+                 value: 0
+             },
+             _selectedType: {
+                 type: String,
+                 value: "MKT"
+             },
+             _symbols:{
+                 type: Array,
+                 value: () => []
+             },
+             _selectedSymbol: {
+                 type: String,
+                 observer: '_symbolChanged'
+             },
+             _selectedUser: {
+                 type: String,
+                 value: 'igor',
+                 observer: '_userChanged'
+             },
+             _currency: {
+                 type: String,
+                 value: "CHF"
+             },
+             _portfolios: {
+                 type: Array,
+                 value: () => [],
+             },
+             _selectedPortfolio: {
+                 type: String,
+                 observer: '_portfolioChanged'
+             },
+             _assetClasses: {
+                 type: Array,
+                 value: () => []
+             },
+             _selectedAssetClass: {
+                 type: String,
+                 observer: '_assetClassChanged'
+             },
+             _brokers: {
+                 type: Array,
+                 value: () => []
+             },
+             _selectedBroker: {
+                 type: String,
+                 observer: '_brokerChanged'
+             },
+             _exchange: {
+                 type: String,
+             },
+             _selectedDuration: {
+                 type: String,
+                 value: "DAY"
+             },
+             _price:{
+                 type: Number,
+             },
+             _selectedAccount: {
+                 type: Object
+             },
+             _tickers: {
+                 type: Object
+             },
+             _selectedTicker: {
+                 type : String,
+                 value: ""
+             },
+             _isEditing: {
+                 type: Boolean,
+                 value: false
+             },
+             _editingIndex: {
+                 type: Number,
+                 value: -1
              }
          }
-         connectedCallback() {
-             super.connectedCallback();
-             this.$["duration"].items = ["DAY", "GTC"]
-             this.$["type"].items = ["MKT", "LMT"]
-         }
-         _userChanged(ev) {
-             login(this._selectedUser, function(data) {
-                 let ud = JSON.parse(data)
-                 this.set('_userData', ud);
-                 this.set('_portfolios', udPortfolioIds(this._userData));
-                 this.set('_selectedPortfolio', this._portfolios[0]);
-             }.bind(this));
-         }
-         _portfolioChanged(ev){
-             if (this._userData) {
-                 let temp = udAssetClasses(this._userData, this._selectedPortfolio);
-                 this.set('_assetClasses', udAssetClasses(this._userData, this._selectedPortfolio));
-                 this.set('_selectedAssetClass', this._assetClasses[0]);
-                 this.set('_brokers', udBrokers(this._userData, this._selectedPortfolio));
-                 this.set('_selectedBroker', this._brokers[0]);
-             }
-         }
-         _assetClassChanged(ev){
-             if ( this._userData ) {
-                 let symbols = udSymbols(this._userData, this._selectedPortfolio, this._selectedAssetClass);
-                 this.set('_symbols', symbols);
-                 this.set('_selectedSymbol', this._symbols[0]);
-                 this._updateAssetDetails();
-             }
-         }
-         _brokerChanged(ev) {
-             this._selectedAccount = udAccount(this._userData, this._selectedPortfolio, this._selectedBroker);
-         }
-         _symbolChanged(ev) {
-             if ( this._selectedSymbol ) {
-                 queryRegistry(this._selectedSymbol, function(reg) {
-                     let selectedAsset = JSON.parse(reg);
-                     this.set('_exchange', selectedAsset.exchange_id);
-                     this.set('_currency', selectedAsset.currency);
-                 }.bind(this));
-             }
-         }
-         _initializeFields() {
+     }
+     connectedCallback() {
+         super.connectedCallback();
+         this.$["duration"].items = ["DAY", "GTC"]
+         this.$["type"].items = ["MKT", "LMT"]
+     }
+     _userChanged(ev) {
+         login(this._selectedUser, function(data) {
+             let ud = JSON.parse(data)
+             this.set('_userData', ud);
              this.set('_portfolios', udPortfolioIds(this._userData));
              this.set('_selectedPortfolio', this._portfolios[0]);
+         }.bind(this));
+
+         console.log("USER: " + this._selectedUser);
+         this.dispatchEvent(new CustomEvent('session-changed', {detail: this._selectedUser }))
+     }
+     _portfolioChanged(ev){
+         if (this._userData) {
+             let temp = udAssetClasses(this._userData, this._selectedPortfolio);
              this.set('_assetClasses', udAssetClasses(this._userData, this._selectedPortfolio));
              this.set('_selectedAssetClass', this._assetClasses[0]);
              this.set('_brokers', udBrokers(this._userData, this._selectedPortfolio));
              this.set('_selectedBroker', this._brokers[0]);
+         }
+     }
+     _assetClassChanged(ev){
+         if ( this._userData ) {
+             let symbols = udSymbols(this._userData, this._selectedPortfolio, this._selectedAssetClass);
+             this.set('_symbols', symbols);
+             this.set('_selectedSymbol', this._symbols[0]);
              this._updateAssetDetails();
          }
-         _updateAssetDetails() {
-             this.set('_symbols', udSymbols(this._userData, this._selectedPortfolio, this._selectedAssetClass));
-             this.set('_selectedSymbol', this._symbols[0]);
-             if ( this._selectedSymbol) {
-                 queryRegistry(this._selectedSymbol, function(reg) {
-                     let selectedAsset = JSON.parse(reg);
-                     this.set('_exchange', selectedAsset.exchange_id);
-                     this.set('_currency', selectedAsset.currency);
-                 }.bind(this));
-             }
-             let areUnderlyings = false;
-             let assets = udPortfolio(this._userData, this._selectedPortfolio).settings.selected_assets;
-             let asClass = assets.find(function(as) {
-                 return as.asset_class === this._selectedAssetClass;
+     }
+     _brokerChanged(ev) {
+         this._selectedAccount = udAccount(this._userData, this._selectedPortfolio, this._selectedBroker);
+     }
+     _symbolChanged(ev) {
+         if ( this._selectedSymbol ) {
+             queryRegistry(this._selectedSymbol, function(reg) {
+                 let selectedAsset = JSON.parse(reg);
+                 this.set('_exchange', selectedAsset.exchange_id);
+                 this.set('_currency', selectedAsset.currency);
              }.bind(this));
-             if (asClass && asClass.underlyings.length > 0) {
-                 areUnderlyings = true;
-             }
-             this._tickers = {tickers : [], underlyings : areUnderlyings}
+         }
+     }
+     _initializeFields() {
+         this.set('_portfolios', udPortfolioIds(this._userData));
+         this.set('_selectedPortfolio', this._portfolios[0]);
+         this.set('_assetClasses', udAssetClasses(this._userData, this._selectedPortfolio));
+         this.set('_selectedAssetClass', this._assetClasses[0]);
+         this.set('_brokers', udBrokers(this._userData, this._selectedPortfolio));
+         this.set('_selectedBroker', this._brokers[0]);
+         this._updateAssetDetails();
+     }
+     _updateAssetDetails() {
+         this.set('_symbols', udSymbols(this._userData, this._selectedPortfolio, this._selectedAssetClass));
+         this.set('_selectedSymbol', this._symbols[0]);
+         if ( this._selectedSymbol) {
+             queryRegistry(this._selectedSymbol, function(reg) {
+                 let selectedAsset = JSON.parse(reg);
+                 this.set('_exchange', selectedAsset.exchange_id);
+                 this.set('_currency', selectedAsset.currency);
+             }.bind(this));
+         }
+         let areUnderlyings = false;
+         let assets = udPortfolio(this._userData, this._selectedPortfolio).settings.selected_assets;
+         let asClass = assets.find(function(as) {
+             return as.asset_class === this._selectedAssetClass;
+         }.bind(this));
+         if (asClass && asClass.underlyings.length > 0) {
+             areUnderlyings = true;
+         }
+         this._tickers = {tickers : [], underlyings : areUnderlyings}
 
-	     let p = []
+         let p = []
          this._symbols.forEach(function(s, i) {
              p.push(axios.get(`/registry/${s}`))
          })
 
-	     Promise.all(p).then(function(res){
-		 res.forEach((x) => this.push('_tickers.tickers', getTickers(x.data)))
-		 this.set('_selectedTicker', this.get('_tickers.tickers.0'));
-	     }.bind(this))
+         Promise.all(p).then(function(res){
+           res.forEach((x) => this.push('_tickers.tickers', getTickers(x.data)))
+           this.set('_selectedTicker', this.get('_tickers.tickers.0'));
+       }.bind(this))
 
-         }
-         _changeQuantity(el){
-             this.set("_quantity", this.get("_quantity") + parseInt(el.target.getAttribute("data")));
-         }
-         _isEquity(s){
-             return s === "Equity";
-         }
-         _isFuture(s){
-             return s === "Future";
-         }
-         _isOption(s){
-             return s === "Option";
-         }
-         _isFutureOrOption(s) {
-             return this._isFuture(s) || this._isOption(s)
-         }
-         _isMKT(s){
-             return s === "MKT"
-         }
-         createOrder(ev){
-            let errmsg = "";
-            if (this._quantity <= 0) {errmsg += "Quantity must be strictly positive\n";}
-            if (this._selectedType === 'LMT' && this._price <= 0) {
-                errmsg += "A limit price must be strictly positive\n";
-            }
 
-            if (errmsg != "") {
-                alert(errmsg);
-                return
-            }
-	     
-             let order = {
-                 account: this._selectedAccount.account_id,
-                 side: ev.target.getAttribute('data'),
-                 portfolio: this._selectedPortfolio,
-                 user: this._selectedUser,
-                 ticker: this._selectedTicker,
-                 quantity: this._quantity,
-                 type: this._selectedType,
-                 price: this._selectedType === 'LMT' ? 0 : this._price,
-                 duration: this._selectedDuration,
-		         asset_class: this._selectedAssetClass,
-		         broker: this._selectedBroker,
-             }
-             queryRegistry(this._selectedSymbol, function(reg) {
-                 let ticker = getTickers(JSON.parse(reg));
-             });
-
-	     if (this._isEditing && this._editingIndex > - 1){
-		 order.index = this._editingIndex
-		 this.dispatchEvent(new CustomEvent('update-order', {detail: order }))
-		 this.set('_isEditing', false)
-		 this.set('_editingIndex', -1)
-	     } else {
-		 this.dispatchEvent(new CustomEvent('new-order', {detail: order }))
-	     }
-             
-         }
-
-	 _edit(order){
-	     this.set('_isEditing', true);
-	     this.set('_editingIndex', order.index)
-	     this.set('_selectedPortfolio', order.portfolio)
-	     this.set('_selectedAssetClass', order.asset_class)
-	     this.set('_selectedBroker', order.broker)
-	     this.set('_selectedTicker', order.ticker)
-	     this.set('_selectedType', order.type)
-	     this.set('_selectedDuration', order.duration)
-	     this.set('_quantity', order.quantity)
-
-	 }
      }
-     customElements.define(OmpBuilder.is, OmpBuilder);
-    </script>
+     _changeQuantity(el){
+         this.set("_quantity", this.get("_quantity") + parseInt(el.target.getAttribute("data")));
+     }
+     _isEquity(s){
+         return s === "Equity";
+     }
+     _isFuture(s){
+         return s === "Future";
+     }
+     _isOption(s){
+         return s === "Option";
+     }
+     _isFutureOrOption(s) {
+         return this._isFuture(s) || this._isOption(s)
+     }
+     _isMKT(s){
+         return s === "MKT"
+     }
+     createOrder(ev){
+        let errmsg = "";
+        if (this._quantity <= 0) {errmsg += "Quantity must be strictly positive\n";}
+        if (this._selectedType === 'LMT' && this._price <= 0) {
+            errmsg += "A limit price must be strictly positive\n";
+        }
+
+        if (errmsg != "") {
+            alert(errmsg);
+            return
+        }
+
+        let order = {
+         account: this._selectedAccount.account_id,
+         side: ev.target.getAttribute('data'),
+         portfolio: this._selectedPortfolio,
+         user: this._selectedUser,
+         ticker: this._selectedTicker,
+         quantity: this._quantity,
+         type: this._selectedType,
+         price: this._selectedType === 'LMT' ? 0 : this._price,
+         duration: this._selectedDuration,
+         asset_class: this._selectedAssetClass,
+         broker: this._selectedBroker,
+         currency: this._currency,
+         exchange: this._exchange,
+     }
+     
+     queryRegistry(this._selectedSymbol, function(reg) {
+         let ticker = getTickers(JSON.parse(reg));
+     });
+     if (this._isEditing && this._editingIndex > - 1){
+         order.index = this._editingIndex
+         this.dispatchEvent(new CustomEvent('update-order', {detail: order }))
+         this.set('_isEditing', false)
+         this.set('_editingIndex', -1)
+     } else {
+         this.dispatchEvent(new CustomEvent('new-order', {detail: order }))
+     }
+ }
+ _edit(order){
+     this.set('_isEditing', true);
+     this.set('_editingIndex', order.index)
+     this.set('_selectedPortfolio', order.portfolio)
+     this.set('_selectedAssetClass', order.asset_class)
+     this.set('_selectedBroker', order.broker)
+     this.set('_selectedTicker', order.ticker)
+     this.set('_selectedType', order.type)
+     this.set('_selectedDuration', order.duration)
+     this.set('_quantity', order.quantity)
+ }
+}
+customElements.define(OmpBuilder.is, OmpBuilder);
+</script>
 </dom-module>

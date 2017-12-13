@@ -111,6 +111,7 @@
 	     let m = ev;
 	     if ( ev instanceof MouseEvent ) m = ev.model.item;
 
+
              let order = {
 		 order_id: m.order_id,
 		 symbol : m.ticker,
@@ -123,17 +124,25 @@
 		 status : "sent",
 		 portfolio_id : m.portfolio,
 		 account_id : m.account,
-		 currency : "CHF",        // TODO retrieve selected currency
-		 exchange : "IBIS"        // TODO retrieve selected exchange
+		 currency : m.currency,
+		 exchange : m.exchange 
              }
 
              axios.post('/order', order)
 		  .then(function(rs){
 		      console.log("Sending :", rs)
 		      console.log("order: " + JSON.stringify(order))
-		  })
-         }
 
+		      let i  = this.orders.findIndex(function(o){
+			  return o.order_id === order.order_id
+		      })
+
+		      if ( i > - 1) {
+			  this.splice('orders', i, 1);
+		      }
+		      
+		  }.bind(this))
+         }
 	 _sendSelected(){
 	     this.$.grid.selectedItems.forEach(function(s){
 		 this._send(s);

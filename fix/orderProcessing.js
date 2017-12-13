@@ -75,8 +75,10 @@ function processAsExecution(report) {
 
         dbRw.readBlotter(order_id, function(blotter) {
 
-            eventBus.emit("order_executed", blotter);
-            addBookEntry(blotter, report.execID.value);                       
+            addBookEntry(blotter, report.execID.value); 
+            dbRw.writeExecution(translate.blotterToExecution(blotter), function() {}); 
+            dbRw.deleteBlotter(order_id);
+            eventBus.emit("order_executed", blotter);                 
         });       
     });   
 }
