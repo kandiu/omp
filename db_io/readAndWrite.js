@@ -13,7 +13,16 @@ const AssetClass = models.AssetClass;
 
 function writeBlotter(blotterObj, next) {
 
+    console.log("WRITING");
+    console.log(blotterObj);
+
     blotterObj.save(function(err, saved) {
+
+        if (err) {
+            console.log("ERROR:");
+            console.log(err);
+        }
+
         if (! err) 
             next(saved);       
     });
