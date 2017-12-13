@@ -120,22 +120,30 @@
             }
 
             connectedCallback() {
+
                 super.connectedCallback();
-                this.socket = io();
-                this.socket.on('new_book_entry', function(data) {
-                    console.log("new entry in the book: ", data);
-                }.bind(this));
 
-                this.socket.on('user-changed', function(data) {
-                    console.log("user-changed ", data);
-                }.bind(this));
-
-                this.socket.on('portfolio-changed', function(data) {
-                    console.log("portfolio-changed ", data);
-                }.bind(this));
-
-                this._fetchBook.bind(this)();
+ //               this._fetchBook.bind(this)();
             }
+
+            onNewBookEntry(bookEntry) {
+
+                console.log("NEW BOOK ENTRY:");
+                console.log(bookEntry);
+            } 
+
+            onUserChanged(user) {
+
+                console.log("USER CHANGED");
+                console.log(user);
+            } 
+
+            onPortfolioChanged(portfolio_id) {
+
+                console.log("PORTFOLIO CHANGED:");
+                console.log(portfolio_id);
+            } 
+
 
             _fetchBook(){
                 //axios.get(`/book/openpositions/`+this.currUser+"/"+this.currPortfoglio)

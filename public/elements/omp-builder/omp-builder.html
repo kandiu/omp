@@ -261,11 +261,6 @@
          this.dispatchEvent(new CustomEvent('session-changed', {detail: this._selectedUser }))
      }
 
-     _portfolioChanged(ev) {
-         console.log("Portfolio: " + this._selectedPortfolio);
-         this.dispatchEvent(new CustomEvent('portfolio-changed', {detail: this._selectedPortfolio }))
-     }
-
      _portfolioChanged(ev){
          if (this._userData) {
              let temp = udAssetClasses(this._userData, this._selectedPortfolio);
@@ -274,6 +269,9 @@
              this.set('_brokers', udBrokers(this._userData, this._selectedPortfolio));
              this.set('_selectedBroker', this._brokers[0]);
          }
+
+         console.log("Portfolio: " + this._selectedPortfolio);
+         this.dispatchEvent(new CustomEvent('portfolio-changed', {detail: this._selectedPortfolio }))
      }
      _assetClassChanged(ev){
          if ( this._userData ) {
