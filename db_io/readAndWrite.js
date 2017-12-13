@@ -39,24 +39,15 @@ function readBlotter(order_id, next) {
 
 function blottersByUser(uname, next) {
 
-    Blotter.find({}, function(allBlotters) {
+    Blotter.find({"user" : uname}, function(err, found) {
         if (! err) {
-            next( selectBlotters(uname, 0, allBlotters, []);
+            next(found);
         }
         else {
             console.log("ERROR:");
             console.log(err);
         }
     })
-}
-
-function selectBlotters(uname, index, blotterList, selection) {
-
-    if (index == blotterList.length) {
-        return selection;
-    }
-
-    blotterUser(blotterList[index], function(user))
 }
 
 function deleteBlotter(order_id) {
@@ -233,6 +224,19 @@ function assetClassList(acIdList, next) {
     });
 }
 
+function executionsByUser(uname, next) {
+
+    Execution.find({"user" : uname}, function(err, found) {
+        if (! err) {
+            next(found);
+        }
+        else {
+            console.log("ERROR:");
+            console.log(err);
+        }
+    })
+}
+
 
 module.exports = {
 
@@ -255,5 +259,7 @@ module.exports = {
     'readAssetClass' : readAssetClass,
     'assetClassList' : assetClassList,
     'writeBook' : writeBook,
-    'readBook' : readBook
+    'readBook' : readBook,
+    'blottersByUser' : blottersByUser,
+    'executionsByUser' : executionsByUser
 }

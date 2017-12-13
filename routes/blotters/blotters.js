@@ -25,18 +25,12 @@ router.get('/', function(req, res) {
 
 router.get('/:uname', function(req, res) {
 
-    dbRw.
+    let user = req.params.uname;
 
+    dbRw.blottersByUser(user, function(blotters) {
 
-
-    Blotter.find({}, function(err, found) {
-
-        if (err || found == null)
-            res.status(404).end();
-        else {
-            res.status(200).json(found);
-        }
-    });
+        res.status(200).json(blotters);
+    })
 });
 
 

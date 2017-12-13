@@ -158,6 +158,7 @@ const BlotterSchema = exports.BlotterSchema = new Schema ({
 });
 
 const FillOrCancelSchema = exports.FillOrCancelSchema  = new Schema ({
+	user : {type : String},
 	order_id : {type : String, required : true, unique : true},
 	symbol : {type : String, required : true},
 	timestamp : {type : Date, required : true},
