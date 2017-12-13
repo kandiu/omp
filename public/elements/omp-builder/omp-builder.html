@@ -99,7 +99,7 @@
                 <div class="row">
                     <div class="col">
                         <template is="dom-if" if="{{ _isMKT(_selectedType)}}">
-                            <vaadin-text-field readonly value="50" label="Price"></vaadin-text-field>
+                            <vaadin-text-field readonly value="" label="Price"></vaadin-text-field>
                         </template>
                         <template is="dom-if" if="{{ !_isMKT(_selectedType) }}">
                             <vaadin-text-field value="{{_price}}" label="Price"></vaadin-text-field>
@@ -138,14 +138,12 @@
             </div>
         </div>
         <div class="row my-2">
-
-
             <div class="col">
-		<template is="dom-if" if="{{_isEditing}}"><span class="badge badge-pill badge-warning">Editing</span></template>                
-                    <div class="btn-group float-right" role="group" aria-label="Basic example">
-			<button type="button" class="btn btn-success" on-click="createOrder" data="buy">BUY</button>
-			<button type="button" class="btn btn-danger" on-click="createOrder" data="sell">SELL</button>
-                    </div>
+                <template is="dom-if" if="{{_isEditing}}"><span class="badge badge-pill badge-warning">Editing</span></template>
+                <div class="btn-group float-right" role="group" aria-label="Basic example">
+                    <button type="button" class="btn btn-success" on-click="createOrder" data="buy">BUY</button>
+                    <button type="button" class="btn btn-danger" on-click="createOrder" data="sell">SELL</button>
+                </div>
             </div>
         </div>
     </template>
@@ -219,8 +217,7 @@
                      value: "DAY"
                  },
                  _price:{
-                     type: Number,
-                     value: 50
+                     type: Number
                  },
                  _selectedAccount: {
                      type: Object
@@ -232,15 +229,14 @@
                      type : String,
                      value: ""
                  },
-
-		 _isEditing: {
-		     type: Boolean,
-		     value: false
-		 },
-		 _editingIndex: {
-		     type: Number,
-		     value: -1
-		 }
+                 _isEditing: {
+                     type: Boolean,
+                     value: false
+                 },
+                 _editingIndex: {
+                     type: Number,
+                     value: -1
+                 }
              }
          }
          connectedCallback() {
@@ -313,17 +309,14 @@
                  areUnderlyings = true;
              }
              this._tickers = {tickers : [], underlyings : areUnderlyings}
-
-	     let p = []
+             let p = []
              this._symbols.forEach(function(s, i) {
                  p.push(axios.get(`/registry/${s}`))
              })
-
-	     Promise.all(p).then(function(res){
-		 res.forEach((x) => this.push('_tickers.tickers', getTickers(x.data)))
-		 this.set('_selectedTicker', this.get('_tickers.tickers.0'));
-	     }.bind(this))
-
+             Promise.all(p).then(function(res){
+                 res.forEach((x) => this.push('_tickers.tickers', getTickers(x.data)))
+                 this.set('_selectedTicker', this.get('_tickers.tickers.0'));
+             }.bind(this))
          }
          _changeQuantity(el){
              this.set("_quantity", this.get("_quantity") + parseInt(el.target.getAttribute("data")));
@@ -344,7 +337,15 @@
              return s === "MKT"
          }
          createOrder(ev){
-	     
+             let errmsg = "";
+	     if (this._quantity <= 0) {errmsg += "Quantity must be strictly positive\n";}
+	     if (this._selectedType === 'LMT' && this._price <= 0) {
+		 errmsg += "limit price must be strictly positive\n";
+	     }
+	     if (errmsg != "") {
+		 alert(errmsg);
+		 return
+	     }
              let order = {
                  account: this._selectedAccount.account_id,
                  side: ev.target.getAttribute('data'),
@@ -355,38 +356,34 @@
                  type: this._selectedType,
                  price: this._selectedType === 'MKT' ? 50 : this._price,
                  duration: this._selectedDuration,
-		 asset_class: this._selectedAssetClass,
-		 broker: this._selectedBroker,
-		 currency: this._currency,
-		 exchange: this._exchange
+                 asset_class: this._selectedAssetClass,
+                 broker: this._selectedBroker,
+                 currency: this._currency,
+                 exchange: this._exchange
              }
              queryRegistry(this._selectedSymbol, function(reg) {
                  let ticker = getTickers(JSON.parse(reg));
              });
-
-	     if (this._isEditing && this._editingIndex > - 1){
-		 order.index = this._editingIndex
-		 this.dispatchEvent(new CustomEvent('update-order', {detail: order }))
-		 this.set('_isEditing', false)
-		 this.set('_editingIndex', -1)
-	     } else {
-		 this.dispatchEvent(new CustomEvent('new-order', {detail: order }))
-	     }
-             
+             if (this._isEditing && this._editingIndex > - 1){
+                 order.index = this._editingIndex
+                 this.dispatchEvent(new CustomEvent('update-order', {detail: order }))
+                 this.set('_isEditing', false)
+                 this.set('_editingIndex', -1)
+             } else {
+                 this.dispatchEvent(new CustomEvent('new-order', {detail: order }))
+             }
          }
-
-	 _edit(order){
-	     this.set('_isEditing', true);
-	     this.set('_editingIndex', order.index)
-	     this.set('_selectedPortfolio', order.portfolio)
-	     this.set('_selectedAssetClass', order.asset_class)
-	     this.set('_selectedBroker', order.broker)
-	     this.set('_selectedTicker', order.ticker)
-	     this.set('_selectedType', order.type)
-	     this.set('_selectedDuration', order.duration)
-	     this.set('_quantity', order.quantity)
-
-	 }
+         _edit(order){
+             this.set('_isEditing', true);
+             this.set('_editingIndex', order.index)
+             this.set('_selectedPortfolio', order.portfolio)
+             this.set('_selectedAssetClass', order.asset_class)
+             this.set('_selectedBroker', order.broker)
+             this.set('_selectedTicker', order.ticker)
+             this.set('_selectedType', order.type)
+             this.set('_selectedDuration', order.duration)
+             this.set('_quantity', order.quantity)
+         }
      }
      customElements.define(OmpBuilder.is, OmpBuilder);
     </script>
