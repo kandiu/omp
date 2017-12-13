@@ -27,7 +27,7 @@
         <div class="container">
             <div class="row mt-4">
                 <omp-builder id="builder" class="col" on-new-order="_newOrder" on-update-order="_updateOrder"
-			     on-session-changed="_sessionChanged" on-user-changed="portfolioChanged"></omp-builder>
+			     on-session-changed="_sessionChanged" on-portfolio-changed="_portfolioChanged"></omp-builder>
             </div>
         </div>
         <div class="container-fluid">
@@ -68,7 +68,7 @@
                     <omp-execution id="execution"  class="col"></omp-execution>
                 </div>
                 <div page-name="analytics" id="analytics" class="row">
-                    <omp-analytics class="col"></omp-analytics>
+                    <omp-analytics id="analyticscomponent" class="col"></omp-analytics>
                 </div>
             </iron-pages>
         </div>
@@ -112,6 +112,10 @@
                  this.$.execution.addReport(data);
                  this.$.blotter.removeReport(data);
              }.bind(this))
+             this.socket.on("new_book_entry", function(data) {
+                    console.log("SOCKET: new book");
+                 this.$.analyticscomponent.onNewBookEntry(data);
+             }.bind(this))
              axios.get('/blotters')
                  .then(function(res){
                      res.data.forEach(function(d){
@@ -144,14 +148,14 @@
              this.$.order._removeSelected()
          }
          _sessionChanged(ev) {
+
              if (this.socket)
                  this.socket.emit("user-changed", ev.detail);
+
+             this.$.analyticscomponent.onUserChanged(ev.detail);
          }
          _portfolioChanged(ev){
-             if (this.socket){
-                 this.socket.emit("portfolio-changed", ev.detail)
-                 console.log(ev.detail);
-             }
+             this.$.analyticscomponent.onPortfolioChanged(ev.detail)
          }
          _isActivePage(page, current){
              if ( page === current ) return "active";
