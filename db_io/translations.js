@@ -118,6 +118,7 @@ function blotterToExecution(blotter) {
 
     let executionData = {
 
+        user : blotter.user,
         order_id : blotter.order_id,
         symbol : blotter.symbol,
         timestamp : blotter.timestamp,

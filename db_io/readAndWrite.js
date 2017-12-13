@@ -23,8 +23,8 @@ function writeBlotter(blotterObj, next) {
             console.log(err);
         }
 
-        if (! err) 
-            next(saved);       
+        if (! err)
+            next(saved);
     });
 }
 
@@ -35,6 +35,19 @@ function readBlotter(order_id, next) {
             next(found);
         }
     });
+}
+
+function blottersByUser(uname, next) {
+
+    Blotter.find({"user" : uname}, function(err, found) {
+        if (! err) {
+            next(found);
+        }
+        else {
+            console.log("ERROR:");
+            console.log(err);
+        }
+    })
 }
 
 function deleteBlotter(order_id) {
@@ -58,7 +71,7 @@ function clearBlotters() {
 
 
 // data: { fieldX : valueX, fieldY : valueY, ...}
-function updateBlotter(order_id, data, next) { 
+function updateBlotter(order_id, data, next) {
 
     Blotter.update({ "order_id" : order_id }, { $set: data }, function(err, done) {
         if (! err) {
@@ -86,15 +99,15 @@ function accountList(acIdList, next) {
             next(found);
         }
     });
-} 
+}
 
 // BOOK
 
 function writeBook(bookObj, next) {
 
     bookObj.save(function(err, saved) {
-        if (! err) 
-            next(saved);       
+        if (! err)
+            next(saved);
     });
 }
 
@@ -128,14 +141,14 @@ function portfolioUser(portfolio_id, next) {
     User.find({}, function(err, users) {
 
         let user = users.find(function(u) {
-                    return u.portfolios.includes(portfolio_id);                
+                    return u.portfolios.includes(portfolio_id);
                    });
 
         next(user.name);
     });
 }
 
-// PORTFOLIO 
+// PORTFOLIO
 
 function readPortfolio(portfolio_id, next) {
 
@@ -154,21 +167,21 @@ function portfolioList(pfIdList, next) {
             next(found);
         }
     });
-} 
+}
 
 // EXECUTION
 
 function writeExecution(execObj, next) {
 
     execObj.save(function(err, saved) {
-        if (! err) { 
+        if (! err) {
             console.log("SAVED EXECUTION");
             console.log(saved);
-        }    
+        }
 
         else
             console.log("ERROR SAVING EXECUTION: " + err);
-       
+
     });
 }
 
@@ -209,7 +222,20 @@ function assetClassList(acIdList, next) {
             next(found);
         }
     });
-} 
+}
+
+function executionsByUser(uname, next) {
+
+    Execution.find({"user" : uname}, function(err, found) {
+        if (! err) {
+            next(found);
+        }
+        else {
+            console.log("ERROR:");
+            console.log(err);
+        }
+    })
+}
 
 
 module.exports = {
@@ -233,22 +259,7 @@ module.exports = {
     'readAssetClass' : readAssetClass,
     'assetClassList' : assetClassList,
     'writeBook' : writeBook,
-    'readBook' : readBook
+    'readBook' : readBook,
+    'blottersByUser' : blottersByUser,
+    'executionsByUser' : executionsByUser
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

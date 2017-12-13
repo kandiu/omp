@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const dbRw = require('../../db_io/readAndWrite');
 
 const models = require('../../models');
 const Execution = models.Execution;
@@ -9,16 +10,25 @@ const Execution = models.Execution;
 
 router.get('/', function(req, res) {
 
-    let inst = req.params._instrument;
-
     Execution.find({}, function(err, found) {
 
-        if (err || found == null) 
-            res.status(404).end();           
+        if (err || found == null)
+            res.status(404).end();
         else {
             res.status(200).json(found);
         }
-    }); 
+    });
+});
+
+// GET /
+
+router.get('/:uname', function(req, res) {
+
+    let user = req.params.uname;
+
+    dbRw.executionsByUser(user, function(executions) {
+        res.status(200).json(executions);
+    });
 });
 
 
