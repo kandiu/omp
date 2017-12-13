@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const dbRw = require('../../db_io/readandWrite');
+const dbRw = require('../../db_io/readAndWrite');
 const models = require('../../models');
 const Blotter = models.Blotter;
 
