@@ -27,7 +27,7 @@
         <div class="container">
             <div class="row mt-4">
                 <omp-builder id="builder" class="col" on-new-order="_newOrder" on-update-order="_updateOrder"
-			     on-session-changed="_sessionChanged"></omp-builder>
+			     on-session-changed="_sessionChanged" on-user-changed="portfolioChanged"></omp-builder>
             </div>
         </div>
         <div class="container-fluid">
@@ -146,6 +146,12 @@
          _sessionChanged(ev) {
              if (this.socket)
                  this.socket.emit("user-changed", ev.detail);
+         }
+         _portfolioChanged(ev){
+             if (this.socket){
+                 this.socket.emit("portfolio-changed", ev.detail)
+                 console.log(ev.detail);
+             }
          }
          _isActivePage(page, current){
              if ( page === current ) return "active";

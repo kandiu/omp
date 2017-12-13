@@ -181,6 +181,11 @@
                  value: 'igor',
                  observer: '_userChanged'
              },
+             _selectedPortfolio: {
+                 type: String,
+                 value: 'igor',
+                 observer: 'stocks-1'
+             },
              _currency: {
                  type: String,
                  value: "CHF"
@@ -255,6 +260,12 @@
          console.log("USER: " + this._selectedUser);
          this.dispatchEvent(new CustomEvent('session-changed', {detail: this._selectedUser }))
      }
+
+     _portfolioChanged(ev) {
+         console.log("Portfolio: " + this._selectedPortfolio);
+         this.dispatchEvent(new CustomEvent('portfolio-changed', {detail: this._selectedPortfolio }))
+     }
+
      _portfolioChanged(ev){
          if (this._userData) {
              let temp = udAssetClasses(this._userData, this._selectedPortfolio);

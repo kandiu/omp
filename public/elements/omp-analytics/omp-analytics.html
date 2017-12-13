@@ -4,7 +4,7 @@
 
 
 <link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="./chartexemple.html">
+<!--<link rel="import" href="./chartexemple.html">-->
 
 <dom-module id="omp-analytics">
     <template>
@@ -108,17 +108,17 @@
                     },
 
                     currUser: {
-                        type: String
+                        type: String,
+                        value: "igor"
+                    },
+
+                    currPortfoglio: {
+                        type: String,
+                        value: "stocks-1"
                     }
                 }
             }
 
-//        ready(){
-//            super.ready();
-//            console.log("ready");
-//            var el = this.shadowRoot.querySelector("#test")
-//            el.appendChild(document.createElement("p"))
-//        }
             connectedCallback() {
                 super.connectedCallback();
                 this.socket = io();
@@ -126,28 +126,41 @@
                     console.log("new entry in the book: ", data);
                 }.bind(this));
 
-                this._fetchBook.bind(this)(this.currUser);
+                this.socket.on('user-changed', function(data) {
+                    console.log("user-changed ", data);
+                }.bind(this));
 
+                this.socket.on('portfolio-changed', function(data) {
+                    console.log("portfolio-changed ", data);
+                }.bind(this));
 
+                this._fetchBook.bind(this)();
             }
 
             _fetchBook(){
-                axios.get(`/book/openpositions/`+this.currUser)
+                //axios.get(`/book/openpositions/`+this.currUser+"/"+this.currPortfoglio)
+                console.log("inside method fetch")
+                axios.get(`/book/openpositions/`)
                     .then(function (d) {
                         this.openPositions = d.data;
+                        console.log("&&&&******: ",d.data)
 
                     }.bind(this)).then(function () {
                     var tempP = [];
                     for (let k = 0; k < this.openPositions.length; k++) {
                         if (this.openPositions[k].total > 0) {
-                            tempP.push(axios.get("/book/openpricepos/" + this.openPositions[k]._id))
+                            console.log("&&&&******: OPEN PRICE",this.openPositions[k]._id)
+                            tempP.push(axios.get("/book/openpricepos/"+ this.openPositions[k]._id))
+                            //tempP.push(axios.get("/book/openpricepos/"+this.currUser+"/"+this.currPortfoglio+"/"+ this.openPositions[k]._id))
                         } else {
-                            tempP.push(axios.get("/book/openpriceneg/" + this.openPositions[k]._id))
+                            //tempP.push(axios.get("/book/openpriceneg/"+this.currUser+"/"+this.currPortfoglio+"/"+ this.openPositions[k]._id))
+                            tempP.push(axios.get("/book/openpriceneg/"+ this.openPositions[k]._id))
                         }
                     }
                     return Promise.all(tempP)
                 }.bind(this)).then(function (d) {
                     d.forEach(function (s) {
+                        console.log("open price single value: ",s.data)
                         this.openPrice.push(s.data)
                     }.bind(this));
 
@@ -177,16 +190,12 @@
                 axios.get(`/book`)
                     .then(function (d) {
                         this.book = d.data;
-
                         let res = this.book.map(function (d) {
                             let t = Date.parse(d.timestamp);
                             let price = d.price;
-
                             return [t, price];
                         }.bind(this));
-
                         this.set('prices', res)
-
                     }.bind(this));
             }
             _sgn(x){
@@ -218,8 +227,15 @@
             }
 
             userChanged(details){
-                console.log("From anal: ", details)
+                console.log("From : ", details)
                 this.currUser = details;
+                this._fetchBook.bind(this)();
+            }
+
+            portfoglioChanged(details){
+                console.log("From $$$$$$$$$$: ", details)
+                this.currPortfoglio = details;
+                this._fetchBook.bind(this)();
             }
 
 //    _makeTab(){

@@ -6,9 +6,7 @@ const Book = models.Book;
 // GET /
 
 router.get('/', function(req, res) {
-
     Book.find({}, function(err, found) {
-
         if (err || found == null)
             res.status(404).end();
         else {
@@ -19,7 +17,10 @@ router.get('/', function(req, res) {
 
 
 
+// router.get('/openpositions/:user/:portfoglio', function(req, res) {
 router.get('/openpositions', function(req, res) {
+    // Book.find({user: "$user", portfolio_id: "$portfoglio"}).aggregate([{$group: {_id: "$security_symbol", total: {$sum: "$quantity"}}}
+    console.log("OPENPOSITION");
     Book.aggregate([{$group: {_id: "$security_symbol", total: {$sum: "$quantity"}}}
         ]
         , function(err, found) {
@@ -40,9 +41,11 @@ router.get('/openpositions', function(req, res) {
 });
 
 
+// router.get('/openpricepos/:user/:portfoglio/:_id', function(req, res) {
 router.get('/openpricepos/:_id', function(req, res) {
     console.log("req.params._id", req.params._id);
-    Book.find({ security_symbol: req.params._id}
+    //Book.find({ user: "$user", portfolio_id: "$portfoglio", security_symbol: req.params._id}
+    Book.find({security_symbol: req.params._id}
         ,function(err, found) {
             if (err || found == null)
                 res.status(404).end();
@@ -54,9 +57,11 @@ router.get('/openpricepos/:_id', function(req, res) {
         });
 });
 
-router.get('/openpriceneg/:_id', function(req, res) {
+// router.get('/openpriceneg/:user/:portfoglio/:_id', function(req, res) {
+    router.get('/openpriceneg/:_id', function(req, res) {
     //console.log("req.params._id", req.params._id);
-    Book.find({ security_symbol: req.params._id}
+    //Book.find({user: "$user", portfolio_id: "$portfoglio", security_symbol: req.params._id}
+        Book.find({security_symbol: req.params._id}
         ,function(err, found) {
             if (err || found == null)
                 res.status(404).end();
