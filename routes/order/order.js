@@ -8,14 +8,21 @@ router.post('/', function(req, res) {
 
     let order = req.body;
 
+    console.log("ORDER");
+    console.log(order);
+
     translate.orderToBlotter(order, function(blotterObj) {
+
+
+        console.log("BLOTTER");
+        console.log(blotterObj);
 
     let fixObj = translate.orderToFix(order);
         dbIo.writeBlotter(blotterObj, function() {
-            fixclient.send(fixObj);            
+            fixclient.send(fixObj);
         });
 
-    res.status(204).end( ); 
+    res.status(204).end( );
     });
 });
 

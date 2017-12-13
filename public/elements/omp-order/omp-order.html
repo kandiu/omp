@@ -90,7 +90,7 @@
 	     if ( ev instanceof MouseEvent ) index = ev.model.index;
 
 	     console.log(index)
-	     
+
              this.splice('orders', index, 1);
          }
          _edit(ev){
@@ -113,6 +113,7 @@
 
 
              let order = {
+         user : m.user,
 		 order_id: m.order_id,
 		 symbol : m.ticker,
 		 creation_time : new Date(),
@@ -125,7 +126,7 @@
 		 portfolio_id : m.portfolio,
 		 account_id : m.account,
 		 currency : m.currency,
-		 exchange : m.exchange 
+		 exchange : m.exchange
              }
 
              axios.post('/order', order)
@@ -140,7 +141,7 @@
 		      if ( i > - 1) {
 			  this.splice('orders', i, 1);
 		      }
-		      
+
 		  }.bind(this))
          }
 	 _sendSelected(){

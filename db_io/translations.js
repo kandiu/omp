@@ -23,6 +23,7 @@ function orderToBlotter(order, next) {
 
         let blotterData = {
 
+            user : order.user,
             order_id : order.order_id,
             external_order_id : "...",
             symbol : order.symbol,
@@ -44,6 +45,8 @@ function orderToBlotter(order, next) {
 
         try {
             let blotterObj = new Blotter(blotterData);
+            console.log("BLOTTER");
+            console.log(blotterObj);
             next(blotterObj);
         }
         catch (err) {
@@ -85,6 +88,7 @@ function blExecCurrToBook(blotter, exec_id, curr) {
 
     let bookData = {
 
+        user : blotter.user,
         order_id : exec_id,
         timestamp : blotter.timestamp,
         quantity : blotter.quantity,
@@ -95,7 +99,7 @@ function blExecCurrToBook(blotter, exec_id, curr) {
         currency : curr,
         exchange_symbol : blotter.exchange,
         account_id : blotter.account,
-        portfolio : blotter.portfolio
+        portfolio_id : blotter.portfolio
     };
 
     try {
@@ -121,7 +125,7 @@ function blotterToExecution(blotter) {
         quantity : blotter.quantity,
         price : blotter.price,
         status : blotter.status,
-        tag : blotter.tag,    
+        tag : blotter.tag,
         broker : blotter.broker,
         account : blotter.account
     }
@@ -147,7 +151,7 @@ function parseDateString(dateString) {
     let m = dateString.substring(12,14);
     let s = dateString.substring(15,17);
     let ms = dateString.substring(18,21);
-    
+
     let date = new Date(Y,M,D,h,m,s,ms);
 
     console.log("DATE STRING: " + dateString);
@@ -166,22 +170,3 @@ module.exports = {
     'blotterToExecution' : blotterToExecution,
     'parseDateString' : parseDateString
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
