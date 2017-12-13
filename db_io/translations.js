@@ -14,6 +14,11 @@ function orderToBlotter(order, next) {
     if (order.exchange == undefined || order.exchange == "")
         order.exchange = "_";
 
+    if (order.price == undefined || order.price == "")
+        order.price = 0;
+
+
+
     dbRw.portfolioUser(order.portfolio_id, function(user) {
 
         let blotterData = {
