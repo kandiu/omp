@@ -30,11 +30,13 @@
                 <template>[[item.openprice]]</template>
             </vaadin-grid-column>
         </vaadin-grid>
-        <div id="trad" onload="_makeTab()">
-        </div>
 
 
-<div id="chart">
+        <!-- TradingView Widget BEGIN -->
+
+
+
+        <div id="chart">
         <vaadin-line-chart on-selection="selectionListener" timeline>
             <chart-title>Orders</chart-title>
 
@@ -67,11 +69,14 @@
                 </series>
             </navigator>
 
-
         </vaadin-line-chart>
+
 </div>
 
-    </template>
+
+
+
+        <!--<import src='./chartexemple.html'/>-->
 
     </template>
 
@@ -111,6 +116,11 @@
         }
         connectedCallback() {
             super.connectedCallback();
+            this.socket = io();
+            this.socket.on('new_book_entry', function(data) {
+                console.log("new entry in the book: ", data);
+            }.bind(this));
+
             axios.get(`/book/openpositions`)
                 .then(function (d) {
                     this.openPositions = d.data;
@@ -166,7 +176,8 @@
 
                     this.set('prices', res)
 
-                }.bind(this))
+                }.bind(this));
+
 
 
         }
@@ -198,11 +209,11 @@
             return op;
         }
 
-    _makeTab(){
-        var str = document.createElement("chartexemple");
-        var elem = this.shadowRoot.querySelector('#trad');
-        elem.appendChild(str);
-    }
+//    _makeTab(){
+//        var str = document.createElement("chartexemple");
+//        var elem = this.shadowRoot.querySelector('#trad');
+//        elem.appendChild(str);
+//    }
     }
 
     customElements.define(OmpAnalytics.is, OmpAnalytics);
