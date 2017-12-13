@@ -251,6 +251,9 @@
                  this.set('_portfolios', udPortfolioIds(this._userData));
                  this.set('_selectedPortfolio', this._portfolios[0]);
              }.bind(this));
+        
+            console.log("USER: " + this._selectedUser);
+            this.dispatchEvent(new CustomEvent('session-changed', {detail: this._selectedUser }))
          }
          _portfolioChanged(ev){
              if (this._userData) {

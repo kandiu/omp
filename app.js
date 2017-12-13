@@ -12,6 +12,10 @@ mongoose.connect('mongodb://localhost/' + config.mongoDbName, {
   useMongoClient: true,
 });
 
+const dbRw = require('./db_io/readAndWrite');
+dbRw.clearBlotters();
+dbRw.clearExecutions();
+
 
 //configure app
 app.use(logger('dev'));
@@ -36,6 +40,8 @@ app.use('/demo', routes.demo);
 app.use('/dev', routes.dev);
 app.use('/login', routes.login);
 app.use('/registry', routes.registry);
+app.use('/blotters', routes.blotters);
+app.use('/executions', routes.executions);
 app.use('/order', routes.order);
 app.use('/book', routes.book);
 
