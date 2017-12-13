@@ -7,6 +7,7 @@ const Book = models.Book;
 const User = models.User;
 const Portfolio = models.Portfolio;
 const AssetClass = models.AssetClass;
+const Registry = models.Registry;
 
 
 // BLOTTER
@@ -25,6 +26,15 @@ function writeBlotter(blotterObj, next) {
 
         if (! err)
             next(saved);
+    });
+}
+
+function readBlotters(next) {
+
+    Blotter.find({}, function(err, found) {
+        if (! err) {
+            next(found);
+        }
     });
 }
 
@@ -131,23 +141,6 @@ function readUser(uname, next) {
     });
 }
 
-function blotterUser(blotter, next) {
-
-    portfolioUser(blotter.portfolio, next);
-}
-
-function portfolioUser(portfolio_id, next) {
-
-    User.find({}, function(err, users) {
-
-        let user = users.find(function(u) {
-                    return u.portfolios.includes(portfolio_id);
-                   });
-
-        next(user.name);
-    });
-}
-
 // PORTFOLIO
 
 function readPortfolio(portfolio_id, next) {
@@ -237,11 +230,32 @@ function executionsByUser(uname, next) {
     })
 }
 
+// REGISTRY
+
+function readRegistry(instrument_id, next) {
+
+    Registry.findOne({"instrument_id" : instrument_id}, function(err, found) {
+        if (! err) {
+            next(found);
+        }
+    });
+}
+
+function readRegistries(next) {
+
+    Registry.find({}, function(err, found) {
+        if (! err) {
+            next(found);
+        }
+    });
+}
+
 
 module.exports = {
 
     'writeBlotter' : writeBlotter,
     'readBlotter' : readBlotter,
+    'readBlotters' : readBlotters,
     'updateBlotter' : updateBlotter,
     'deleteBlotter' : deleteBlotter,
     'clearBlotters' : clearBlotters,
@@ -249,8 +263,6 @@ module.exports = {
     'accountList' : accountList,
     'readBook' : readBook,
     'readUser' : readUser,
-    'portfolioUser' : portfolioUser,
-    'blotterUser' : blotterUser,
     'readPortfolio' : readPortfolio,
     'portfolioList' : portfolioList,
     'writeExecution' : writeExecution,
@@ -261,5 +273,7 @@ module.exports = {
     'writeBook' : writeBook,
     'readBook' : readBook,
     'blottersByUser' : blottersByUser,
-    'executionsByUser' : executionsByUser
+    'executionsByUser' : executionsByUser,
+    'readRegistry' : readRegistry,
+    'readRegistries' : readRegistries
 }

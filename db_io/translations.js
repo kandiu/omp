@@ -17,42 +17,37 @@ function orderToBlotter(order, next) {
     if (order.price == undefined || order.price == "")
         order.price = 0;
 
+    let blotterData = {
 
+        user : order.user,
+        order_id : order.order_id,
+        external_order_id : "...",
+        symbol : order.symbol,
+        creation_time : order.creation_time,
+        timestamp : new Date(0,0,0),
+        type : order.type,
+        action : order.action,
+        quantity : order.quantity,
+        price : order.price,
+        duration : order.duration,
+        status : order.status,
+        tag : order.user + "|" + order.portfolio_id,
+        broker : "...",
+        account : order.account_id,
+        portfolio : order.portfolio_id,
+        exchange : order.exchange
 
-    dbRw.portfolioUser(order.portfolio_id, function(user) {
+    };
 
-        let blotterData = {
-
-            user : order.user,
-            order_id : order.order_id,
-            external_order_id : "...",
-            symbol : order.symbol,
-            creation_time : order.creation_time,
-            timestamp : new Date(0,0,0),
-            type : order.type,
-            action : order.action,
-            quantity : order.quantity,
-            price : order.price,
-            duration : order.duration,
-            status : order.status,
-            tag : user + "|" + order.portfolio_id,
-            broker : "...",
-            account : order.account_id,
-            portfolio : order.portfolio_id,
-            exchange : order.exchange
-
-        };
-
-        try {
-            let blotterObj = new Blotter(blotterData);
-            console.log("BLOTTER");
-            console.log(blotterObj);
-            next(blotterObj);
-        }
-        catch (err) {
-            console.error(err);
-        }
-    });
+    try {
+        let blotterObj = new Blotter(blotterData);
+        console.log("BLOTTER");
+        console.log(blotterObj);
+        next(blotterObj);
+    }
+    catch (err) {
+        console.error(err);
+    }
 }
 
 // ORDER TO FIX
