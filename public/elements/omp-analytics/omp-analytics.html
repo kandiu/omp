@@ -109,12 +109,10 @@
 
                     currUser: {
                         type: String,
-                        value: "igor"
                     },
 
-                    currPortfoglio: {
+                    currPortfolio: {
                         type: String,
-                        value: "stocks-1"
                     }
                 }
             }
@@ -122,7 +120,6 @@
             connectedCallback() {
 
                 super.connectedCallback();
-
                 this._fetchBook.bind(this)();
             }
 
@@ -130,45 +127,46 @@
 
                 console.log("NEW BOOK ENTRY:");
                 console.log(bookEntry);
+                //this.currUser = detail;
+                this._fetchBook.bind(this)();
             } 
 
             onUserChanged(user) {
 
-                console.log("USER CHANGED");
+                console.log("USER CHANGED: "+ user);
                 console.log(user);
+                this.currUser = user;
+                this._fetchBook.bind(this)();
             } 
 
             onPortfolioChanged(portfolio_id) {
 
-                console.log("PORTFOLIO CHANGED:");
+                console.log("PORTFOLIO CHANGED: ", portfolio_id);
                 console.log(portfolio_id);
+                this.currPortfolio = portfolio_id;
+                this._fetchBook.bind(this)();
             } 
 
 
             _fetchBook(){
-                //axios.get(`/book/openpositions/`+this.currUser+"/"+this.currPortfoglio)
                 console.log("inside method fetch")
-                axios.get(`/book/openpositions/`)
+                axios.get(`/book/openpositions/`+this.currUser+`/`+this.currPortfolio)
                     .then(function (d) {
                         this.openPositions = d.data;
-                        console.log("&&&&******: ",d.data)
-
                     }.bind(this)).then(function () {
                     var tempP = [];
                     for (let k = 0; k < this.openPositions.length; k++) {
                         if (this.openPositions[k].total > 0) {
-                            console.log("&&&&******: OPEN PRICE",this.openPositions[k]._id)
-                            tempP.push(axios.get("/book/openpricepos/"+ this.openPositions[k]._id))
-                            //tempP.push(axios.get("/book/openpricepos/"+this.currUser+"/"+this.currPortfoglio+"/"+ this.openPositions[k]._id))
+
+                            tempP.push(axios.get(`/book/openpricepos/`+this.currUser+`/`+this.currPortfolio+`/`+ this.openPositions[k]._id))
                         } else {
-                            //tempP.push(axios.get("/book/openpriceneg/"+this.currUser+"/"+this.currPortfoglio+"/"+ this.openPositions[k]._id))
-                            tempP.push(axios.get("/book/openpriceneg/"+ this.openPositions[k]._id))
+                            tempP.push(axios.get(`/book/openpriceneg/`+this.currUser+`/`+this.currPortfolio+`/`+ this.openPositions[k]._id))
                         }
                     }
                     return Promise.all(tempP)
                 }.bind(this)).then(function (d) {
                     d.forEach(function (s) {
-                        console.log("open price single value: ",s.data)
+                        //console.log("open price single value: ",s.data)
                         this.openPrice.push(s.data)
                     }.bind(this));
 
@@ -178,7 +176,7 @@
                     console.log("Values of openPositions: ", this.openPositions);
                 }.bind(this));
 
-                axios.get(`/book`)
+                axios.get(`/book/`+this.currUser+`/`+this.currPortfolio)
                     .then(function (d) {
                         this.book = d.data;
 
@@ -192,10 +190,9 @@
 
                         this.set('datas', res)
                         console.log("Data for chart datas: ", res);
-                        console.log("###### Value of openPrice: ", this.openPrice)
                     }.bind(this));
 
-                axios.get(`/book`)
+                axios.get(`/book/`+this.currUser+`/`+this.currPortfolio)
                     .then(function (d) {
                         this.book = d.data;
                         let res = this.book.map(function (d) {
@@ -235,22 +232,17 @@
             }
 
             userChanged(details){
-                console.log("From : ", details)
+                //console.log("From : ", details)
                 this.currUser = details;
                 this._fetchBook.bind(this)();
             }
 
             portfoglioChanged(details){
-                console.log("From $$$$$$$$$$: ", details)
+                //console.log("From $$$$$$$$$$: ", details)
                 this.currPortfoglio = details;
                 this._fetchBook.bind(this)();
             }
 
-//    _makeTab(){
-//        var str = document.createElement("chartexemple");
-//        var elem = this.shadowRoot.querySelector('#trad');
-//        elem.appendChild(str);
-//    }
         }
 
         customElements.define(OmpAnalytics.is, OmpAnalytics);
