@@ -86,7 +86,7 @@ function blExecCurrToBook(blotter, exec_id, curr) {
         user : blotter.user,
         order_id : exec_id,
         timestamp : blotter.timestamp,
-        quantity : blotter.quantity,
+        quantity : blotter.action == "buy" ? blotter.quantity : -blotter.quantity,
         price : blotter.price,
         security_symbol : blotter.symbol,
         execution_broker_symbol : blotter.broker,

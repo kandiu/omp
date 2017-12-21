@@ -15,150 +15,171 @@
     <template>
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
         <style>
-         .section-title{
-             text-transform: uppercase;
-             font-weight: bold;
-         }
-         #quantity {
-             border-radius: 0px;
-             text-aling:center;
-         }
+            .section-title{
+                text-transform: uppercase;
+                font-weight: bold;
+            }
+            #quantity {
+                border-radius: 0px;
+                text-aling:center;
+            }
+            .active {
+                background-color:yellow;
+            }
         </style>
-        <vaadin-grid id="grid" items="{{orders}}">
-            <vaadin-grid-selection-column auto-select>
-            </vaadin-grid-selection-column>
-            <vaadin-grid-column lex-grow="0">
-                <template class="header">Side</template>
-                <template>[[item.side]]</template>
-                <!-- If necessary, the footer could be set using <template class="footer"> -->
-            </vaadin-grid-column>
-            <vaadin-grid-column>
-                <template class="header">ticker</template>
-                <template>[[item.ticker]]</template>
-            </vaadin-grid-column>
-            <vaadin-grid-column>
-                <template class="header">Quantity</template>
-                <template>[[item.quantity]]</template>
-            </vaadin-grid-column>
-            <vaadin-grid-column>
-                <template class="header">Type</template>
-                <template>[[item.type]]</template>
-            </vaadin-grid-column>
-            <vaadin-grid-column>
-                <template class="header">Price</template>
-                <template>[[item.price]]</template>
-            </vaadin-grid-column>
-            <vaadin-grid-column>
-                <template class="header">Druation</template>
-                <template>[[item.duration]]</template>
-            </vaadin-grid-column>
-            <vaadin-grid-column>
-                <template>
-                    <div style="display: flex">
-                        <button on-click="_remove">Remove</button>
-                        <button on-click="_edit">Edit</button>
-                        <button on-click="_send">Send</button>
-                    </div>
-                </template>
-            </vaadin-grid-column>
-        </vaadin-grid>
-    </template>
-    <script>
-     class OmpOrder extends Polymer.Element{
-         static get is() { return 'omp-order'; }
-         static get properties(){
-             return {
-                 orders: {
-                     type: Array,
-                     value: () => []
-                 }
-             }
-         }
-	 connectedCallback() {
-             super.connectedCallback()
-	 }
-         addOrder(order){
-	     order.order_id = this._guid()
-	     this.push('orders', order);
-         }
+ <vaadin-grid id="grid" items="{{orders}}">
+    <vaadin-grid-selection-column auto-select>
+    </vaadin-grid-selection-column>
+    <vaadin-grid-column lex-grow="0">
+        <template class="header">Side</template>
+        <template>[[item.side]]</template>
+        <!-- If necessary, the footer could be set using <template class="footer"> -->
+        </vaadin-grid-column>
+        <vaadin-grid-column>
+            <template class="header">ticker</template>
+            <template>[[item.ticker]]</template>
+        </vaadin-grid-column>
+        <vaadin-grid-column>
+            <template class="header">Quantity</template>
+            <template>[[item.quantity]]</template>
+        </vaadin-grid-column>
+        <vaadin-grid-column>
+            <template class="header">Type</template>
+            <template>[[item.type]]</template>
+        </vaadin-grid-column>
+        <vaadin-grid-column>
+            <template class="header">Price</template>
+            <template>[[item.price]]</template>
+        </vaadin-grid-column>
+        <vaadin-grid-column>
+            <template class="header">Duration</template>
+            <template>[[item.duration]]</template>
+        </vaadin-grid-column>
 
-	 updateOrder(order){
-	     this.set(`orders.${order.index}`, order)
-	 }
-         _remove(ev) {
-	     let index = ev;
-	     if ( ev instanceof MouseEvent ) index = ev.model.index;
+        <vaadin-grid-column>
+            <template>
+                <div style="display: flex">
+                    <template is="dom-if" if="{{!_isEditing}}">
+                        <vaadin-button on-click="_remove">Remove</vaadin-button>
+                    </template>
+                    <template is="dom-if" if="{{_isEditing}}">
+                        <vaadin-button on-click="_edit">Update</vaadin-button>
+                    </template>
+                    <template is="dom-if" if="{{!_isEditing}}">
+                        <vaadin-button on-click="_send">Send</vaadin-button>
+                    </template>
+                </div>
+            </template>
+        </vaadin-grid-column>
+    </vaadin-grid>
+</template>
+<script>
+ class OmpOrder extends Polymer.Element{
+    static get is() { return 'omp-order'; }
+    static get properties(){
+        return {
+            orders: {
+                type: Array,
+                value: () => [],
+            },
+            _isEditing: {
+               type: Boolean,
+               value: false
+            },
+        }
+    }
 
-	     console.log(index)
+    connectedCallback() {
+        super.connectedCallback()
+    }
 
-             this.splice('orders', index, 1);
-         }
-         _edit(ev){
-             let toEdit = Object.assign({ index : ev.model.index }, ev.model.item );
-             this.dispatchEvent(new CustomEvent('edit-order', {detail : toEdit  }))
-         }
+    addOrder(order){
+        order.order_id = this._guid();
+        this.push('orders', order);
+    }
 
-	 _guid() {
-	     function s4() {
-		 return Math.floor((1 + Math.random()) * 0x10000)
-			    .toString(16)
-			    .substring(1);
-	     }
-	     return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-		    s4() + '-' + s4() + s4() + s4();
-	 }
-         _send(ev) {
-	     let m = ev;
-	     if ( ev instanceof MouseEvent ) m = ev.model.item;
+    updateOrder(order){    
+        this.set(`orders.${order.index}`, order)
+    }
+
+    _remove(ev) {
+        let index = ev;
+        if ( ev instanceof MouseEvent ) index = ev.model.index;
+
+        //console.log(index)
+
+        this.splice('orders', index, 1);
+    }
+
+    _edit(ev){
+        let toEdit = Object.assign({ index : ev.model.index }, ev.model.item );
+        this.dispatchEvent(new CustomEvent('edit-order', {detail : toEdit}))
+    }
+
+    _guid() {
+        function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000)
+            .toString(16)
+            .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+        s4() + '-' + s4() + s4() + s4();
+    }
+
+    _send(ev) {
+        let m = ev;
+        if ( ev instanceof MouseEvent ) m = ev.model.item;
 
 
-             let order = {
-         user : m.user,
-		 order_id: m.order_id,
-		 symbol : m.ticker,
-		 creation_time : new Date(),
-		 type : m.type,
-		 action : m.side,
-		 quantity : m.quantity,
-		 price : m.price,
-		 duration : m.duration,
-		 status : "sent",
-		 portfolio_id : m.portfolio,
-		 account_id : m.account,
-		 currency : m.currency,
-		 exchange : m.exchange
-             }
+        let order = {
+            user : m.user,
+            order_id: m.order_id,
+            symbol : m.ticker,
+            creation_time : new Date(),
+            type : m.type,
+            action : m.side,
+            quantity : m.quantity,
+            price : m.price,
+            duration : m.duration,
+            status : "sent",
+            portfolio_id : m.portfolio,
+            account_id : m.account,
+            currency : m.currency,
+            exchange : m.exchange
+        }
 
-             axios.post('/order', order)
-		  .then(function(rs){
-		      console.log("Sending :", rs)
-		      console.log("order: " + JSON.stringify(order))
+        axios.post('/order', order)
+        .then(function(rs){
+            //console.log("Sending :", rs)
+            //console.log("order: " + JSON.stringify(order))
 
-		      let i  = this.orders.findIndex(function(o){
-			  return o.order_id === order.order_id
-		      })
+            let i  = this.orders.findIndex(function(o){
+                return o.order_id === order.order_id
+            })
 
-		      if ( i > - 1) {
-			  this.splice('orders', i, 1);
-		      }
+            if ( i > - 1) {
+                this.splice('orders', i, 1);
+            }
 
-		  }.bind(this))
-         }
-	 _sendSelected(){
-	     this.$.grid.selectedItems.forEach(function(s){
-		 this._send(s);
-	     }.bind(this))
-	 }
+        }.bind(this))
+    }
 
-	 _removeSelected(){
-	     this.$.grid.selectedItems.forEach(function(s){
-		 let index = this.orders.findIndex(function(i){
-		     return s.order_id == i.order_id
-		 })
-		 if ( index > -1) this._remove(index);
-	     }.bind(this))
-	 }
-     }
-     customElements.define(OmpOrder.is, OmpOrder);
-    </script>
+    _sendSelected(){
+        this.$.grid.selectedItems.forEach(function(s){
+            this._send(s);
+        }.bind(this))
+    }
+
+    _removeSelected(){
+        this.$.grid.selectedItems.forEach(function(s){
+            let index = this.orders.findIndex(function(i){
+                return s.order_id == i.order_id
+            })
+            if ( index > -1) this._remove(index);
+        }.bind(this))
+    }
+}
+
+customElements.define(OmpOrder.is, OmpOrder);
+</script>
 </dom-module>

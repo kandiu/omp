@@ -4,6 +4,8 @@
 <link rel="import" href="../../../bower_components/vaadin-split-layout/vaadin-split-layout.html">
 <link rel="import" href="../../bower_components/vaadin-valo-theme/vaadin-text-field.html">
 <link rel="import" href="../../../bower_components/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="../../../bower_components/vaadin-valo-theme/vaadin-button.html">
+<link rel="import" href="../../../bower_components/vaadin-button/vaadin-button.html">
 <link rel="import" href="../../bower_components/vaadin-valo-theme/vaadin-combo-box.html">
 <link rel="import" href="../../bower_components/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
@@ -27,7 +29,7 @@
         <div class="container">
             <div class="row mt-4">
                 <omp-builder id="builder" class="col" on-new-order="_newOrder" on-update-order="_updateOrder"
-			     on-session-changed="_sessionChanged" on-portfolio-changed="_portfolioChanged"></omp-builder>
+			     on-session-changed="_sessionChanged" on-portfolio-changed="_portfolioChanged" _is-editing='{{isEditing}}'></omp-builder>
             </div>
         </div>
         <div class="container-fluid">
@@ -50,8 +52,9 @@
                                 </li>
                             </ul>
                             <div class="form-inline my-2 my-lg-0">
-                                <button class="btn mr-2 btn-secondary" on-click="_sendSelected">Send</button>
-                                <button class="btn btn-secondary " on-click="_removeSelected">Remove</button>
+                                <vaadin-button class="btn mr-2 btn-secondary" on-click="_setEditing">Edit</vaadin-button>
+                                <vaadin-button class="btn mr-2 btn-secondary" on-click="_sendSelected" disabled="{{isEditing}}">Send</vaadin-button>
+                                <vaadin-button class="btn btn-secondary " on-click="_removeSelected" disabled="{{isEditing}}">Remove</vaadin-button>
                             </div>
                         </div>
                     </nav>
@@ -59,7 +62,7 @@
             </div>
             <iron-pages selected="[[pageName]]" attr-for-selected="page-name" fallback-selection="order">
                 <div page-name="order" class="row">
-                    <omp-order id="order"  class="col" on-edit-order="_edit"></omp-order>
+                    <omp-order id="order"  class="col" on-edit-order="_edit" _is-editing='{{isEditing}}'></omp-order>
                 </div>
                 <div page-name="blotter" class="row">
                     <omp-blotter id="blotter" class="col"></omp-blotter>
@@ -86,6 +89,10 @@
                      type: String,
                      value: "order"
                  },
+                 isEditing : {
+                    type : Boolean,
+                    value : false,
+                 }
              }
          }
          connectedCallback() {
@@ -136,10 +143,12 @@
              this.$.order.addOrder(ev.detail)
          }
          _updateOrder(ev) {
-             this.$.order.updateOrder(ev.detail)
+            this.$.order.updateOrder(ev.detail);
+             // this.$.order.updateOrder(ev.detail.update, ev.detail.editing)
          }
          _edit(ev) {
-             this.$.builder._edit(ev.detail)
+            this.$.builder._edit(ev.detail)
+            // this.$.builder._edit(ev.detail.order, ev.detail.editing, ev.detail.index)
          }
          _sendSelected(ev) {
              this.$.order._sendSelected()
@@ -160,6 +169,9 @@
          _isActivePage(page, current){
              if ( page === current ) return "active";
              return "";
+         }
+         _setEditing() {
+            this.isEditing = !this.isEditing;
          }
      }
      customElements.define(OmpApp.is, OmpApp);

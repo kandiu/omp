@@ -4,85 +4,85 @@
 <link rel="import" href="../../../bower_components/vaadin-valo-theme/color.html">
 <link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
 <dom-module id="omp-blotter">
-    <template>
-	<style include="valo-colors">
+	<template>
+		<style include="valo-colors">
 	</style>
 	<vaadin-grid items="{{reports}}" theme="">
-	    <vaadin-grid-column>
-		<template class="header">SYMBOL</template>
-		<template>[[item.symbol]]</template>
-	    </vaadin-grid-column>
-	    <vaadin-grid-column>
-		<template class="header">ENT TIME</template>
-		<template>[[item.creation_time]]</template>
-	    </vaadin-grid-column>
-	    <vaadin-grid-column>
-		<template class="header">TIME</template>
-		<template>[[item.timestamp]]</template>
-	    </vaadin-grid-column>
-	    <vaadin-grid-column>
-		<template class="header">TYPE</template>
-		<template>[[item.type]]</template>
-	    </vaadin-grid-column>
-	    <vaadin-grid-column>
-		<template class="header">ACTION</template>
-		<template>[[item.action]]</template>
-	    </vaadin-grid-column>
-	    <vaadin-grid-column>
-		<template class="header">QUANTITY</template>
-		<template>[[item.quantity]]</template>
-	    </vaadin-grid-column>
-	    <vaadin-grid-column>
-		<template class="header">PRICE</template>
-		<template>[[item.price]]</template>
-	    </vaadin-grid-column>
-	    <vaadin-grid-column>
-		<template class="header">DURATION</template>
-		<template>[[item.duration]]</template>
-	    </vaadin-grid-column>
-	    <vaadin-grid-column>
-		<template class="header">TAG</template>
-		<template>[[item.tag]]</template>
-	    </vaadin-grid-column>
-	    <vaadin-grid-column>
-		<template class="header">BROKER</template>
-		<template>[[item.broker]]</template>
-	    </vaadin-grid-column>
-	    <vaadin-grid-column>
-		<template class="header">ACCOUNT</template>
-		<template>[[item.account]]</template>
-	    </vaadin-grid-column>
-	    <vaadin-grid-column>
-		<template class="header">STATUS</template>
-		<template>[[item.status]]</template>
-	    </vaadin-grid-column>
+		<vaadin-grid-column>
+			<template class="header">SYMBOL</template>
+			<template>[[item.symbol]]</template>
+		</vaadin-grid-column>
+		<vaadin-grid-column>
+			<template class="header">ENT TIME</template>
+			<template>[[item.creation_time]]</template>
+		</vaadin-grid-column>
+		<vaadin-grid-column>
+			<template class="header">TIME</template>
+			<template>[[item.timestamp]]</template>
+		</vaadin-grid-column>
+		<vaadin-grid-column>
+			<template class="header">TYPE</template>
+			<template>[[item.type]]</template>
+		</vaadin-grid-column>
+		<vaadin-grid-column>
+			<template class="header">ACTION</template>
+			<template>[[item.action]]</template>
+		</vaadin-grid-column>
+		<vaadin-grid-column>
+			<template class="header">QUANTITY</template>
+			<template>[[item.quantity]]</template>
+		</vaadin-grid-column>
+		<vaadin-grid-column>
+			<template class="header">PRICE</template>
+			<template>[[item.price]]</template>
+		</vaadin-grid-column>
+		<vaadin-grid-column>
+			<template class="header">DURATION</template>
+			<template>[[item.duration]]</template>
+		</vaadin-grid-column>
+		<vaadin-grid-column>
+			<template class="header">TAG</template>
+			<template>[[item.tag]]</template>
+		</vaadin-grid-column>
+		<vaadin-grid-column>
+			<template class="header">BROKER</template>
+			<template>[[item.broker]]</template>
+		</vaadin-grid-column>
+		<vaadin-grid-column>
+			<template class="header">ACCOUNT</template>
+			<template>[[item.account]]</template>
+		</vaadin-grid-column>
+		<vaadin-grid-column>
+			<template class="header">STATUS</template>
+			<template>[[item.status]]</template>
+		</vaadin-grid-column>
 	</vaadin-grid>
-    </template>
-    <script>
-     class OmpBlotter extends Polymer.Element{
-         static get is() { return 'omp-blotter'; }
-         static get properties(){
-             return {
-		 reports: {
-                     type: Array,
-                     value: () => []
-		 }
-             }
-         }
+</template>
+<script>
+	class OmpBlotter extends Polymer.Element{
+		static get is() { return 'omp-blotter'; }
+		static get properties(){
+			return {
+				reports: {
+					type: Array,
+					value: () => []
+				}
+			}
+		}
 
-	 addReport(data){
-	     console.log(data);
-	     this.push('reports', data);
-	 }
+		addReport(data){
+			console.log(data);
+			this.push('reports', data);
+		}
 
-	 removeReport(data){
-	     let i = this.reports.findIndex(function(r){
-		 return data.order_id === r.order_id
-	     })
+		removeReport(data){
+			let i = this.reports.findIndex(function(r){
+				return data.order_id === r.order_id
+			})
 
-	     if ( i > -1 ) this.splice('reports', i, 1);
-	 }
-     }
-     customElements.define(OmpBlotter.is, OmpBlotter);
-    </script>
+			if ( i > -1 ) this.splice('reports', i, 1);
+		}
+	}
+	customElements.define(OmpBlotter.is, OmpBlotter);
+</script>
 </dom-module>

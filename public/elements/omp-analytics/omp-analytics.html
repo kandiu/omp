@@ -34,7 +34,7 @@
             </vaadin-grid-column>
         </vaadin-grid>
 
-        <div id="chart">
+<!--          <div id="chart">
             <vaadin-line-chart on-selection="selectionListener" timeline>
                 <chart-title>Orders</chart-title>
 
@@ -45,16 +45,9 @@
                     <chart-title>Quantity</chart-title>
                     <opposite>true</opposite>
                 </y-axis>
-                <!--<y-axis id="price">-->
-                <!--<chart-title>Price</chart-title>-->
-                <!--<opposite>true</opposite>-->
-                <!--</y-axis>-->
+
                 <data-series name="quantity" type="column" data="[[datas]]" y-axis="q">
                 </data-series>
-
-                <!--<data-series name="price" type="scatter" data="[[prices]]"y-axis="price">-->
-                <!--</data-series>-->
-
 
                 <range-selector selected="4" id="rangeSelector" enable="false">
                     <button-theme fill="#7DADB2" stroke="#121212" stroke-width="0" width="100"  >
@@ -69,8 +62,7 @@
 
             </vaadin-line-chart>
 
-
-        </div>
+        </div>  -->
 
     </template>
 

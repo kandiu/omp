@@ -114,7 +114,6 @@ function accountList(acIdList, next) {
 // BOOK
 
 function writeBook(bookObj, next) {
-
     bookObj.save(function(err, saved) {
         if (! err)
             next(saved);

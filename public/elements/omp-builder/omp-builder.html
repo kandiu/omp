@@ -1,4 +1,6 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<!-- <link rel="import" href="../../../bower_components/paper-input-container/paper-input-container.html"> -->
 <link rel="import" href="../../../bower_components/vaadin-valo-theme/vaadin-combo-box.html">
 <link rel="import" href="../../../bower_components/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="../../../bower_components/vaadin-text-field/vaadin-text-field.html">
@@ -7,34 +9,36 @@
 <link rel="import" href="../../../bower_components/vaadin-valo-theme/vaadin-button.html">
 <link rel="import" href="../../../bower_components/vaadin-button/vaadin-button.html">
 <link rel="import" href="../../../bower_components/vaadin-radio-button/vaadin-radio-button.html">
+<link rel="import" href="../../../bower_components/vaadin-radio-button/vaadin-radio-group.html">
 <link rel="import" href="../../../bower_components/vaadin-valo-theme/vaadin-grid.html">
 <link rel="import" href="../../../bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
+
 <dom-module id="omp-builder">
     <template>
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
         <style>
         .section-title{
-         text-transform: uppercase;
-         font-weight: bold;
-     }
-     #quantity {
-         border-radius: 0px;
-         text-aling:center;
-     }
- </style>
- <div id="topbar" class="row">
+           text-transform: uppercase;
+           font-weight: bold;
+       }
+       #quantity {
+           border-radius: 0px;
+           text-aling:center;
+       }
+   </style>
+   <div id="topbar" class="row">
     <div class="col-3">
-        <vaadin-combo-box id="user" label="User" items="{{_users}}" value="{{_selectedUser}}"></vaadin-combo-box>
+        <vaadin-combo-box id="user" label="User" items="{{_users}}" value="{{_selectedUser}}" readonly></vaadin-combo-box>
     </div>
     <div class="col-3">
-        <vaadin-combo-box id="portfolio" label="Portfolio" items="[[_portfolios]]" value="{{_selectedPortfolio}}"></vaadin-combo-box>
+        <vaadin-combo-box id="portfolio" label="Portfolio" items="[[_portfolios]]" value="{{_selectedPortfolio}}" required="true"></vaadin-combo-box>
     </div>
     <div class="col-3">
         <vaadin-combo-box id="asset-class" label="Asset class" items="[[_assetClasses]]" value="{{_selectedAssetClass}}"></vaadin-combo-box>
     </div>
     <div class="col-3">
-        <vaadin-combo-box id="broker" label="Broker" items="[[_brokers]]" value="{{_selectedBroker}}"></vaadin-combo-box>
+        <vaadin-combo-box id="broker" label="Broker" items="[[_brokers]]" value="{{_selectedBroker}}" required="true"></vaadin-combo-box>
     </div>
 </div>
 <div class="row mt-4">
@@ -48,19 +52,19 @@
         <template is="dom-if" if="{{ _isEquity(_selectedAssetClass)}}">
             <div class="row">
                 <div class="col">
-                    <vaadin-combo-box id="symbol" label="Symbol" items="{{_tickers.tickers}}" value="{{_selectedTicker}}" on-value-changed="_tickerChanged"></vaadin-combo-box>
+                    <vaadin-combo-box id="symbol" label="Symbol" items="{{_tickers.tickers}}" value="{{_selectedTicker}}" on-change="_tickerChanged" required="true"></vaadin-combo-box>
                 </div>
             </div>
         </template>
         <template is="dom-if" if="{{ _isFutureOrOption(_selectedAssetClass)}}">
             <div class="row">
                 <div class="col">
-                    <vaadin-combo-box id="underlying" label="Underlying" items="{{_tickers.tickers}}" value="{{_selectedTicker}}" on-value-change="_tickerChanged"></vaadin-combo-box>
+                    <vaadin-combo-box id="underlying" label="Underlying" items="{{_tickers.tickers}}" value="{{_selectedTicker}}" on-change="_tickerChanged" required="true"></vaadin-combo-box>
                 </div>
             </div>
             <div class="row">
                 <div class="col">
-                    <vaadin-date-picker label="Maturity">
+                    <vaadin-date-picker id="maturity" label="Maturity" required="true" on-invalid-changed='_changeMaturity' value="{{_maturity}}">
                     </vaadin-date-picker>
                 </div>
             </div>
@@ -70,12 +74,12 @@
         </template>
         <div class="row">
             <div class="col">
-                <vaadin-text-field id="exchange" label="Exchange" value="{{_exchange}}"></vaadin-text-field>
+                <vaadin-text-field id="exchange" readonly label="Exchange" value="{{_exchange}}"></vaadin-text-field>
             </div>
         </div>
         <div class="row">
             <div class="col">
-                <vaadin-text-field readonly value="{{_currency}}" label="Currency"></vaadin-text-field>
+                <vaadin-text-field id="currency" readonly value="{{_currency}}" label="Currency"></vaadin-text-field>
             </div>
         </div>
     </div>
@@ -88,12 +92,12 @@
         </div>
         <div class="row">
             <div class="col">
-                <vaadin-combo-box id="type" label="Type" value="{{_selectedType}}"></vaadin-combo-box>
+                <vaadin-combo-box id="type" label="Type" value="{{_selectedType}}" required="true" on-change="_changeType"></vaadin-combo-box>
             </div>
         </div>
         <div class="row">
             <div class="col">
-                <vaadin-combo-box id="duration" label="Duration" value="{{_selectedDuration}}"></vaadin-combo-box>
+                <vaadin-combo-box id="duration" label="Duration" value="{{_selectedDuration}}" required="true" on-change="_changeDuration"></vaadin-combo-box>
             </div>
         </div>
         <div class="row">
@@ -102,7 +106,7 @@
                     <vaadin-text-field readonly value="" label="Price"></vaadin-text-field>
                 </template>
                 <template is="dom-if" if="{{ !_isMKT(_selectedType) }}">
-                    <vaadin-text-field value="{{_price}}" label="Price"></vaadin-text-field>
+                    <vaadin-text-field label="Price" value="{{_price}}" required="true" pattern="[0-9]*" error-message="Invalid price" on-value-changed='_changePrice'></vaadin-text-field>
                 </template>
             </div>
         </div>
@@ -130,306 +134,432 @@
             <div class="col">
                 <div class="btn-group" role="group" aria-label="Basic example">
                     <button type="button" class="btn btn-secondary" on-click="_changeQuantity" data="1">+</button>
-                    <input id="quantity" type="text" class="form-control" value="{{_quantity}}">
+<!--                     <input id="quantity" type="number" class="form-control" value="{{_quantity}}" on-change="_setQuantity" min="0" required> -->
+
+                      <paper-input id="quantity" 
+                                   type="number" 
+                                   class="form-control" 
+                                   value="{{_quantity}}" 
+                                   on-change="_setQuantity" 
+                                   min="0" 
+                                   required
+                                   auto-validate 
+                                   error-message="Invalid quantity">  
+                      </paper-input>
+
+
                     <button type="button" class="btn btn-secondary" on-click="_changeQuantity" data="-1">-</button>
                 </div>
             </div>
         </div>
+
+        <div class="row mt-4">
+          <div class="col">
+            <div class="radio-group">
+                <vaadin-radio-group value="{{_side}}">
+                  <vaadin-radio-button value="buy" checked>BUY</vaadin-radio-button>
+                  <vaadin-radio-button value="sell">SELL</vaadin-radio-button>
+                </vaadin-radio-group>
+            </div>
+          </div>
+        </div>
+
     </div>
 </div>
 <div class="row my-2">
     <div class="col">
-        <template is="dom-if" if="{{_isEditing}}"><span class="badge badge-pill badge-warning">Editing</span></template>
+        <template is="dom-if" if="{{_isEditing}}"><span class="badge badge-pill badge-warning">Editing: order amendation only</span></template>
+
+        <template is="dom-if" if="{{_wrongOrderInputs}}">
+          <template is="dom-repeat" items={{_errorMessage}}>
+            <span class="badge badge-pill badge-danger">{{item}}</span>
+          </template>
+        </template>
+
         <div class="btn-group float-right" role="group" aria-label="Basic example">
-            <button type="button" class="btn btn-success" on-click="createOrder" data="buy">BUY</button>
-            <button type="button" class="btn btn-danger" on-click="createOrder" data="sell">SELL</button>
+<!--             <button type="button" class="btn btn-success" on-click="createOrder" data="buy">BUY</button>
+            <button type="button" class="btn btn-danger" on-click="createOrder" data="sell">SELL</button> -->
+            <button type="button" class="btn btn-primary" on-click="createOrder">CREATE</button>
         </div>
     </div>
 </div>
 </template>
 <script>
- class OmpBuilder extends Polymer.Element{
-     static get is() { return 'omp-builder'; }
-     static get properties(){
-         return {
-             _users: {
-                 type: Array,
-                 value: () => ['igor', 'uma', 'marcel', 'eljon', 'robert']
-             },
-             _userData: {
-                 type: Object,
-                 value: () => {}
-             },
-             _quantity: {
-                 type: Number,
-                 value: 0
-             },
-             _selectedType: {
-                 type: String,
-                 value: "MKT"
-             },
-             _symbols:{
-                 type: Array,
-                 value: () => []
-             },
-             _selectedSymbol: {
-                 type: String,
-                 observer: '_symbolChanged'
-             },
-             _selectedUser: {
-                 type: String,
-                 value: 'igor',
-                 observer: '_userChanged'
-             },
-             _selectedPortfolio: {
-                 type: String,
-                 value: 'igor',
-                 observer: 'stocks-1'
-             },
-             _currency: {
-                 type: String,
-                 value: "CHF"
-             },
-             _portfolios: {
-                 type: Array,
-                 value: () => [],
-             },
-             _selectedPortfolio: {
-                 type: String,
-                 observer: '_portfolioChanged'
-             },
-             _assetClasses: {
-                 type: Array,
-                 value: () => []
-             },
-             _selectedAssetClass: {
-                 type: String,
-                 observer: '_assetClassChanged'
-             },
-             _brokers: {
-                 type: Array,
-                 value: () => []
-             },
-             _selectedBroker: {
-                 type: String,
-                 observer: '_brokerChanged'
-             },
-             _exchange: {
-                 type: String,
-             },
-             _selectedDuration: {
-                 type: String,
-                 value: "DAY"
-             },
-             _price:{
-                 type: Number,
-             },
-             _selectedAccount: {
-                 type: Object
-             },
-             _tickers: {
-                 type: Object
-             },
-             _selectedTicker: {
-                 type : String,
-                 value: ""
-             },
-             _isEditing: {
-                 type: Boolean,
-                 value: false
-             },
-             _editingIndex: {
-                 type: Number,
-                 value: -1
-             }
-         }
-     }
-     connectedCallback() {
-         super.connectedCallback();
-         this.$["duration"].items = ["DAY", "GTC"]
-         this.$["type"].items = ["MKT", "LMT"]
-     }
-     _userChanged(ev) {
-         login(this._selectedUser, function(data) {
-             let ud = JSON.parse(data)
-             this.set('_userData', ud);
-             this.set('_portfolios', udPortfolioIds(this._userData));
-             this.set('_selectedPortfolio', this._portfolios[0]);
-         }.bind(this));
+   class OmpBuilder extends Polymer.Element{
+       static get is() { return 'omp-builder'; }
+       static get properties(){
+           return {
+               _users: {
+                   type: Array,
+                   value: () => ['igor'] //['igor', 'uma', 'marcel', 'eljon', 'robert']
+               },
+               _userData: {
+                   type: Object,
+                   value: () => {}
+               },
+               _side: {
+                  type : String,
+                  value : "buy",
+               },
+               _quantity: {
+                   type: Number,
+                   value: 0
+               },
+               _selectedType: {
+                   type: String,
+                   value: "MKT"
+               },
+               _symbols:{
+                   type: Array,
+                   value: () => []
+               },
+               _maturity: {
+                    type: String,
+                    value:  function() {
+                              let date = new Date();
+                              var day = date.getDate();
+                              var month = date.getMonth() + 1;
+                              var year = date.getFullYear();
 
-         console.log("USER: " + this._selectedUser);
-         this.dispatchEvent(new CustomEvent('session-changed', {detail: this._selectedUser }))
-     }
+                              return year + '-' + month + '-' + day;
+                            }
+               },
+               _selectedSymbol: {
+                   type: String,
+                   observer: '_symbolChanged'
+               },
+               _selectedUser: {
+                   type: String,
+                   value: 'igor',
+                   observer: '_userChanged'
+               },
+               _selectedPortfolio: {
+                   type: String,
+                   value: 'igor',
+                   observer: 'stocks-1'
+               },
+               _currency: {
+                   type: String,
+                   value: "CHF"
+               },
+               _portfolios: {
+                   type: Array,
+                   value: () => [],
+               },
+               _selectedPortfolio: {
+                   type: String,
+                   observer: '_portfolioChanged'
+               },
+               _assetClasses: {
+                   type: Array,
+                   value: () => []
+               },
+               _selectedAssetClass: {
+                   type: String,
+                   observer: '_assetClassChanged'
+               },
+               _brokers: {
+                   type: Array,
+                   value: () => []
+               },
+               _selectedBroker: {
+                   type: String,
+                   observer: '_brokerChanged'
+               },
+               _exchange: {
+                   type: String,
+               },
+               _selectedDuration: {
+                   type: String,
+                   value: "DAY"
+               },
+               _price:{
+                   type: Number,
+               },
+               _selectedAccount: {
+                   type: Object
+               },
+               _tickers: {
+                   type: Object
+               },
+               _selectedTicker: {
+                   type : String,
+                   value: ""
+               },
+               _wrongOrderInputs: {
+                   type: Boolean,
+                   value: false
+               },
+               _errorMessage: {
+                   type: Array,
+                   value: () => [],
+               },
+               _isEditing: {
+                   type: Boolean,
+                   value: false
+               },
+               _editingIndex: {
+                   type: Number,
+                   value: -1
+               }
+           }
+       }
 
-     _portfolioChanged(ev){
-         if (this._userData) {
-             let temp = udAssetClasses(this._userData, this._selectedPortfolio);
-             this.set('_assetClasses', udAssetClasses(this._userData, this._selectedPortfolio));
-             this.set('_selectedAssetClass', this._assetClasses[0]);
-             this.set('_brokers', udBrokers(this._userData, this._selectedPortfolio));
-             this.set('_selectedBroker', this._brokers[0]);
-         }
+       connectedCallback() {
+           super.connectedCallback();
+           this.$["duration"].items = ["DAY", "GTC"]
+           this.$["type"].items = ["MKT", "LMT"]
+       }
+       _userChanged(ev) {
+           login(this._selectedUser, function(data) {
+               let ud = JSON.parse(data)
+               this.set('_userData', ud);
+               this.set('_portfolios', udPortfolioIds(this._userData));
+               this.set('_selectedPortfolio', this._portfolios[0]);
+           }.bind(this));
 
-         console.log("Portfolio: " + this._selectedPortfolio);
-         this.dispatchEvent(new CustomEvent('portfolio-changed', {detail: this._selectedPortfolio }))
-     }
-     _assetClassChanged(ev){
-         if ( this._userData ) {
-             let symbols = udSymbols(this._userData, this._selectedPortfolio, this._selectedAssetClass);
-             this.set('_symbols', symbols);
-             this.set('_selectedSymbol', this._symbols[0]);
-             this._updateAssetDetails();
-         }
-     }
-     _brokerChanged(ev) {
-         this._selectedAccount = udAccount(this._userData, this._selectedPortfolio, this._selectedBroker);
-     }
-     _symbolChanged(ev) {
-         if ( this._selectedSymbol ) {
-             queryRegistry(this._selectedSymbol, function(reg) {
-                 let selectedAsset = JSON.parse(reg);
-                 this.set('_exchange', selectedAsset.exchange_id);
-                 this.set('_currency', selectedAsset.currency);
-             }.bind(this));
-         }
-     }
-     _initializeFields() {
-         this.set('_portfolios', udPortfolioIds(this._userData));
-         this.set('_selectedPortfolio', this._portfolios[0]);
-         this.set('_assetClasses', udAssetClasses(this._userData, this._selectedPortfolio));
-         this.set('_selectedAssetClass', this._assetClasses[0]);
-         this.set('_brokers', udBrokers(this._userData, this._selectedPortfolio));
-         this.set('_selectedBroker', this._brokers[0]);
-         this._updateAssetDetails();
-     }
-     _updateAssetDetails() {
-         this.set('_symbols', udSymbols(this._userData, this._selectedPortfolio, this._selectedAssetClass));
-         this.set('_selectedSymbol', this._symbols[0]);
-         if ( this._selectedSymbol) {
-             queryRegistry(this._selectedSymbol, function(reg) {
-                 let selectedAsset = JSON.parse(reg);
-                 this.set('_exchange', selectedAsset.exchange_id);
-                 this.set('_currency', selectedAsset.currency);
-             }.bind(this));
-         }
-         let areUnderlyings = false;
-         let assets = udPortfolio(this._userData, this._selectedPortfolio).settings.selected_assets;
-         let asClass = assets.find(function(as) {
-             return as.asset_class === this._selectedAssetClass;
-         }.bind(this));
-         if (asClass && asClass.underlyings.length > 0) {
-             areUnderlyings = true;
-         }
-         this._tickers = {tickers : [], underlyings : areUnderlyings}
+           console.log("USER: " + this._selectedUser);
+           this.dispatchEvent(new CustomEvent('session-changed', {detail: this._selectedUser }))
+       }
 
-         let p = []
-         this._symbols.forEach(function(s, i) {
-             p.push(axios.get(`/registry/${s}`))
-         })
+       _portfolioChanged(ev){
+           if (this._userData) {
+               let temp = udAssetClasses(this._userData, this._selectedPortfolio);
+               this.set('_assetClasses', udAssetClasses(this._userData, this._selectedPortfolio));
+               this.set('_selectedAssetClass', this._assetClasses[0]);
+               this.set('_brokers', udBrokers(this._userData, this._selectedPortfolio));
+               this.set('_selectedBroker', this._brokers[0]);
+           }
 
-         Promise.all(p).then(function(res){
-             res.forEach((x) => this.push('_tickers.tickers', getTickers(x.data)))
-             this.set('_selectedTicker', this.get('_tickers.tickers.0'));
-	 }.bind(this))
+           //console.log("Portfolio: " + this._selectedPortfolio);
+           this.dispatchEvent(new CustomEvent('portfolio-changed', {detail: this._selectedPortfolio }))
+       }
 
+       _assetClassChanged(ev){
+           if ( this._userData ) {
+               let symbols = udSymbols(this._userData, this._selectedPortfolio, this._selectedAssetClass);
+               this.set('_symbols', symbols);
+               this.set('_selectedSymbol', this._symbols[0]);
+               this._updateAssetDetails();
+           }
+       }
+       _brokerChanged(ev) {
+           this._selectedAccount = udAccount(this._userData, this._selectedPortfolio, this._selectedBroker);
+       }
+       _symbolChanged(ev) {
+           if ( this._selectedSymbol ) {
+               queryRegistry(this._selectedSymbol, function(reg) {
+                   let selectedAsset = JSON.parse(reg);
+                   this.set('_exchange', selectedAsset.exchange_id);
+                   this.set('_currency', selectedAsset.currency);
+               }.bind(this));
+           }
 
-     }
-     _changeQuantity(el){
-         this.set("_quantity", this.get("_quantity") + parseInt(el.target.getAttribute("data")));
-     }
-     _isEquity(s){
-         return s === "Equity";
-     }
-     _isFuture(s){
-         return s === "Future";
-     }
-     _isOption(s){
-         return s === "Option";
-     }
-     _isFutureOrOption(s) {
-         return this._isFuture(s) || this._isOption(s)
-     }
-     _isMKT(s){
-         return s === "MKT"
-     }
-     createOrder(ev){
-         let errmsg = [];
-         if (this._quantity <= 0) {errmsg.push( "Quantity must be strictly positive");}
-         if (this._selectedType === 'LMT' && this._price <= 0) {
-             errmsg.push("A limit price must be strictly positive");
-         }
+       }
+       _tickerChanged() {
+            this.manageErrorMsg("!this._selectedTicker", "Symbol missed. Please select a symbol");      
+       }
+       _initializeFields() {
+           this.set('_portfolios', udPortfolioIds(this._userData));
+           this.set('_selectedPortfolio', this._portfolios[0]);
+           this.set('_assetClasses', udAssetClasses(this._userData, this._selectedPortfolio));
+           this.set('_selectedAssetClass', this._assetClasses[0]);
+           this.set('_brokers', udBrokers(this._userData, this._selectedPortfolio));
+           this.set('_selectedBroker', this._brokers[0]);
+           this._updateAssetDetails();
+       }
+       _updateAssetDetails() {
+           this.set('_symbols', udSymbols(this._userData, this._selectedPortfolio, this._selectedAssetClass));
+           this.set('_selectedSymbol', this._symbols[0]);
+           if ( this._selectedSymbol) {
+               queryRegistry(this._selectedSymbol, function(reg) {
+                   let selectedAsset = JSON.parse(reg);
+                   this.set('_exchange', selectedAsset.exchange_id);
+                   this.set('_currency', selectedAsset.currency);
+               }.bind(this));
+           }
+           let areUnderlyings = false;
+           let assets = udPortfolio(this._userData, this._selectedPortfolio).settings.selected_assets;
+           let asClass = assets.find(function(as) {
+               return as.asset_class === this._selectedAssetClass;
+           }.bind(this));
+           if (asClass && asClass.underlyings.length > 0) {
+               areUnderlyings = true;
+           }
+           this._tickers = {tickers : [], underlyings : areUnderlyings}
 
-	 if ( !this._selectedAccount || this._selectedAccount.account_id === "" ){
-	     errmsg.push("Select an account ");
-	 }
+           let p = []
+           this._symbols.forEach(function(s, i) {
+               p.push(axios.get(`/registry/${s}`))
+           })
 
-	 if ( !this._selectedAssetClass ){
-	     errmsg.push("Select an asset");
-	 }
-
-	 if ( !this._selectedTicker ){
-	     errmsg.push("Select a ticker");
-	 }
-
-	 if ( !this._selectedPortfolio){
-	     errmsg.push("Select a portfolio");
-	 }
-
-	 if ( !this._selectedType){
-	     errmsg.push("Select a type");
-	 }
-
-	 if ( !this._selectedDuration){
-	     errmsg.push("Select a duration");
-	 }
+           Promise.all(p).then(function(res){
+               res.forEach((x) => this.push('_tickers.tickers', getTickers(x.data)))
+               this.set('_selectedTicker', this.get('_tickers.tickers.0'));
+           }.bind(this))
 
 
+       }
+       _changeQuantity(el){
+           this.set("_quantity", parseInt(this.get("_quantity")) + parseInt(el.target.getAttribute("data")));
+          this.manageErrorMsg("this._quantity <= 0", "Quantity must be strictly positive");
+       }
+       _setQuantity() {
+          this.set('_quantity', parseInt(this.shadowRoot.getElementById('quantity').value));
+          this.manageErrorMsg("this._quantity <= 0", "Quantity must be strictly positive");
+       }
+       _changeType() {
+          this.manageErrorMsg("!this._selectedType", "Order type missed. Please select a type");
+       }
+       _changePrice(el) {
+        if (this._selectedType == 'LMT') {
+          if (el.target.value <= 0) {
+            this.manageErrorMsg("true", "A limit price must be strictly positive");
+          } else {
+            this.manageErrorMsg("false", "A limit price must be strictly positive");
+          }     
+        }
+       }
+       _changeDuration() {
+          this.manageErrorMsg("!this._selectedDuration", "Order duration missed. Please select a duration");
+       }
+       _changeMaturity(el) {
+        if (el.target.value == '') {
+          this.manageErrorMsg("true", "A derivative must have a maturity. Please pick a date");
+        } else {
+          this.manageErrorMsg("false", "A derivative must have a maturity. Please pick a date");
+        }
+       }
+       _isEquity(s){
+           return s === "Equity";
+       }
+       _isFuture(s){
+           return s === "Future";
+       }
+       _isOption(s){
+           return s === "Option";
+       }
+       _isFutureOrOption(s) {
+           return this._isFuture(s) || this._isOption(s)
+       }
+       _isMKT(s){
+           return s === "MKT" || s == '';
+       }
 
-         if (errmsg.length > 0) {
-             alert(errmsg.join('\n'));
-             return
-         }
+       manageErrorMsg(condition, errmsg) {
+          if (eval(condition)) {
+            this.set("_wrongOrderInputs", true);
+            let found = false;
+            this._errorMessage.forEach((m) => {
+              if (m == errmsg) {
+                found = true;
+              }
+            });
+            if (!found) {
+              this.push("_errorMessage", errmsg);
+            }
+          } else {
+            let i = 0;
+            this._errorMessage.forEach((m) => {
+              if (m == errmsg) {
+                this.splice('_errorMessage', i, 1);
+              } else {i++;}
+            });
+          }
+          if (this._errorMessage.length == 0) {
+            this.set("_wrongOrderInputs", false);
+          }
+       }
 
-         let order = {
-             account: this._selectedAccount.account_id,
-             side: ev.target.getAttribute('data'),
-             portfolio: this._selectedPortfolio,
-             user: this._selectedUser,
-             ticker: this._selectedTicker,
-             quantity: this._quantity,
-             type: this._selectedType,
-             price: this._selectedType === 'LMT' ? 0 : this._price,
-             duration: this._selectedDuration,
-             asset_class: this._selectedAssetClass,
-             broker: this._selectedBroker,
-             currency: this._currency,
-             exchange: this._exchange,
-	 }
+      createOrder(){
+          this.set("_errorMessage", []);
+          if (this._quantity <= 0) {
+            this.push("_errorMessage", "Quantity must be strictly positive");
+          }
+          if (this._selectedType === 'LMT' && this._price <= 0) {
+            this.push("_errorMessage", "A limit price must be strictly positive");
+          }
 
-	 queryRegistry(this._selectedSymbol, function(reg) {
+          if ( !this._selectedAccount || this._selectedAccount.account_id === "" ){
+            this.push("_errorMessage", "Account missed. Please select an account");
+          }
+
+          // if (this._selectedAssetClass == "Future" || this._selectedAssetClass == "Option") {
+          //       if(this.shadowRoot.getElementById('maturity').value == '')
+          //         {
+          //           this.push("_errorMessage", "A derivative must have a maturity. Please pick a date");
+          //         } else {
+          //           this.manageErrorMsg("false", "A derivative must have a maturity. Please pick a date");
+          //         }
+          // }
+
+          // if ( !this._selectedTicker ){
+          //   this.push("_errorMessage", "Symbol missed. Please select a symbol");
+          // }
+
+          if ( !this._selectedPortfolio){
+            this.push("_errorMessage", "Portfolio missed. Please select a portfolio");
+          }
+
+          // if ( !this._selectedType){
+          //   this.push("_errorMessage", "Order type missed. Please select a type");
+          // }
+
+          // if ( !this._selectedDuration){
+          //   this.push("_errorMessage", "Order duration missed. Please select a duration");
+          // }
+
+          if (this._errorMessage.length > 0) {
+            this.set("_wrongOrderInputs", true);
+            return
+          } else {
+            this.set("_wrongOrderInputs", false);
+            this.set("_errorMessage", []);
+          }
+
+          let order = {
+              account: this._selectedAccount.account_id,
+              side: this._side, //ev.target.getAttribute('data'),
+              portfolio: this._selectedPortfolio,
+              user: this._selectedUser,
+              ticker: this._selectedTicker,
+              quantity: this._quantity,
+              type: this._selectedType,
+              price: this._selectedType === 'LMT' ? this._price : "",
+              duration: this._selectedDuration,
+              asset_class: this._selectedAssetClass,
+              broker: this._selectedBroker,
+              currency: this._currency,
+              exchange: this._exchange,
+          }
+
+          queryRegistry(this._selectedSymbol, function(reg) {
              let ticker = getTickers(JSON.parse(reg));
-	 });
-	 if (this._isEditing && this._editingIndex > - 1){
-             order.index = this._editingIndex
-             this.dispatchEvent(new CustomEvent('update-order', {detail: order }))
-             this.set('_isEditing', false)
-             this.set('_editingIndex', -1)
-	 } else {
-             this.dispatchEvent(new CustomEvent('new-order', {detail: order }))
-	 }
-     }
-     _edit(order){
-	 this.set('_isEditing', true);
-	 this.set('_editingIndex', order.index)
-	 this.set('_selectedPortfolio', order.portfolio)
-	 this.set('_selectedAssetClass', order.asset_class)
-	 this.set('_selectedBroker', order.broker)
-	 this.set('_selectedTicker', order.ticker)
-	 this.set('_selectedType', order.type)
-	 this.set('_selectedDuration', order.duration)
-	 this.set('_quantity', order.quantity)
-     }
- }
- customElements.define(OmpBuilder.is, OmpBuilder);
+          });
+          if (this._isEditing && this._editingIndex > - 1){
+            order.index = this._editingIndex
+            this.dispatchEvent(new CustomEvent('update-order', {detail: order }))
+            this.set('_editingIndex', -1)
+          } else {
+            this.dispatchEvent(new CustomEvent('new-order', {detail: order }))
+          }
+    }
+
+    _edit(order){
+          this.set('_isEditing', true);
+          this.set('_editingIndex', order.index);
+          // this.set('_side', order.side);
+          // this.set('_selectedPortfolio', order.portfolio)
+          // this.set('_selectedAssetClass', order.asset_class)
+          // this.set('_selectedBroker', order.broker)
+          // this.set('_selectedTicker', order.ticker)
+          // this.set('_selectedType', order.type)
+          // this.set('_selectedDuration', order.duration)
+          // this.set('_quantity', order.quantity)
+
+        this.createOrder();
+    }
+}
+customElements.define(OmpBuilder.is, OmpBuilder);
 </script>
 </dom-module>
